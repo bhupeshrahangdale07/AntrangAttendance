@@ -1,0 +1,11 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" 
+                controller="StudentIARFormCtrl">
+	<aura:attribute name="questionId" type="String" />
+    <aura:attribute name="imageData" type="String" default=""/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:if isTrue="{!v.imageData}">
+    	<img src="{!v.imageData}" alt="Question Image" />
+    </aura:if>    
+</aura:component>

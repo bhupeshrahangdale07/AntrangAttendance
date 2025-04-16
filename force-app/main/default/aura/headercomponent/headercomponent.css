@@ -1,0 +1,28 @@
+.THIS .container {
+  width: 100%;
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+.THIS .content {
+  padding: 0 16px;
+}
+.THIS header {
+  min-height: 40px;
+  max-height: 110px;
+}
+
+.THIS .bkwhite {
+  background: #ffffff;
+}
+
+.THIS .imghw {
+  min-height: 40px;
+  max-height: 110px;
+}
+
+.THIS .header {
+  overflow: hidden;
+  background-color: #f1f1f1;
+  padding: 20px 10px;
+}

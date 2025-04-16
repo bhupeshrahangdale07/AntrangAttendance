@@ -1,0 +1,31 @@
+ul.slds-p-horizontal_small {
+    text-align: center;
+}
+ul.slds-p-horizontal_small li {
+    display: inline;
+    padding: 10px;
+}
+th:first-child {
+    /* display: flex !important; */
+}
+
+thead tr th:first-child,
+ tbody tr td:first-child {
+    width: 100px;
+ }
+ 
+@media (max-width: 767px) {
+    ul.slds-p-horizontal_small li {
+        display: block;
+        padding: 3px;
+    }
+    div ul.slds-p-horizontal_small {
+        text-align: left !important;
+    }
+    .slds-align_absolute-center.slds-m-bottom_small.slds-box {
+        display: block;
+    }
+    ul.slds-p-horizontal_small {
+        padding-left: 3px;
+    }
+}

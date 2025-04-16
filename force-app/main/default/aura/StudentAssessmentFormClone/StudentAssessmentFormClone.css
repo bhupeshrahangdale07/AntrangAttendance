@@ -1,0 +1,203 @@
+.THIS .firstDivMTC{
+	padding-top: 32px;
+    float: left;
+}
+
+.THIS .middleDivMTC{
+    float: left;
+}
+.THIS .lastDivMTC{
+    float: left;
+    padding-top: 57px;
+}
+
+.THIS .QTitleMTC{
+    float: left;
+    padding-left: 115px;
+}
+
+.THIS .ATitleMTC{
+    float: left;
+    padding-left: 130px;
+}
+
+.THIS .lastROW{
+    padding: 75px;
+}
+
+.THIS .prvsbtn{
+    display:none;
+}
+
+.THIS .slds-spinner_container  {
+    background-color: rgba(0, 0, 0, 0.10);
+    position:fixed !important;
+}
+
+.THIS .btn{
+    width: 20%;
+}
+
+.THIS .slds-button{
+    background: #91b332;
+    color: #fff;
+}
+.THIS .slds-form-element__label{
+    font-size: 15px !important;
+}
+
+.THIS .loader li.active:before {
+	display:none;
+}
+
+.THIS .sticky {
+    margin-left: -104px;
+}
+
+.THIS .resultheader{
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+.THIS .scoretbl{
+	width:50%;
+    background-color:white;
+    font-size: inherit;
+}
+
+.THIS .scoretbl td{
+    padding: 5px;
+    border: 1px solid;
+    text-align: center;
+}
+.THIS .scoretbl th{
+    padding: 5px;
+    border: 1px solid;
+    text-align: center;
+    background-color:#91b332;
+}
+.THIS .sectiontd{
+    text-align: left !important;
+}
+.THIS .overalltd{
+    text-align: right !important;
+}
+
+
+/* report card css start */
+
+.THIS .resultContentHeader{
+    font-weight: 600;
+    text-decoration: underline;
+}
+.THIS .main .numberCircle {
+    margin: 5px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    background: #fff;
+    border: 2px solid #666;
+    color: #666;
+    font: 20px Arial, sans-serif;
+}
+
+.THIS .main .rcorners1 {
+    margin: 5px;
+    border-radius: 25px;
+    background: #73AD21;
+    padding: 10px;
+    height: 181px;
+}
+
+.THIS .main .divrs {
+    text-align: center;
+    font-weight: bold;
+    margin: 5px;
+    border: 2px solid ;
+    padding: 10px;
+    border-radius: 10px 0px;
+}
+.THIS .contentDiv{
+    margin-top: 30px;
+}
+.THIS .stepdiv .li{
+    list-style-type: disc;
+}
+.THIS .stepdiv .li, .THIS .rcorners1 .li{
+    list-style-type: disc;
+    text-align: initial;
+}
+
+/* report card css end */
+
+@media only screen and (max-width: 1023px){
+    .THIS .btn{
+        width: 30%;
+    }    
+    .THIS .sticky {
+    	margin-left: -32px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .THIS .scoretbl{
+        width:75%;
+    }
+    
+    /* report card css start */
+    .THIS .main .rcorners1 {
+        height: 140px;
+    }
+	/* report card css end */
+}
+
+@media only screen and (max-width: 767px){
+    .THIS .firstDivMTC{
+        padding-top: 32px;
+        float: left;
+        width: 40%;
+    }
+    
+    .THIS .middleDivMTC{
+        float: left;
+        width: 55%;
+    }
+    .THIS .lastDivMTC{
+        width: 5%;
+    }
+    
+    .THIS .QTitleMTC{
+        float: left;
+        padding-left: 0px;
+    }
+    
+    .THIS .ATitleMTC{
+        float: left;
+        padding-left: 0px;
+    }
+    
+    .THIS .btn{
+        width: 100%;
+        margin:3px;
+    }
+    
+    .THIS .btndiv{
+        display:table;
+    }
+    
+    .THIS .sticky {
+    	margin-left: -32px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .THIS .scoretbl{
+        width:100%;    
+    }
+    
+    /* report card css start */
+    .THIS .main .rcorners1 {
+        height: 185px;
+    }
+	/* report card css end */
+}

@@ -1,0 +1,7 @@
+.THIS tr.disabled {
+    background-color: #f0f0f0;
+    pointer-events: none;
+}
+.THIS .slds-form-element__help{
+    font-size: 0.7em;
+}

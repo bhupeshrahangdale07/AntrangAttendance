@@ -1,0 +1,38 @@
+.THIS div.signOut{
+    position: relative;
+    bottom: 10px;
+    top: -55px;
+    right: 0px;
+}
+.THIS ul.slds-p-horizontal_small {
+    text-align: center;
+}
+.THIS ul.slds-p-horizontal_small li {
+    display: inline;
+    padding: 10px;
+}
+@media (max-width: 767px) {
+    .THIS ul.slds-p-horizontal_small li {
+        display: block;
+        padding: 3px;
+    }
+    .THIS div ul.slds-p-horizontal_small {
+        text-align: left !important;
+    }
+    .THIS .slds-align_absolute-center.slds-m-bottom_small.slds-box {
+        display: block;
+    }
+    .THIS ul.slds-p-horizontal_small {
+        padding-left: 3px;
+    }
+}
+.THIS .slds-scrollable_y, .THIS table.slds-table.slds-table_header-fixed.slds-table_bordered.slds-table_edit.slds-table_resizable-cols {
+    width: 100% !important;
+}
+.THIS span.slds-resizable__divider, .THIS .slds-has-button-menu .slds-th__action-button {
+    display: none !important;
+}
+.THIS .slds-align_absolute-center.slds-m-bottom_small.slds-box {
+    margin-right: -21px;
+    margin-left: -21px;
+}

@@ -1,0 +1,173 @@
+<apex:page standardController="Batch__c" recordSetVar="batch" extensions="assignFacilatorOnBatchController" docType="html-5.0" 
+           lightningStyleSheets="true" standardStylesheets="false"  showHeader="false">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script>
+            //edit selected Coursr Competency Record
+            function selectedTrainer(trainerId){
+            console.log('trainerId: ' + trainerId);
+            assigntrainerId(trainerId);
+        }
+        
+        $(document).ready(function(){
+            overridePageMessages();
+        });
+        function overridePageMessages(){    
+            var textureEffect = '';
+            //Uncomment below line for texture effect on page messages
+            textureEffect = 'slds-theme--alert-texture';
+            
+            $('.warningM3').addClass('slds-notify slds-notify--toast slds-theme--warning customMessage '+textureEffect);          
+            $('.confirmM3').addClass('slds-notify slds-notify--alert slds-theme--success  customMessage '+textureEffect);    
+            $('.errorM3').addClass('slds-notify slds-notify--alert slds-theme--error customMessage '+textureEffect);                  
+            $('.infoM3').addClass('slds-notify slds-notify--toast customMessage '+textureEffect);    
+            
+            $('.errorM3').removeClass('errorM3'); 
+            $('.confirmM3').removeClass('confirmM3'); 
+            $('.infoM3').removeClass('infoM3');   
+            $('.warningM3').removeClass('warningM3');  
+        }
+        </script>
+        
+        <apex:slds />
+        <apex:pageMessages />
+        <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <body>
+            <div class="slds" style="margin:20px;">
+                <div class="slds-page-header">
+                    <div class="slds-grid">
+                        <div class="slds-col slds-has-flexi-truncate">
+                            <div class="slds-media slds-no-space slds-grow">
+                                <div class="slds-media__figure">
+                                    <svg class="slds-icon slds-icon-custom-custom68" aria-hidden="true">
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, "/assets/icons/custom-sprite/svg/symbols.svg#custom68")}"></use>
+                                    </svg>
+                                </div>
+                                <div class="slds-media__body">
+                                    <p class="slds-text-title--caps slds-line-height--reset">Assign facilitator</p>
+                                    <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate" title="{!facilitator}">{!facilitator}</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <apex:form id="selectedBatches" style="margin-top:15px;" >
+                    
+                    <apex:outputPanel rendered="{!NOT(ISBLANK(lstBatch))}">
+                        <h2 id="element-with-table-label" class="slds-text-heading_medium slds-m-bottom_xx-small">Selected Batches</h2>
+                        <table width="100%" class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered" style="border-spacing:0px !important;">
+                            <thead>
+                                <tr>
+                                    <th width="20%" style="text-align: center;"><b>Batch Name</b></th>
+                                    <th width="20%" style="text-align: center;"><b>School Name</b></th>
+                                    <th width="20%" style="text-align: center;"><b>School Medium</b></th>
+                                    <th width="20%" style="text-align: center;"><b>School Located</b></th>
+                                    <th width="20%" style="text-align: center;"><b>School Timing</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <apex:repeat value="{!lstBatch}" var="b">
+                                    <tr>
+                                        <td style="text-align: center;">
+                                            {!b.Name}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {!b.School_Name__r.Name}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {!b.School_Name__r.Medium_Language_of_Instruction__c}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {!b.School_Name__r.City__r.Name}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {!b.School_Name__r.School_Timing__c}
+                                        </td>
+                                    </tr>
+                                </apex:repeat>
+                            </tbody>
+                        </table>
+                    </apex:outputPanel>
+                </apex:form>
+                
+                
+                <apex:form id="trainerForm" style="margin-top:15px;">
+                    <!-- SPINNER -->
+                    <apex:actionstatus id="spinner">
+                        <apex:facet name="start">
+                            <div class="demo-only" style="height:6rem">
+                                <div id="spinner" class="slds-spinner_container">
+                                    <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                                        <span class="slds-assistive-text">Loading</span>
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </apex:facet>
+                    </apex:actionstatus> 
+                    <!-- / SPINNER -->
+                    
+                    
+                    <apex:actionFunction name="assigntrainerId" reRender="pgMsg">
+                        <apex:param name="trainerId" assignTo="{!selectedCon}" value="" />
+                    </apex:actionFunction>
+                    <apex:outputPanel rendered="{!NOT(ISBLANK(lstContact))}">
+                        <h2 style="margin-bottom:10px;" id="element-with-table-label" class="slds-text-heading_medium slds-m-bottom_xx-small">Available Facilators</h2>
+                       <!-- <div style="margin-bottom:10px;text-align:center;">
+                            <apex:commandButton value="Select" styleClass="slds-button slds-button--brand btnSave" reRender="pgMsg" 
+                                                action="{!processSelected}"/>
+                            <apex:commandButton value="back" styleClass="slds-button slds-button--neutral" action="{!backToList}"/>
+                        </div> -->
+                        
+                        <table width="100%" class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered" style="border-spacing:0px !important;">
+                            <thead>
+                                <tr>
+                                    <th width="15%" style="text-align: center;"><b>Select</b></th>
+                                    <th width="30%" style="text-align: center;"><b>Trainer Name</b></th>
+                                    <th width="20%" style="text-align: center;"><b>Total Session Assigned</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <apex:repeat value="{!lstContact}" var="con">
+                                    <tr>
+                                        <td style="text-align: center;">
+                                            <span class="slds-radio">
+                                                <input type="radio" name="Select" id="con-{!con.Id}" value="{!con.Id}" onclick="selectedTrainer('{!con.Id}');"/>
+                                                <label class="slds-radio__label" for="con-{!con.Id}">
+                                                    <span class="slds-radio_faux"></span>
+                                                    <span class="slds-form-element__label"></span>
+                                                </label>
+                                            </span>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {!con.Name}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {!con.sessions__r.size}
+                                        </td>
+                                    </tr>
+                                </apex:repeat>
+                            </tbody>
+                        </table>
+                        <div style="margin-top:10px;text-align:center;">
+                            <apex:commandButton value="Select" styleClass="slds-button slds-button--brand btnSave" 
+                                                action="{!processSelected}"  reRender="trainerForm,spinner" status="spinner"
+                                                disabled="{!selectDisable}"/>
+                            <apex:commandButton value="Back" styleClass="slds-button slds-button--neutral" action="{!backToList}"/>
+                        </div>
+                    </apex:outputPanel> 
+                    <apex:outputPanel rendered="{!(ISBLANK(lstContact))}">
+                        <div style="margin-top:10px;text-align:center;">
+                            <apex:commandButton value="Back" styleClass="slds-button slds-button--neutral" action="{!backToList}"/>
+                        </div>
+                    </apex:outputPanel>
+                </apex:form>
+                
+                
+            </div>
+        </body>
+    </html>
+</apex:page>

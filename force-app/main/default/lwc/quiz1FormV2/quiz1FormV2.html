@@ -1,0 +1,209 @@
+<template>
+    <template if:true={showLoading}>
+        <lightning-spinner alternative-text="Loading" size="medium" class="spinnerClass"></lightning-spinner>
+    </template>
+    <lightning-card>
+        <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+            <b>
+                Quiz-1 : {grd}
+            </b>
+        </div>
+        <p class="slds-m-around--small" style="text-align: center;"> 
+            {instructions}
+        </p>
+        <!-- <div slot="footer" style="display: grid;">
+            <div>
+                <lightning-button variant="brand" 
+                                  class="slds-var-m-left_x-small" 
+                                  label="Back"  
+                                  data-name="backButton"
+                                  onclick={handleBackButton} 
+                                  style="float: left;"></lightning-button>
+
+                <lightning-button variant="brand" 
+                                  class="slds-var-m-left_x-small" 
+                                  label="Submit"  
+                                  data-name="submitButton"
+                                  disabled={freeze}
+                                  onclick={handleSubmitButton} 
+                                  style="float: right;"></lightning-button>
+            </div>
+        </div> -->
+
+        <div>
+            <lightning-spinner alternative-text="Loading" size="medium" if:true={isLoading}></lightning-spinner>
+            <div class="slds-box">
+                <ul class="slds-p-horizontal_small" style="text-align: center;">
+                    <li><b>School Name : </b> {sch}</li>
+                    <li><b>Grade : </b> {grd}</li>
+                    <li><b>Batch Code : </b> {batchNumber}</li>
+                    <li><b>Student Name : </b> {studentName}</li>
+                </ul>
+                
+            </div>
+
+        <template if:true={showForm}>
+            <!-- Form -->
+            <div class="formAptitude">
+                <!-- <p class="slds-m-around--small" style="text-align: center;"> 
+                    {instructions}
+                </p> -->
+                <template for:each={getAssesmentQuestion} for:item="question">
+                    <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium" key={question.Sequence_Number__c}>
+                        <label class="slds-form-element__label" for="select-01">
+                            <abbr class="slds-required" title="required">* </abbr>
+                            <template if:true={isEnglish}>{question.Question_Label_English__c}</template>
+                            <template if:false={isEnglish}>{question.Question_Label_Hindi__c}</template>
+                        </label>
+                        <template for:each={question.Assessment_Question_Options__r} for:item="option">
+                            <div class="slds-grid slds-gutters" key={option.Sequence_Number__c}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input  name={question.Sequence_Number__c}
+                                                      variant="label-hidden"
+                                                      type="checkbox" 
+                                                      data-value={option.Sequence_Number__c}
+                                                      class="checkbox-group" 
+                                                      data-group-id={question.Sequence_Number__c} 
+                                                      value={option.Sequence_Number__c}
+                                                      onchange={handleQuestionOptions}></lightning-input>
+                                </div>
+                                <div>
+                                    <template if:true={isEnglish}>{option.Option_Label_English__c}</template>
+                                    <template if:false={isEnglish}>{option.Option_Label_Hindi__c}</template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            
+                <div slot="footer" style="display: grid;" class="footerDiv">	
+                    <div class="footer slds-m-top--medium slds-m-bottom_xx-large" >
+                            <lightning-button label="Back"  
+                                            variant="brand"
+                                            data-name="backButton"
+                                            onclick={handleBackButton} 
+                                            style="float:left;"></lightning-button>
+                            <lightning-button label="Submit Quiz 1 Data"                                     
+                                            variant="brand"
+                                            data-name="submitButton"
+                                            onclick={handleSubmitButton} 
+                                            style="float:right;"></lightning-button>
+                    </div>
+                </div>
+            </div>
+        </template>
+            <!-- <div class="slds-box">
+                <span>{question01}</span>
+                <template for:each={q01_Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.optionName}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input type="checkbox" variant="label-hidden"
+                            data-id={obj.optionName}
+                            checked={obj.answer}
+                            disabled={freeze}
+                            onchange={handleQ01} ></lightning-input>                        
+                        </div>
+                        <div>
+                            <span>{obj.optionValue}</span>
+                        </div>
+                    </div>  
+                </template>            
+            </div>
+
+            <div class="slds-box">
+                <span>2.Below is Nasir's Interest and Aptitude Code</span>
+
+                <div>
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-border_left slds-border_right">
+                    <thead>
+                      <tr class="slds-line-height_reset">
+                        <th class="" scope="col">
+                          <div class="slds-truncate">Interest Code</div>
+                        </th>
+                        <th class="" scope="col">
+                          <div class="slds-truncate">Aptitude Code</div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="slds-hint-parent">
+                        <td data-label="Interest Code">
+                          <div class="slds-truncate">Conventional</div>
+                        </td>
+                        <td data-label="Aptitude Code">
+                          <div class="slds-truncate">Verbal</div>
+                        </td>
+                      </tr>
+                      <tr class="slds-hint-parent">
+                        <td data-label="Interest Code">
+                          <div class="slds-truncate">Likes working with data/numbers, working indoors/in offices</div>
+                        </td>
+                        <td data-label="Aptitude Code">
+                          <div class="slds-truncate">Good at communicating and explaining things</div>
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
+                </div>
+
+                <span>{question02}</span>
+                <template for:each={q02_Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.optionName}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input type="checkbox" 
+                            data-id={obj.optionName} variant="label-hidden"
+                            checked={obj.answer}
+                            disabled={freeze}
+                            onchange={handleQ02} ></lightning-input>                        
+                        </div>
+                        <div>
+                            <span>{obj.optionValue}</span>
+                        </div>
+                    </div>  
+                </template>            
+            </div> -->
+
+            <!-- Showing/Displayiing Modal for Back Btn Functionality -->
+            <template if:true={isShowModal}>
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                    <!-- modal header start -->
+                        <header class="slds-modal__header">
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Do you want to go back ?</h2>
+                        </header>
+                    
+                        <!-- modal body start -->
+                        <div class="slds-modal__content slds-p-around_x-large slds-text-align_center" id="modal-content-id-1">
+                            <p>You will lose all the data entered. Are you sure you want to go
+                                back?</p>
+                        </div>
+
+                        <!-- modal footer start-->
+                        <footer class="slds-modal__footer">
+                            <div slot="footer">
+                                <div class="footer slds-m-top--medium slds-m-bottom--large" align="center">
+                                    <lightning-button variant="brand" 
+                                    class="slds-var-m-left_x-small" 
+                                    label="Yes"  
+                                    data-name="submitData"
+                                    onclick={yesBackBtnHandler}></lightning-button>
+                    
+                                    <lightning-button variant="brand" 
+                                    class="slds-var-m-left_x-small" 
+                                    label="No"  
+                                    data-name="editData"
+                                    onclick={noBackBtnHandler}></lightning-button>
+                    
+                                </div>
+                            </div>
+                        </footer>
+                    
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </template>
+
+        </div>
+
+    </lightning-card>
+</template>

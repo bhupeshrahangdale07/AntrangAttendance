@@ -1,0 +1,96 @@
+<template>
+    <article class="slds-card" style="padding:20px"> 
+
+        <template if:true={isUploadLoading}>
+            <div class="exampleHolder">
+                <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+            </div>
+        </template>
+
+        <lightning-combobox
+            name="Select Process"
+            label="Select Process"
+            placeholder="Select Process"
+            value={selectedOMRType}
+            options={options}
+            onchange={handleOMRTypeChange} ></lightning-combobox>
+
+        <template if:true={showEmail}>
+            <lightning-combobox
+                name="Select to email"
+                label="Email"
+                value={selectedEmail}
+                placeholder="Select Email"
+                options={emailPicklist}
+                onchange={handleEmailPicklist} ></lightning-combobox>
+        </template>
+        
+        <template if:true={showBaseLineOptions}>
+            <!--<lightning-combobox
+                name="Action"
+                label="Action"
+                placeholder="Select Action"
+                options={actionOptions}
+                onchange={handleActionChange} ></lightning-combobox>-->
+            <!-- Below template comment out by "Kandisa" on 05/07/2023 -->
+            <!--<c-customlookup icon-name="standard:account"
+                            s-object-api-name="account"
+                            label="School"
+                            onlookupupdate={lookupRecord}
+                            whereclause="RecordType.DeveloperName = 'School_Account'"
+                            placeholder="Search School here..."></c-customlookup>-->          
+        </template>
+
+        <template if:true={showGrade}>
+            <lightning-combobox
+                name="filter"
+                label="Grade"
+                value={selectedGrade}
+                options={gradeOptions}
+                onchange={handleGradeChange}
+                placeholder="Select Grade"></lightning-combobox>
+        </template>
+
+        <!-- Below template comment out by "Kandisa" on 05/07/2023 -->
+        <!--<template if:true={showbatch}>
+            <lightning-combobox
+                name="Batch"
+                label="Batch"
+                placeholder="Select Batch"
+                options={batch}
+                onchange={handleBatchChange} ></lightning-combobox>
+        </template>-->
+        
+        <!-- Below template comment out by "Kandisa" on 05/07/2023 -->
+        <!--<template if:true={showFaciDono}>
+            <lightning-combobox
+                name="Preferred_Language"
+                label="Preferred Language"
+                value={selectedPreLan}
+                options={preferedLanguage}
+                onchange={handlePreLangChange}
+                placeholder="Select preferedLanguage"></lightning-combobox>
+            
+
+            <c-customlookup icon-name="standard:contact"
+                s-object-api-name="contact"
+                label="Facilitator "
+                onlookupupdate={handleFacilitorChange}
+                whereclause="RecordType.DeveloperName = 'CA_Trainer' AND Academic_Year__c = #year#"
+                placeholder="Search Facilitator here..."></c-customlookup>
+
+            <c-customlookup icon-name="standard:account"
+                s-object-api-name="account"
+                label="Donor "
+                onlookupupdate={handleDonorChange}
+                whereclause="RecordType.DeveloperName = 'Donor_Account'"
+                placeholder="Search Donor here..."></c-customlookup>
+        </template>-->
+
+        <!--<lightning-input type="email" label="Email Id" onchange={handleEmailChange} field-level-help="Error records will be sent on this email id" placeholder="type here...">
+        </lightning-input>-->
+
+        <lightning-input label={filename} name="file uploader" onchange={handleFilesChange} accept=".csv" type="file"></lightning-input>
+        <p style="color: red;">* Please ensure the number of rows in a file(.csv) are not more than 3000.</p>
+    </article>
+</template>

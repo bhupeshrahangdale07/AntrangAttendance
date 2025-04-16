@@ -1,0 +1,74 @@
+<template>
+    <lightning-card>
+
+        <!-- <div class="slds-box">
+            <h3 slot="title" class="slds-align_absolute-center">
+                <img alt="Antarang Logo" src={antarangImage} width="50px"/>
+                Quiz-1 Student Details
+            </h3>
+        </div> -->
+        <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small" ><b>Quiz-1 Student Details</b></div>
+        <template if:false={studentPresent}>
+            <lightning-spinner alternative-text="Loading" size="medium" if:true={isLoading}></lightning-spinner>
+            <!-- <span>Student absent</span> -->
+            <div>
+                <div class="slds-box">
+                    <ul class="slds-p-horizontal_small">
+                        <li><b>School Name: </b> {schoolName}</li>
+                        <li><b>Grade: </b> {grd}</li>
+                        <li><b>Batch Code: </b> {batchNumber}</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="slds-var-p-around_medium">
+                <p>Type the first 4 letters of the student name and wait for the drop down to select the student
+                </p>
+                <lightning-input type="search" 
+                label="Search Student:" 
+                value={studentName}
+                onchange={handleInputChangeStudent} variant = "label-hidden">
+                </lightning-input>
+
+                <div class="resText"><span>{studentSearchResult}</span></div> 
+                
+                <template if:true={showStudentList}>
+                <div class="slds-scrollable_y slds-box slds-box_xx-small lgc-bg" style="height:8.5rem">
+                    <ul>
+                    <template for:each={studentDisplay} for:item="con" for:index="index">
+                    <div class="slds-box slds-box_xx-small special" key={con} 
+                        onclick={handleClick}
+                        data-index={index} data-id={con.Id}>           
+                        <li>{con.Name}</li>
+                    </div>
+                    </template>
+                    </ul>
+                </div> 
+                
+                </template> 
+                <div>
+                    <lightning-button variant="brand" 
+                    class="slds-align_absolute-center slds-m-top_small" 
+                    label="Back"  
+                    data-name="backButton"
+                    onclick={handleBackButton}></lightning-button>
+                </div>
+                     
+            </div>
+        </template>
+
+        <!-- <template if:true={studentPresent}>
+            <lightning-spinner alternative-text="Loading" size="medium" if:true={isLoading}></lightning-spinner>
+            <span>Student Present</span>
+
+            <div slot="footer">
+                <lightning-badge label="Tag"></lightning-badge>
+            </div>
+            
+            <div>
+                <span>Main div</span>
+            </div>
+        </template> -->
+
+    </lightning-card>
+</template>

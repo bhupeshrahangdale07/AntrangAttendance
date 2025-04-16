@@ -1,0 +1,179 @@
+<apex:page standardController="Contact" extensions="RecommendationController" renderAs="{!if(Contact.Recommedation_Status__c == 'Processed', 'pdf','')}">
+    <body style="font-family:Arial Unicode MS;font-size:12px;">
+        <apex:outputPanel rendered="{!if(Contact.Recommedation_Status__c != 'Processed', true,false)}">
+            <apex:pageMessage severity="error" strength="1" 
+                summary="Recommedation Status is Not Processed for this Contact." />
+        </apex:outputPanel>
+        <apex:form style="margin:20px;" rendered="{!if(Contact.Recommedation_Status__c == 'Processed', true,false)}">
+            <img src="{!URLFOR($Resource.Antarang, 'antarang.png')}" style="float:right;"  width="60" height="65"/>
+            <br/><br/>
+             <!--<p style="text-align:right;">Antarang Foundation<br/><br/>
+              231/C, Tawripada Compound, Next to Hilla Apartments,<br/><br/>
+              Dr. S.S. RaoMarg, Lalbaug, Parel, Mumbai 400012<br/><br/>
+                  Office: 022-40050164/022-40050943</p>-->
+         
+            <p> Name:&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;
+            <apex:outputField value="{!Contact.Name}"/><br/>
+            Age:&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
+            <apex:outputField value="{!Contact.Age__c}"/><br/>
+            Class:&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;<apex:outputText value="{!grade}"/><br/>
+            School:&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+            <apex:outputtext value="{!schoolName}"/><br/>
+            Batch code:&nbsp; &nbsp; &nbsp;&nbsp;
+            <apex:outputtext value="{!batchNumber}"/><br/>
+            Trainer name:&nbsp; &nbsp; 
+            <apex:outputtext value="{!trainerName}"/><br/></p>
+            
+            <p> At the start of the program you aspired to be a <b><apex:outputField value="{!Contact.Current_Aspiration__c}"/></b>.
+            </p>
+            
+            <p><b>INTEREST </b><br/><br/>
+                From the interest mapping exercise the student’s interest codes are  <b><apex:outputField value="{!Contact.Interest_1__c}"/></b>,&nbsp;<b><apex:outputField value="{!Contact.Interest_2__c}"/></b>.
+                <br/>
+                <ul>
+                    <li>
+                        <b><apex:outputField value="{!Contact.Interest_1__c}"/></b>:&nbsp;<apex:outputText value="{!interest1}"/>
+                    </li>
+                    <li>
+                        <b><apex:outputField value="{!Contact.Interest_2__c}"/></b>:&nbsp;<apex:outputText value="{!interest2}"/>
+                    </li>
+                </ul>
+            </p>
+            <p><b>APTITUDE</b><br/><br/>
+                Student shows a well-developed aptitude in <b><apex:outputField value="{!Contact.Aptitude_1__c}"/></b>&nbsp;Ability and <b><apex:outputField value="{!Contact.Aptitude_2__c}"/></b>&nbsp;Ability.
+                <br/>
+                <ul>
+                    <li>
+                        <b><apex:outputField value="{!Contact.Aptitude_1__c}"/></b>:&nbsp;<apex:outputText value="{!aptitude1}"/>
+                    </li>
+                    <li>
+                        <b> <apex:outputField value="{!Contact.Aptitude_2__c}"/></b>:&nbsp;<apex:outputText value="{!aptitude2}"/>
+                    </li>
+                </ul>
+            </p>
+            <p><b>PERSONALITY TYPES</b><br/><br/>  
+                Based on the Personality test, it is shown that the student has the following personality types. 
+                <span style="display:{!if(personality1 != '',"","none")};"><b>{!Contact.Personality_1__c}</b></span>
+                <span style="display:{!if(personality2 != '',"","none")};"><b>,&nbsp;{!Contact.Personality_2__c}</b></span>
+                <span style="display:{!if(personality3 != '',"","none")};"><b>,&nbsp;{!Contact.Personality_3__c}</b></span>
+                <span style="display:{!if(personality4 != '',"","none")};"><b>,&nbsp;{!Contact.Personality_4__c}</b></span>
+                <span style="display:{!if(personality5 != '',"","none")};"><b>,&nbsp;{!Contact.Personality_5__c}</b></span>
+                <span style="display:{!if(personality6 != '',"","none")};"><b>,&nbsp;{!Contact.Personality_6__c}</b></span>
+                <span style="display:{!if(personality7 != '',"","none")};"><b>,&nbsp;{!Contact.Personality_7__c}</b></span>
+                <span style="display:{!if(personality8 != '',"","none")};"><b>,&nbsp;{!Contact.Personality_8__c}</b></span>.
+                People with these personality types tend to be:<br/>
+                <ul>
+                    <li style="display:{!if(personality1 != '',"","none")};">
+                        <b><apex:outputField value="{!Contact.Personality_1__c}"/></b>:&nbsp;<apex:outputText value="{!personality1}"/>
+                    </li>
+                    <li style="display:{!if(personality2!='',"","none")};">
+                        <b><apex:outputField value="{!Contact.Personality_2__c}"/></b>:&nbsp;<apex:outputText value="{!personality2}"/>
+                    </li>
+                    <li style="display:{!if(personality3!='',"","none")};">
+                        <b><apex:outputField value="{!Contact.Personality_3__c}"/></b>:&nbsp;<apex:outputText value="{!personality3}"/>
+                    </li>
+                    <li style="display:{!if(personality4 != '',"","none")};">
+                        <b><apex:outputField value="{!Contact.Personality_4__c}"/></b>:&nbsp;<apex:outputText value="{!personality4}"/>
+                    </li>
+                    <li style="display:{!if(personality5 != '',"","none")};">
+                        <b><apex:outputField value="{!Contact.Personality_5__c}"/></b>:&nbsp;<apex:outputText value="{!personality5}"/>
+                    </li>
+                    <li style="display:{!if(personality6 != '',"","none")};">
+                        <b><apex:outputField value="{!Contact.Personality_6__c}"/></b>:&nbsp;<apex:outputText value="{!personality6}"/>
+                    </li>
+                    <li style="display:{!if(personality7 != '',"","none")};">
+                        <b><apex:outputField value="{!Contact.Personality_7__c}"/></b>:&nbsp;<apex:outputText value="{!personality7}"/>
+                    </li>
+                    <li style="display:{!if(personality8 != '',"","none")};">
+                        <b><apex:outputField value="{!Contact.Personality_8__c}"/></b>:&nbsp;<apex:outputText value="{!personality8}"/>
+                    </li>
+                </ul>
+            </p>
+            <p><b>REALITITES:</b><br/><br/>
+                <b>Reality 1:</b> &nbsp;<apex:outputText value="{!reality1}"/>
+                <br/><br/>
+                <b>Reality 2:</b> &nbsp;<apex:outputText value="{!reality2}"/>
+                <br/><br/>
+                <b>Reality 3: </b>&nbsp;<apex:outputText value="{!reality3}"/>
+                <br/><br/>
+                <b>Reality 4:</b> &nbsp;<apex:outputText value="{!reality4}"/>
+                <br/><br/>
+                <b>Reality 5: </b>&nbsp;<apex:outputText value="{!reality5}"/>
+                <br/><br/>
+                <b>Reality 6: </b>&nbsp;<apex:outputText value="{!reality6}"/>
+                <br/><br/>
+                <b>Reality 7: </b>&nbsp;<apex:outputText value="{!reality7}"/>
+                <br/><br/>
+                <b>Reality 8: </b>&nbsp;<apex:outputText value="{!reality8}"/>
+            </p>
+            <p><b>RECOMMENDATION</b><br/>
+                
+                <div id="CommonBlockn" style="display:{!if(aptitude1!='' && aptitude2!='',"block","none")};">
+                    <b>Aptitude:</b>&nbsp;<apex:outputField value="{!Contact.Aptitude_1__c}"/>,<apex:outputField value="{!Contact.Aptitude_2__c}"/>
+                </div>
+                <div id="CommonBlockn1" style="display:{!if(aptitude1!='' && aptitude2=='',"block","none")};">
+                    <b>Aptitude:</b>&nbsp;<apex:outputField value="{!Contact.Aptitude_1__c}"/>
+                </div>
+                <div id="CommonBlockn2" style="display:{!if(aptitude1=='' && aptitude2!='',"block","none")};">
+                    <b>Aptitude:</b>&nbsp;<apex:outputField value="{!Contact.Aptitude_2__c}"/>
+                </div>
+                <div id="CommonBlockn3" style="display:{!if(aptitude1=='' && aptitude2=='',"block","none")};">
+                    <b>Aptitude:</b>&nbsp;
+                </div>
+               
+                <b> Personality:</b>&nbsp;   
+                <apex:outputText value="{!commaSepratedList}"/>   
+               
+                <div id="CommonBlockn3" style="display:{!if(interest1!='' && interest2!='',"block","none")};">
+                    <b>Interest Code:</b>&nbsp;<apex:outputField value="{!Contact.Interest_1__c}"/>,<apex:outputField value="{!Contact.Interest_2__c}"/>
+                </div>
+                <div id="CommonBlockn4" style="display:{!if(interest1!='' && interest2=='',"block","none")};">
+                    <b>Interest Code:</b>&nbsp; <apex:outputField value="{!Contact.Interest_1__c}"/>
+                </div>
+                <div id="CommonBlockn5" style="display:{!if(interest1=='' && interest2!='',"block","none")};">
+                    <b>Interest Code:</b>&nbsp;<apex:outputField value="{!Contact.Interest_2__c}"/>
+                </div>
+                <div id="CommonBlockn5" style="display:{!if(interest1=='' && interest2=='',"block","none")};">
+                    <b>Interest Code:</b>&nbsp;
+                </div>
+            </p>            
+            <div id="CommonBlock" style="display:{!if(professionshowContent1 || professionshowContent2,"block","none")};">
+               <div>
+                    Based on the student’s personal profile the possible career options are:
+                    <b><apex:outputText value="{!profession1}"/></b><b id="coma" style="display:{!if(professionshowContent1 && professionshowContent2,"inline:block","none")};"> and </b><b><apex:outputText value="{!profession2}"/></b><br/><br/>
+                    <b>NEXT STEPS:</b><br/>
+                    <div id="Test" style="display:{!if(professionshowContent1,"block","none")};">
+                        <div>
+                            <p><b>Profession 1</b><br/><apex:outputText value="{!profession1}"/>&nbsp;-&nbsp;<apex:outputField value="{!Contact.Profession_1_Recommendation__c}"/>
+                            <br/><b>Next steps</b>:&nbsp;<apex:outputField value="{!Contact.Profession_1_Next_steps__c}"/>
+                            </p>
+                        </div>
+                    </div> 
+                    
+                    <div id="Test1" style="display:{!if(professionshowContent2,"block","none")};">
+                        <div>
+                            <p>
+                                <b>Profession 2</b><br/><apex:outputText value="{!profession2}"/>&nbsp;-&nbsp;<apex:outputField value="{!Contact.Profession_2_Recommendation__c}"/>
+                                <br/>
+                                <b>Next steps</b>:&nbsp;<apex:outputField value="{!Contact.Profession_2_Next_steps__c}"/>
+                            </p>
+                        </div>
+                    </div> 
+                </div>
+            </div> 
+            <div id="Test2" style="display:{!if(!professionshowContent1 && !professionshowContent2,"block","none")};">
+                <div>
+                    <p>
+                        <b>Recommendation not calculated.</b>
+                    </p> 
+                </div>
+            </div>
+            
+        
+            <p>
+                <b><apex:commandbutton value="Download" action="{!redirect}"/></b>
+                <b><apex:commandbutton value="Print" onclick="window.print();"/></b>
+            </p>         
+        </apex:form>
+    </body>
+</apex:page>

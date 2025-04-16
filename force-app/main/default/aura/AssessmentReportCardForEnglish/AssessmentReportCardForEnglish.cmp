@@ -1,0 +1,197 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" >
+	
+    <aura:attribute name="AssessmentMark" type="object" />
+    
+    <div class="container">
+            <div class="resultheader">
+                <img class="resultimage" src="/sfsites/c/resource/AssessmentReportcard/images/CareerYatra.png" />:Baseline Report Card</div><br/>
+            <p>
+                Hello <b>{!v.AssessmentMark.Student__r.Name}</b>, Congratulations on completing the baseline assessment! You are now so much more about yourself, career options, and ways to get to the career of your choice.
+            </p>
+            <p>
+                From now on, it's <b>a fun journey</b> of getting to <b>know yourself</b> more and exploring a lot of new and <b>exciting career options!</b> This report card contains details of your overall score as well as an explanation of score calculations.
+                <br/><br/>
+                <span class="slds-text-heading_medium resultContentHeader">Here is how your scores look:</span>
+            </p>
+            <p>
+                <table class="scoretbl">
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>Actual Score (%)</th>
+                        <th>Grade</th>
+                    </tr>
+                    <tr>
+                        <td class="sectiontd">Self Awareness</td>
+                        <td>{!v.AssessmentMark.Self_Awareness_Score__c}</td>
+                        <td>{!v.AssessmentMark.Self_Awareness_Grade__c}</td>
+                    </tr>
+                    <tr>
+                        <td class="sectiontd">Career Awareness</td>
+                        <td>{!v.AssessmentMark.Career_Awareness_Score__c}</td>
+                        <td>{!v.AssessmentMark.Career_Awareness_Grade__c}</td>
+                    </tr>
+                    <tr>
+                        <td class="sectiontd">Parent Support</td>
+                        <td>{!v.AssessmentMark.Parent_Support_Score__c}</td>
+                        <td>{!v.AssessmentMark.Parent_Support_Grade__c}</td>
+                    </tr>
+                    <tr>
+                        <td class="sectiontd">Career Planning</td>
+                        <td>{!v.AssessmentMark.Career_Planning_Score__c}</td>
+                        <td>{!v.AssessmentMark.Career_Planning_Grade__c}</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="overalltd"><b>Overall Score (%)</b></td>
+                        <td><b>{!v.AssessmentMark.Overall_Score__c}</b></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="overalltd"><b>Overall Grade</b></td>
+                        <td><b>{!v.AssessmentMark.Overall_Grade__c}</b></td>
+                    </tr>
+                </table>                
+            </p>            
+            <p>
+                <span class="slds-text-heading_medium resultContentHeader">Explanation of the Grades:</span><br/>
+                <b>Grade A:</b> Very good (>=80% marks), <b>Grade B:</b> Good (60%-79% marks), <b>Grade C:</b> Fair (40%-59% marks), <b>Grade D :</b> Needs more work (less than 40% marks)
+            </p>
+            <p>
+                <span class="slds-text-heading_medium resultContentHeader">What do your scores mean?</span><br/>
+                Your overall career score shown in the above graph captures your level of <b>Self Awareness, Awareness of Careers, Parental Support, and Career Planning.</b> These are crucial aspects to making the right career and educational choices and steps for moving towards them.
+            </p>
+            
+            <div class="main slds-grid slds-wrap" align="center">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                    <div class="numberCircle" >1</div>
+                    <div class="divrs" style="background : #d9ead3;">Self Awareness</div>                    
+                    <div class="rcorners1" style="background: #ffe599;">
+                        <b>Understanding of yourself: </b><br/>
+                        <ul class="slds-list_dotted">
+                            <li class="li">Things which you are interested in and good at doing</li>
+                            <li class="li">Things that may prevent you from taking up a career of your choice</li>
+                        </ul>                         
+                    </div>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                    <div class="numberCircle">2</div>                    
+                    <div class="divrs" style="background : #ffd966;">Career Awareness</div>                    
+                    <div class="rcorners1" style="background : #93c47d;">
+                        <b>Understanding of Careers:  </b><br/>
+                        <ul class="slds-list_dotted">
+                            <li class="li">Type of jobs available in the industry</li>
+                            <li class="li">Type of work that you may have to do if you take up a career</li>
+                            <li class="li">Qualifications required</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">                    
+                    <div class="numberCircle" >3</div>                    
+                    <div class="divrs" style="background : #93c47d;">Parent Support</div>                    
+                    <div class="rcorners1" style="background : #f1c232;">
+                        <b>Parent support/permission: </b><br/>
+                        <ul class="slds-list_dotted">
+                            <li class="li">It refers to your ability to gain parents' support to move ahead with your career and educational choices</li>                            
+                        </ul>
+                    </div>                    
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">                    
+                    <div class="numberCircle">4</div>                    
+                    <div class="divrs" style="background : #bf9000">Career Planning</div>                    
+                    <div class="rcorners1" style="background : #b6d7a8;">
+                        <b>Making the right career plan:   </b><br/>
+                        <ul class="slds-list_dotted">
+                            <li class="li">Choosing a career that matches your interests, strengths, and realities</li>
+                            <li class="li">Choosing the right educational path which matches your career choice</li>
+                        </ul>                         
+                    </div>
+                </div>                
+            </div>
+            
+            <div class="stepdiv">
+                <p>
+                    <br/>
+                	<span class="slds-text-heading_medium resultContentHeader">Four steps towards the career of your choice:</span><br/>
+                </p>
+                <div class="contentDiv slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6 slds-large-size_1-of-6">
+                        <span>
+                            <img src="/sfsites/c/resource/AssessmentReportcard/images/selfAwareness.png" />
+                        </span>
+                    </div>
+                    
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_5-of-6" >
+                        <span class="slds-text-heading_medium resultContentHeader">
+                            Self Awareness<br/>
+                        </span>
+                        <ul class="slds-list_dotted">
+                            <li class="li" >Learning about the things that interest you and are <b>good at doing.</b></li>
+                            <li class="li">Understanding ourselves and realities to choose that matches with our <b>interests, strengths, and current realities.</b></li>
+                            <li class="li"><b>Antarang’s Career Yatra program, aptitude tests, career guidance experts &amp; counselors</b> will help you learn about yourself.</li>
+                        </ul>
+                    </div>
+                </div>                
+                
+                <div class="contentDiv slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6 slds-large-size_1-of-6" >
+                        <span><img src="/sfsites/c/resource/AssessmentReportcard/images/careerAwareness.png" /></span>
+                    </div>
+                    
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_5-of-6" >
+                        <span class="slds-text-heading_medium resultContentHeader" >
+                            Career Awareness<br/>
+                        </span>
+                        <ul class="slds-list_dotted">
+                            <li class="li">Awareness of various <b>career options</b> will help you pick a career that matches with your strength and interests.</li>
+                            <li class="li"><b>Type of jobs, qualifications required, roles &amp; responsibilities</b> about sectors will aid to your career decision-making.</li>
+                            <li class="li">Attend the Career guidance program held in your school to build career knowledge.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="contentDiv slds-grid slds-wrap" >
+                    <div  class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6 slds-large-size_1-of-6" >
+                       	<img src="/sfsites/c/resource/AssessmentReportcard/images/ParentSupport.png" />
+                    </div>
+                    
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_5-of-6" >
+                        <span class="slds-text-heading_medium resultContentHeader">
+                            Parent Support<br/>
+                        </span>
+                        <ul class="slds-list_dotted">
+                            <li class="li"> <b>Parent permission and support</b> are essential to move towards the education and career of your choice.</li>
+                            <li class="li">Gain your parents' support by <b>discussing</b> with them all your <b>career and education-related decisions</b> and by having them <b>attend career-related programs and meetings</b> held in your school.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="contentDiv slds-grid slds-wrap" >
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6 slds-large-size_1-of-6" >
+                        <span><img src="/sfsites/c/resource/AssessmentReportcard/images/CareerPlanning.png" /></span>
+                    </div>
+                    
+                    <div  class="slds-col slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_5-of-6" >
+                        <span class="slds-text-heading_medium resultContentHeader" >
+                            Career Planning<br/>
+                        </span>
+                        <ul class="slds-list_dotted">
+                            <li class="li">Choosing a career that <b>matches your interest, strength, and realities</b></li>
+                            <li class="li">Choosing the right <b>educational path</b> that matches your career choices</li>
+                            <li class="li">Career planning provides you clarity and helps you in having <b>well-defined next steps</b> towards the career of your choice.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="slds-col contentDiv" >
+                    <p>
+                        Now that you know quite a bit about yourself and a fair amount of career options, you need to <b>learn how to plan your career</b>. And that is what we are here for, to help you plan your <b>career next steps</b>. 
+                    </p>
+                    <p>
+                        <b>The Career Yatra program</b> organized in your school with the help of the <b>Antarang Foundation</b> will lead you to your <b>dream profession</b>.
+                    </p>
+                    <p>
+                        Do attend the program as it will help you to work on <b>improving your career scores</b> and <b>make the right career and educational decisions for yourself!</b>
+                    </p>
+                </div>                
+            </div>
+        </div>
+</aura:component>

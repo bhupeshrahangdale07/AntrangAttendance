@@ -1,0 +1,32 @@
+.THIS .allPage{
+    /*float: right;*/
+    position: relative;
+}
+.THIS .signOutButton{
+    position: absolute;
+    right: 10px;
+    top: 15px;
+}
+.THIS button.assessmentButton {
+    width: 155px ;
+    line-height: 25px;
+}
+.THIS div.signOut{
+    position: relative;
+    bottom: 10px;
+    top: -55px;
+    right: 0px;
+}
+.THIS ul.slds-p-horizontal_small {
+    text-align: center;
+}
+.THIS ul.slds-p-horizontal_small li {
+    display: inline;
+    padding: 10px;
+}
+@media (max-width: 767px) {
+    .THIS ul.slds-p-horizontal_small li {
+        display: block;
+        padding: 3px;
+    }
+}

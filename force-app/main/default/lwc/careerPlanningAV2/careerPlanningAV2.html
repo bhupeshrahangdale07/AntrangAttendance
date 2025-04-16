@@ -1,0 +1,163 @@
+<template>
+    <lightning-card>
+
+        <!-- <div class="slds-box">
+            <h3 slot="title" class="slds-align_absolute-center">
+                <img alt="Antarang Logo" src={antarangImage} width="50px"/>
+                Career Planning
+            </h3>
+        </div> -->
+        <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+            <b>
+                <template if:true={isEnglish}>Baseline Career Planning</template>    
+                <template if:false={isEnglish}>आधारभूत करियर नियोजन</template>
+            </b>
+        </div>
+
+        <div>
+            <lightning-spinner alternative-text="Loading" size="medium" if:true={isLoading}></lightning-spinner>
+            <div class="slds-box">
+                <ul class="slds-p-horizontal_small" style="text-align: center;">
+                    
+                    <li><b>
+                        <template if:true={isEnglish}>School Name : </template>    
+                        <template if:false={isEnglish}>स्कूल के नाम : </template>
+                    </b>
+                    {sch}
+                    </li>
+                    <li><b>
+                        <template if:true={isEnglish}>Grade :  </template>    
+                        <template if:false={isEnglish}>श्रेणी : </template>
+                        </b>
+                        {grd}
+                    </li>
+                    <li><b>
+                        <template if:true={isEnglish}>Batch Code :  </template>    
+                        <template if:false={isEnglish}>बैच कोड : </template>
+                        </b>
+                        {batchNumber}
+                    </li>
+                    <li if:true={studentName}>
+                        <b>
+                            <template if:true={isEnglish}>Student Name : </template>    
+                            <template if:false={isEnglish}>छात्र का नाम : </template> 
+                        </b>
+                        {studentName}
+                    </li>
+                </ul>
+                
+            </div>
+
+            <div class="slds-box">
+                <span><abbr class="slds-required" title="required">* </abbr>{question07}</span>
+                <template for:each={q07_Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.optionName}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input type="checkbox" variant="label-hidden"
+                            data-id={obj.optionName}
+                            checked={obj.answer}
+                            disabled={freeze}
+                            onchange={handleQ07} ></lightning-input>                        
+                        </div>
+                        <div>
+                            <span>{obj.optionValue}</span>
+                        </div>
+                    </div>  
+                </template>            
+            </div>
+
+            <div class="slds-box">
+                <span><abbr class="slds-required" title="required">* </abbr>{question08}</span>
+                <template for:each={q08_Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.optionName}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input type="checkbox" variant="label-hidden"
+                            data-id={obj.optionName}
+                            checked={obj.answer}
+                            disabled={freeze}
+                            onchange={handleQ08} ></lightning-input>                        
+                        </div>
+                        <div>
+                            <span>{obj.optionValue}</span>
+                        </div>
+                    </div>  
+                </template>            
+            </div>
+
+            <div class="slds-box">
+                <span>
+                    <!-- <abbr class="slds-required" title="required">* </abbr> -->
+                    {question09}</span>
+                <template for:each={q09_Options} for:item="obj">
+                    <div class="slds-m-bottom_small" key={obj.optionName}>
+                        <div class="slds-m-left_x-small">
+                            <span><abbr class="slds-required" title="required">* </abbr>{obj.optionValue}</span>
+                        </div>
+                        <div class="slds-m-left_x-small">
+                            <lightning-combobox 
+                            data-id={obj.optionName}
+                            placeholder={placeHoldervalue}
+                            value={obj.answer}
+                            disabled={freeze}
+                            options={q09PicklistOptions}
+                            onchange={handleQ09} 
+                            variant="label-hidden" ></lightning-combobox>                        
+                        </div>
+                    </div>  
+                </template>            
+            </div>
+
+            <div class="slds-box">
+                <span><abbr class="slds-required" title="required">* </abbr>{question10}</span>
+                <template for:each={q10_Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.optionName}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input type="checkbox" variant="label-hidden"
+                            data-id={obj.optionName}
+                            checked={obj.answer}
+                            disabled={freeze}
+                            onchange={handleQ10} ></lightning-input>                        
+                        </div>
+                        <div>
+                            <span>{obj.optionValue}</span>
+                        </div>
+                    </div>  
+                </template>            
+            </div>
+
+        </div>
+        <div slot="footer" style="display: grid;">
+            <div>
+                <lightning-button variant="brand" 
+                                  class="slds-var-m-left_x-small" 
+                                  label="Back"  
+                                  data-name="backButton"
+                                  onclick={handleBackButton} 
+                                  style="float: left;"></lightning-button>
+
+                <!--<lightning-button variant="brand" 
+                class="slds-var-m-left_x-small" 
+                label="Save"  
+                data-name="saveButton"
+                disabled={freeze}
+                onclick={handleSaveButton}></lightning-button>-->
+
+                <lightning-button variant="brand"
+                                  class="slds-var-m-left_x-small" 
+                                  label="Submit"  
+                                  data-name="submitButton"
+                                  disabled={freeze}
+                                  onclick={handleSubmitButton} 
+                                  style="float: right;"></lightning-button>  
+                <!--if:true={getGrade}-->
+
+                <!-- <lightning-button variant="brand" if:false={getGrade}
+                class="slds-m-left_x-small" 
+                label="Save & Continue"  
+                data-name="continueButton"
+                onclick={handleContinueButton}></lightning-button> -->
+
+            </div>
+        </div>
+    </lightning-card>
+</template>

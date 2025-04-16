@@ -1,0 +1,73 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,lightning:isUrlAddressable,force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                controller="DataEntryLoginFormController">
+    <aura:attribute name="batchId" type="String" />
+    <aura:attribute name="selectedSchool" type="String" />
+    <aura:attribute name="selectedGrade1" type="String" />
+    <aura:attribute name="selectedBatchName" type="String" />	
+    <aura:attribute name="selectedBatchNumber" type="String" />	
+    <aura:attribute name="totalStudents" type="Integer" />	
+    <!-- below variable is for Student Details Table -->
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="facilitatorEmail" type="String" />
+    <aura:attribute name="sch" type="String" />
+    <aura:attribute name="acid" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+        <lightning:navigation aura:id="navService"/>
+        <div class="container">
+            <div class="slds-box slds-theme_default">
+                <div class="slds-form">
+                    <div class="slds-form-element slds-form-element_stacked">
+                        <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+                            <b>Student Details</b>
+                        </div>
+                        <div class="slds-align_absolute-center slds-m-bottom_small">
+                            This form is used to add a new student or see the names of students already added to the batch.
+                        </div>
+                        <div class="slds-align_absolute-center slds-m-bottom_small slds-box">
+                            <ul class="slds-p-horizontal_small">
+                                <li><b>School Name:</b> &nbsp; {!v.selectedSchool}</li>
+                                <li><b>Grade:</b> &nbsp; {!v.selectedGrade1}</li>
+                                <li><b>Batch Code:</b> &nbsp; {!v.selectedBatchNumber}</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="slds-align_absolute-left slds-m-top_small" title="">
+                                Total Students: {!v.totalStudents} </p>
+                        </div>
+                        <div class="slds-form-element slds-form-element_stacked allPage">
+                            <div>
+                                <lightning:button label="Add Student" 
+                                                  name="Add Student"
+                                                  onclick="{!c.baselineHandler}"
+                                                  class="slds-align_absolute-center slds-m-top_small assessmentButton slds-button_brand"></lightning:button>
+                            </div>
+    
+                            <div>
+                                <lightning:button label="Back" 
+                                                  name="Back"
+                                                  onclick="{!c.handleBack}"
+                                                  class="slds-align_absolute-center slds-m-top_small assessmentButton slds-button_brand"></lightning:button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <p class="slds-align_absolute-left slds-m-top_small" title="">
+                                Below are the names of students who have already been added to the batch</p>
+                            
+                            <!-- the container element determine the height of the datatable -->
+                            <div style="height: 300px">
+                                <lightning:datatable
+                                                     keyField="id"
+                                                     data="{! v.data }"
+                                                     columns="{! v.columns }"
+                                                     showRowNumberColumn="true"
+                                                     hideCheckboxColumn="true"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</aura:component>

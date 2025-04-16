@@ -1,0 +1,198 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" >
+    
+    <aura:attribute name="AssessmentMark" type="object" />
+    
+    <div class="container">
+        <div class="resultheader">
+            <img class="resultimage" src="/sfsites/c/resource/AssessmentReportcard/images/CareerYatra.png" /> بیس لائن رپورٹ کارڈ</div><br/>
+        <p>            
+            بیس لائن ٹیسٹ مکمل کرنے پر مبارکباد! اب آپ اپنے بارے میں بہت زیادہ جان چکے ہیں ، جیسے آپ کن کیریئر کو چن سکتے ہیں ، اور اپنی پسند کے کیریئر تک پہنچنے کے کیا طریقے ہیں۔ ،<b> {! v.AssessmentMark.Student__r.Name} </b> ہیلو 
+        </p>
+        <p>
+            اب سے ، یہ ایک مزےدار سفر ہے اپنے آپ کو اور زیادہ جاننے اور بہت سے نئے اور دلچسپ کیریئر آپشنز کی تلاش کرنے کا! اس رپورٹ کارڈ میں آپ کے تمام اسکور کی تفصیلات کے ساتھ ساتھ اسکور کے حسابات کی وضاحت بھی شامل ہے!
+            <br/><br/>
+            <span class="slds-text-heading_medium resultContentHeader">یہ بتاتا ہے کہ آپ کے اسکور کیسے نظر آتے ہیں:</span>
+        </p>
+        <p>
+            <table class="scoretbl">
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>اصل اسکور (٪)</th>
+                    <th>گریڈ</th>
+                </tr>
+                <tr>
+                    <td class="sectiontd">خود کے بارے میں جاننا۔</td>
+                    <td>{!v.AssessmentMark.Self_Awareness_Score__c}</td>
+                    <td>{!v.AssessmentMark.Self_Awareness_Grade__c}</td>
+                </tr>
+                <tr>
+                    <td class="sectiontd">کیریئر کے بارے میں جاننا۔</td>
+                    <td>{!v.AssessmentMark.Career_Awareness_Score__c}</td>
+                    <td>{!v.AssessmentMark.Career_Awareness_Grade__c}</td>
+                </tr>
+                <tr>
+                    <td class="sectiontd">والدین کی مدد۔</td>
+                    <td>{!v.AssessmentMark.Parent_Support_Score__c}</td>
+                    <td>{!v.AssessmentMark.Parent_Support_Grade__c}</td>
+                </tr>
+                <tr>
+                    <td class="sectiontd">کیریئر منصوبہ بندی۔</td>
+                    <td>{!v.AssessmentMark.Career_Planning_Score__c}</td>
+                    <td>{!v.AssessmentMark.Career_Planning_Grade__c}</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td class="overalltd"><b>مجموعی اسکور (٪)</b></td>
+                    <td><b>{!v.AssessmentMark.Overall_Score__c}</b></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td class="overalltd"><b>مجموعی گریڈ۔</b></td>
+                    <td><b>{!v.AssessmentMark.Overall_Grade__c}</b></td>
+                </tr>
+            </table>                
+        </p>            
+        <p>
+            <span class="slds-text-heading_medium resultContentHeader">گریڈ کی وضاحت:</span><br/>
+            گریڈ A: بہت اچھا ( %80 سے زیادہ نمبر) ، گریڈ B: اچھا (%60 - %79 نمبر)، گریڈ C: مناسب/ ٹھیک (%40 - %59 نمبر) ، گریڈ D: زیادہ کام کی ضرورت ہے (%40 سے کم نمبر)۔
+            
+        </p>
+        <p>
+            <span class="slds-text-heading_medium resultContentHeader">آپ کے اسکور کا کیا مطلب ہے؟ </span><br/>
+            اوپر دیے گئے گراف میں دکھایا گیا کہ آپ کا کُل کیریئر اسکور، آپ کا خود کے بارے میں جاننا، کیریئر کے بارے میں جاننا، والدین کی مدد، اور کیریئر منصوبہ بندی، ان ساری سطحوں تک پہنچنے کے بارے میں بتاتا ہے۔ یہ صحیح کیریئر اور تعلیمی چناؤ اور ان کی طرف بڑھنے کے قدموں کے لیے اہم پہلو ہیں۔
+        </p>
+        
+        <div class="main slds-grid slds-wrap" align="center">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                <div class="numberCircle" >1</div>
+                <div class="divrs" style="background : #d9ead3;">خود کے بارے میں جاننا۔</div>                    
+                <div class="rcorners1" style="background: #ffe599;">
+                    <b>اپنے آپ کو سمجھنا۔: </b><br/>
+                    <ul class="slds-list_dotted">
+                        <li class="li">اُن چیزوں کے بارے میں جاننا جن میں آپ دلچسپی رکھتے ہیں اور کرنے میں اچھے ہیں۔</li>
+                        <li class="li">اُن چیزوں کے بارے میں جاننا جو آپ کو اپنی پسند کا کیریئر لینے سے روک سکتی ہیں۔</li>
+                    </ul>                         
+                </div>
+            </div>
+            
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                <div class="numberCircle">2</div>                    
+                <div class="divrs" style="background : #ffd966;">کیریئر کے بارے میں جاننا۔</div>                    
+                <div class="rcorners1" style="background : #93c47d;">
+                    <b>کیریئر کے بارے میں سمجھنا۔:  </b><br/>
+                    <ul class="slds-list_dotted">
+                        <li class="li">صنعت میں دستیاب نوکریوں کی قسمیں۔</li>
+                        <li class="li">کام کی قسمیں جو آپ کو کرنا پڑ سکتا ہیں اگر آپ کسی کیریئر کو اپناتے ہیں۔</li>
+                        <li class="li">کیریئر سے متعلق درکار تعلیم۔</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">                    
+                <div class="numberCircle" >3</div>                    
+                <div class="divrs" style="background : #93c47d;">والدین کی مدد۔</div>                    
+                <div class="rcorners1" style="background : #f1c232;">
+                    <b>والدین کی مدد / اجازت۔: </b><br/>
+                    <ul class="slds-list_dotted">
+                        <li class="li">اِس سے یہ مُراد ہے کہ اپنے والدین سے اپنے کیریئر اور تعلیمی چناؤ کے ساتھ آگے بڑھنے کے لیے مدد حاصل کرنے کی صلاحیت پیدا کرنا۔</li>
+                    </ul>
+                </div>                    
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">                    
+                <div class="numberCircle">4</div>                    
+                <div class="divrs" style="background : #bf9000">کیریئر منصوبہ بندی۔</div>                    
+                <div class="rcorners1" style="background : #b6d7a8;">
+                    <b>کیریئر کے لیے صحیح منصوبہ بندی کرنا۔:   </b><br/>
+                    <ul class="slds-list_dotted">
+                        <li class="li">ایسا کیریئر چننا جو آپ کی دلچسپی ، قابلیت اور حقیقت سے ملتا ہو۔</li>
+                        <li class="li">صحیح تعلیمی راستے کو چننا جو آپ کے کیریئر کے چناؤ سے ملتا ہو۔</li>
+                    </ul>                         
+                </div>
+            </div>                
+        </div>
+        
+        <div class="stepdiv">
+            <p>
+                <br/>
+                <span class="slds-text-heading_medium resultContentHeader">اپنی پسند کے کیریئر کی طرف بڑھنے کے  چار قدم:</span><br/>
+            </p>
+            <div class="contentDiv slds-grid slds-wrap">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6 slds-large-size_1-of-6">
+                    <span>
+                        <img src="/sfsites/c/resource/AssessmentReportcard/images/selfAwareness.png" />
+                    </span>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_5-of-6" >
+                    <span class="slds-text-heading_medium resultContentHeader">
+                        خود کے بارے میں جاننا۔<br/>
+                    </span>
+                    <ul class="slds-list_dotted">
+                        <li class="li" >ان چیزوں کے بارے میں سیکھنا جس میں آپ کی دلچسپی ہے اور کرنے میں اچھے ہیں۔</li>
+                        <li class="li">ہماری دلچسپی، قابلیت اور موجودہ حقیقت سے ملنے والے کیرئیر کے لیے اپنے آپ کو اور  اُس کیریئر کی حقیقت کو سمجھنا۔</li>
+                        <li class="li">انترنگ کا کیریئر یاترا پروگرام، قابلیت کا ٹیسٹ، کیریئر گائیڈنس کے ماہرین اور مشورہ دینے والے آپ کو اپنے بارے میں جاننے میں مدد کریں گے۔ </li>
+                    </ul>
+                </div>
+            </div>                
+            
+            <div class="contentDiv slds-grid slds-wrap">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6 slds-large-size_1-of-6" >
+                    <span><img src="/sfsites/c/resource/AssessmentReportcard/images/careerAwareness.png" /></span>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_5-of-6" >
+                    <span class="slds-text-heading_medium resultContentHeader" >
+                        کیریئر کے بارے میں جاننا۔<br/>
+                    </span>
+                    <ul class="slds-list_dotted">
+                        <li class="li">کیریئر کے مختلف آپشنز سے واقفیت آپ کو ایسا کیریئر چننے میں مدد دے گا جو آپ کی قابلیت اور دلچسپیوں کے مطابق صحیح ہو۔</li>
+                        <li class="li">آپ کے کیریئر کا فیصلہ کرنے میں الگ الگ نوکریاں، اُس کے لئے درکار تعلیم، کردار اور شعبوں کے بارے میں ذمہ داریاں، یہ ساری باتیں آپ کے لئے معاون ثابت ہوں گی۔</li>
+                        <li class="li">کیریئر کے بارے میں معلومات بڑھانے کے لیے اپنے اسکول میں ہونے والے کیریئر گائیڈنس پروگرام میں حاضر رہیں۔</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="contentDiv slds-grid slds-wrap" >
+                <div  class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6 slds-large-size_1-of-6" >
+                    <img src="/sfsites/c/resource/AssessmentReportcard/images/ParentSupport.png" />
+                </div>
+                
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_5-of-6" >
+                    <span class="slds-text-heading_medium resultContentHeader">
+                        والدین کی مدد۔<br/>
+                    </span>
+                    <ul class="slds-list_dotted">
+                        <li class="li">اپنی پسند کی تعلیم اور کیریئر کی طرف بڑھنے کے لیے والدین کی اجازت اور مدد ضروری ہے۔</li>
+                        <li class="li">اپنے والدین کے ساتھ اپنے تمام کیریئر اور تعلیم سے متعلق فیصلوں پر بات چیت کریں اور اُن کے ساتھ  اپنے اسکول میں ہونے والے کیریئر سے متعلق پروگراموں اور میٹنگز میں حاضر رہیں۔</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="contentDiv slds-grid slds-wrap" >
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6 slds-large-size_1-of-6" >
+                    <span><img src="/sfsites/c/resource/AssessmentReportcard/images/CareerPlanning.png" /></span>
+                </div>
+                
+                <div  class="slds-col slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_5-of-6" >
+                    <span class="slds-text-heading_medium resultContentHeader" >
+                        کیریئر منصوبہ بندی۔<br/>
+                    </span>
+                    <ul class="slds-list_dotted">
+                        <li class="li">ایسے کیریئر کو چننا جو آپ کی دلچسپی، قابلیت اور حقیقت سے ملتا ہو۔</li>
+                        <li class="li">صحیح تعلیمی راستے کا چناؤ جو آپ کے چُنے ہوئے کیریئر سے ملتا ہو۔</li>
+                        <li class="li">کیریئر کی منصوبہ بندی آپ کو وضاحت  کرتی ہے اور آپ کو اپنی پسند کے کیریئر کی طرف بڑھنے کے لئے اگلے مرحلے کو اچھی طرح سے طے کرنے میں مدد دیتی ہے۔</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slds-col contentDiv" >
+                <p>
+                    اب جب کہ آپ اپنے بارے میں اور کیریئر کے چناؤ کے بارے میں کافی حد تک جانتے ہیں، آپ کو اپنے کیریئر کی منصوبہ بندی کرنے کا طریقہ سیکھنے کی ضرورت ہے۔ اور اسی کے لیے ہم یہاں ہیں، تاکہ ہم آپ کو آپ کے کیریئر کے اگلے مراحل کی منصوبہ بندی میں مدد کرسکیں۔
+                </p>
+                <p>
+                    انترنگ فاؤنڈیشن کی مدد سے آپ کے اسکول میں ہونے والا کیریئر یاترا پروگرام آپ کو اپنے خوابوں کے پیشے کی طرف لے جائے گا۔
+                </p>
+                <p>
+                    پروگرام میں حاضر رہیں کیونکہ یہ آپ کو اپنے کیریئر کے اسکور کو بہتر بنانے اور اپنے لیے صحیح کیریئر اور تعلیمی فیصلے کرنے میں مدد دے گا!
+                </p>
+            </div>                
+        </div>
+    </div>
+</aura:component>

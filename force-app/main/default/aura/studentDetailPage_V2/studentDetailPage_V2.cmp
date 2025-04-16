@@ -1,0 +1,192 @@
+<aura:component
+    implements="forceCommunity:availableForAllPageTypes,lightning:isUrlAddressable,force:appHostable,flexipage:availableForAllPageTypes"
+    access="global" controller="DataEntryLoginFormController">
+    <aura:attribute name="batchId" type="String" />
+    <aura:attribute name="selectedSchool" type="String" />
+    <aura:attribute name="selectedGrade1" type="String" />
+    <aura:attribute name="selectedBatchName" type="String" />
+    <aura:attribute name="selectedBatchNumber" type="String" />
+    <aura:attribute name="totalStudents" type="Integer" />
+    <!-- below variable is for Student Details Table -->
+    <aura:attribute name="columns" type="List" />
+    <aura:attribute name="data" type="Object" />
+    <aura:attribute name="facilitatorEmail" type="String" />
+    <aura:attribute name="sch" type="String" />
+    <aura:attribute name="acid" type="String" />
+
+    <aura:attribute name="typ" type="String" />
+    <aura:attribute name="lng" type="String" />
+    <aura:attribute name="Label" type="Object" />
+
+    <aura:attribute name="showEditModal" type="Boolean" default="false" />
+    <aura:attribute name="showSpinner" type="Boolean" default="true" />
+    <aura:attribute name="selectedStudent" type="Object" />
+    <aura:attribute name="selectedRawStudent" type="Object" />
+    <aura:attribute name="isDisableStudentLinking" type="Boolean" default="true" />
+    <aura:attribute name="whatAreYouCurrentlyStudyingOptions" type="Object" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <lightning:navigation aura:id="navService" />
+    <div class="container">
+        <div class="slds-box slds-theme_default">
+            <div class="slds-form">
+                <div class="slds-form-element slds-form-element_stacked">
+                    <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+                        <b>
+                            <!-- Student Details -->
+                            {!v.Label.StudentDetails}
+                        </b>
+                    </div>
+                    <div class="slds-align_absolute-center slds-m-bottom_small">
+                        <!-- This form is used to add a new student or see the names of students already added to the batch. -->
+                        {!v.Label.TitleTagLine1} 
+                        {!v.Label.TitleTagLine2}
+                    </div>
+                    <div class="slds-align_absolute-center slds-m-bottom_small slds-box">
+                        <ul class="slds-p-horizontal_small">
+                            <li><b>
+                                    <!-- School Name: -->
+                                    {!v.Label.SchoolName}
+                                </b> &nbsp; {!v.selectedSchool}</li>
+                            <li><b>
+                                    <!-- Grade: -->
+                                    {!v.Label.Grade}
+                                </b> &nbsp; {!v.selectedGrade1}</li>
+                            <li><b>
+                                    <!-- Batch Code: -->
+                                    {!v.Label.BatchCode}
+                                </b> &nbsp; {!v.selectedBatchNumber}</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="slds-align_absolute-left slds-m-top_small" title="">
+                            <!-- Total Students: -->
+                            {!v.Label.TotalStudent}&nbsp;{!v.totalStudents}
+                        </p>
+                    </div>
+                    <div class="slds-form-element slds-form-element_stacked allPage">
+
+                        <aura:if
+                            isTrue="{! v.selectedGrade1 == 'Grade 10' || v.selectedGrade1 == 'Grade 11' || v.selectedGrade1 == 'Grade 12' }">
+                            <div>
+                                <lightning:button label="Link Students" name="Link Students"
+                                    onclick="{!c.handleLinkStudent}" disabled="{!v.isDisableStudentLinking}"
+                                    class="slds-align_absolute-center slds-m-top_small assessmentButton slds-button_brand">
+                                </lightning:button>
+                            </div>
+                        </aura:if>
+
+                        <div>
+                            <lightning:button label="Add Student" name="Add Student" onclick="{!c.baselineHandler}"
+                                class="slds-align_absolute-center slds-m-top_small assessmentButton slds-button_brand">
+                            </lightning:button>
+                        </div>
+
+                        <div>
+                            <lightning:button label="Back" name="Back" onclick="{!c.handleBack}"
+                                class="slds-align_absolute-center slds-m-top_small assessmentButton slds-button_brand">
+                            </lightning:button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="slds-align_absolute-left slds-m-top_small" title="">
+                            <!-- Below are the names of students who have already been added to the batch -->
+                            {!v.Label.SubTagLine}
+                        </p>
+
+                        <!-- the container element determine the height of the datatable -->
+                        <div class="slds-scrollable">
+                            <div style="height: 300px; min-width: 600px;">
+                                <lightning:datatable keyField="id" data="{! v.data }" columns="{! v.columns }"
+                                    onrowaction="{! c.handleRowAction }" showRowNumberColumn="true"
+                                    hideCheckboxColumn="true" minColumnWidth="100"
+                                    columnWidthsMode="Auto" wrapTableHeader="true" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <aura:if isTrue="{!v.showEditModal}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close" onclick="{! c.cancelEdit }" alternativeText="close"
+                        variant="bare-inverse" class="slds-modal__close" />
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                        {!v.selectedStudent.Full_Name__c} - Edit
+                    </h2>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+
+                    <!-- <lightning:recordForm
+                        aura:id="myRecordForm"
+                        objectApiName="Contact"
+                        fields="{!v.fields}"
+                        columns="2"
+                        mode="edit"
+                        onsubmit="{!c.handleSubmit}"
+                        onload="{!c.populateEditForm}" /> -->
+
+                    <aura:if isTrue="{!v.selectedGrade1 == 'Grade 9' }">
+                        <lightning:input type="tel" aura:id="field" label="G9 Whatsapp Number"
+                            value="{!v.selectedStudent.G9_Whatsapp_Number__c}" maxlength='10'
+                            messageWhenTooLong="Please enter a 10-digit WhatsApp number."
+                            messageWhenTooShort="Please enter a 10-digit WhatsApp number." minlength='10'
+                            messageWhenPatternMismatch="Please enter a valid number" pattern="^[0-9]*$" />
+                    </aura:if>
+
+                    <aura:if isTrue="{!v.selectedGrade1 == 'Grade 10' }">
+                        <lightning:input type="tel" aura:id="field" label="G10 Whatsapp Number"
+                            value="{!v.selectedStudent.G10_Whatsapp_Number__c}" maxlength='10'
+                            messageWhenTooLong="Please enter a 10-digit WhatsApp number."
+                            messageWhenTooShort="Please enter a 10-digit WhatsApp number." minlength='10'
+                            messageWhenPatternMismatch="Please enter a valid number" pattern="^[0-9]*$" />
+                    </aura:if>
+                    <aura:if isTrue="{!v.selectedGrade1 == 'Grade 11' }">
+                        <lightning:input type="tel" aura:id="field" label="G11 Whatsapp Number"
+                            value="{!v.selectedStudent.G11_Whatsapp_Number__c}" maxlength='10'
+                            messageWhenTooLong="Please enter a 10-digit WhatsApp number."
+                            messageWhenTooShort="Please enter a 10-digit WhatsApp number." minlength='10'
+                            messageWhenPatternMismatch="Please enter a valid number" pattern="^[0-9]*$" />
+                    </aura:if>
+
+                    <aura:if isTrue="{!v.selectedGrade1 == 'Grade 12' }">
+                        <lightning:input type="tel" aura:id="field" label="G12 Whatsapp Number"
+                            value="{!v.selectedStudent.G12_Whatsapp_Number__c}" maxlength='10'
+                            messageWhenTooLong="Please enter a 10-digit WhatsApp number."
+                            messageWhenTooShort="Please enter a 10-digit WhatsApp number." minlength='10'
+                            messageWhenPatternMismatch="Please enter a valid number" pattern="^[0-9]*$" />
+
+                    </aura:if>
+
+                    <aura:if isTrue="{! v.selectedGrade1 == 'Grade 12' || v.selectedGrade1 == 'Grade 11' }">
+                        <lightning:combobox label="What are you currently studying ?" aura:id="field"
+                            value="{!v.selectedStudent.What_are_you_currently_studying__c}" placeholder="Select"
+                            options="{! v.whatAreYouCurrentlyStudyingOptions }" required="true" />
+                    </aura:if>
+                </div>
+
+                <!-- Modal/Popup Box Footer Starts here -->
+                <footer class="slds-modal__footer">
+                    <div class="slds-align_absolute-center">
+                        <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{! c.cancelEdit }" />
+                        <lightning:button variant="brand" label="Update" title="Update Student"
+                            onclick="{!c.updateSelectedStudent}" />
+                    </div>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+    <aura:if isTrue="{! v.showSpinner }">
+        <lightning:spinner alternativeText="Loading" />
+    </aura:if>
+</aura:component>

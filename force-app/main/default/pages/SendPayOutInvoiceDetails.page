@@ -1,0 +1,120 @@
+<apex:page standardController="contact" extensions="SendPayoutController" >
+    
+    <apex:slds />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <div class="slds-page-header">
+        <div class="slds-grid">
+            <div class="slds-col slds-has-flexi-truncate">
+                <div class="slds-media slds-no-space slds-grow">
+                    <div class="slds-media__figure">
+                        <svg class="slds-icon slds-icon-custom-custom68" aria-hidden="true">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, "/assets/icons/custom-sprite/svg/symbols.svg#custom68")}"></use>
+                        </svg>
+                    </div>
+                    <div class="slds-media__body">
+                        <p class="slds-text-title--caps slds-line-height--reset">Send Payout Email</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+                        
+                        
+    <apex:form id="payout"  style="margin-top:15px;text-align: center;">
+        <apex:pageMessages />
+            <apex:actionFunction name="backToAccountMethod" action="{!backToAccount}"/>
+        <apex:outputPanel id="msg" rendered="{!showSuccessMsg}" >
+            <script>
+            setInterval(function(){ backToAccountMethod(); }, 1500);
+            </script>
+            <div class="demo-only" style="height:4rem">
+                <div class="slds-notify_container slds-is-relative">
+                    <div class="slds-notify slds-notify_toast slds-theme_success" role="status">
+                        <span class="slds-assistive-text">success</span>
+                        
+                        <div class="slds-notify__content">
+                            <h2 class="slds-text-heading_small ">Email sent successfully.</h2>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+            
+             <!-- SPINNER -->
+                    <apex:actionstatus id="spinner">
+                        <apex:facet name="start">
+                            <div class="demo-only" style="height:6rem">
+                                <div id="spinner" class="slds-spinner_container">
+                                    <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                                        <span class="slds-assistive-text">Loading</span>
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </apex:facet>
+                    </apex:actionstatus> 
+                    <!-- / SPINNER -->
+        
+        
+        
+        
+        <legend><h1>
+            <b>Select month and year</b>
+            </h1></legend>
+        
+        <apex:selectList value="{!monthAndYear}" multiselect="false" size="1" styleClass="slds-select"  style="max-inline-size: 50%;">
+            
+            <apex:selectOptions value="{!monthAndYearOptions}" />
+            <apex:actionSupport event="onchange" reRender="payout" /> 
+        </apex:selectList><br/>
+        <apex:commandButton action="{!submitSingle}" styleClass="slds-button slds-button--brand" value="Send Email" disabled="{!If((monthAndYear == '--None--'),true,If((monthAndYear == NULL),true,false))}"
+                     reRender="spinner,msg,payout"       status="spinner" style="margin-top:15px;"/>
+      
+        
+        <style>
+             .msgIcon {
+                display: none!important
+            }
+            .customMessage * {
+                color: #fff!important
+            }
+            .customMessage {
+                margin: 5px 0!important;
+                opacity: 1!important;
+                width: 100%;
+                font-size: 12px;
+                border: 0px;
+                padding-left: 10px;
+            }
+            .message {
+                opacity: .1
+            }
+        </style> 
+        
+        <apex:commandButton action="{!cancel}" styleClass="slds-button slds-button--brand" value="Back" style="margin-top:15px;"/>
+         <script>
+         $(document).ready(function(){
+                overridePageMessages();
+            });
+            function overridePageMessages(){    
+                var textureEffect = '';
+                //Uncomment below line for texture effect on page messages
+                textureEffect = 'slds-theme--alert-texture';
+                             
+                $('.warningM3').addClass('slds-notify slds-notify--toast slds-theme--warning customMessage '+textureEffect);          
+                $('.confirmM3').addClass('slds-notify slds-notify--alert slds-theme--success  customMessage '+textureEffect);    
+                $('.errorM3').addClass('slds-notify slds-notify--alert slds-theme--error customMessage '+textureEffect);                  
+                $('.infoM3').addClass('slds-notify slds-notify--toast customMessage '+textureEffect);    
+                                 
+                $('.errorM3').removeClass('errorM3'); 
+                $('.confirmM3').removeClass('confirmM3'); 
+                $('.infoM3').removeClass('infoM3');   
+                $('.warningM3').removeClass('warningM3');  
+            }
+        </script>
+        
+        
+    </apex:form>
+</apex:page>

@@ -1,0 +1,17 @@
+<apex:page standardController="Batch__c" extensions="BatchRecommendationController" renderAs="pdf">
+    <body style="font-family:sans-serif,Arial,Unicode MS;">
+        <apex:variable value="{!0}" var="index"/>
+        <apex:repeat value="{!lstWrapperDetails}" var="wrapper">
+            <div style="{!if(index == 0, '','page-break-before: always;')}">
+                <c:ContactRecommendation contactwrapper="{!wrapper}"></c:ContactRecommendation>
+            </div>
+            <apex:variable value="{!index+1}" var="index"/>
+        </apex:repeat>
+        <apex:form style="margin:20px;">
+        <p>
+            <b><apex:commandbutton value="Download" action="{!redirect}"/></b>
+            <b><apex:commandbutton value="Print" onclick="window.print();"/></b>
+        </p>         
+        </apex:form>
+    </body>
+</apex:page>

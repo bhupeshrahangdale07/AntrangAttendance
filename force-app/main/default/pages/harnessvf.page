@@ -1,0 +1,16 @@
+<apex:page >        
+       <apex:includeLightning /> 
+    <div id="Con" />
+    <script>
+/* $Lightning.use("c:harness", function() {
+        $Lightning.createComponent(
+            "c:studentfeedbackform",
+            {},
+            "Con",
+            function(cmp) {
+                console.log("Component is created!");
+                console.log(cmp);
+            });
+    });   */      
+    </script>
+</apex:page>

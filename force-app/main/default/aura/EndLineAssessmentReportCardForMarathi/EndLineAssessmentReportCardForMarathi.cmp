@@ -1,0 +1,249 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" >
+
+    <aura:attribute name="baseLineAssessmentMark" type="object" />
+    <aura:attribute name="endLineAssessmentMark" type="object" />
+    
+    <div class="container">
+            <div class="resultheader">
+                <img class="resultimage" src="/sfsites/c/resource/AssessmentReportcard/images/CareerYatra.png" />:एंडलाइन रिपोर्ट कार्ड</div><br/>
+            <p>
+                नमस्कार <b>{!v.endLineAssessmentMark.Student__r.Name}</b>, मुल्यांकन पूर्ण केल्याबद्दल अभिनंदन! तुम्हाला आता तुमच्याबद्दल, करिअरचे पर्याय आणि तुमच्या आवडीच्या करिअरकडे जाण्याचे मार्ग बरेच काही माहीत आहे.
+            </p>
+            <p>
+                या रिपोर्ट कार्डमध्ये तुमच्या एकूण स्कोअरचा तपशील तसेच करिअरअवेअर प्रोग्रामच्या शेवटी स्कोअरच्या गणनेचे स्पष्टीकरण आहे.
+                <br/><br/>
+                <span class="slds-text-heading_medium resultContentHeader">तुमचे स्कोअर कसे दिसतात ते येथे आहे:</span>
+            </p>
+            <p>
+                <table class="scoretbl">
+					<tr>
+                        <th rowspan="2" style="text-align:left;">निकष</th>
+                        <th colspan="2">फेरी 1 (बेसलाइन)</th>
+                        <th colspan="2">फेरी 2 (एंडलाइन)</th>
+                    </tr>
+                    <tr>
+                        <th style="font-weight:normal">वास्तविक स्कोअर (%)</th>
+                        <th style="font-weight:normal">ग्रेड</th>
+                        <th style="font-weight:normal">वास्तविक स्कोअर (%)</th>
+                        <th style="font-weight:normal">ग्रेड</th>
+                    </tr>
+                    <tr>
+                        <td class="sectiontd">स्वत:बद्दल जागरूकता</td>
+                        <aura:if isTrue="{!notequals(v.baseLineAssessmentMark, null)}">
+                            <td>{!v.baseLineAssessmentMark.Self_Awareness_Score__c}</td>
+                            <td>{!v.baseLineAssessmentMark.Self_Awareness_Grade__c}</td>
+                            <aura:set attribute="else">
+                                <td colspan="2"><b>अनुपस्थित</b></td>
+                            </aura:set>
+                        </aura:if>
+                        <td>{!v.endLineAssessmentMark.Self_Awareness_Score__c}</td>
+                        <td>{!v.endLineAssessmentMark.Self_Awareness_Grade__c}</td>                        
+                    </tr>
+                    <tr>
+                        <td class="sectiontd">करिअर जागरूकता</td>
+                        <aura:if isTrue="{!notequals(v.baseLineAssessmentMark, null)}">
+                            <td>{!v.baseLineAssessmentMark.Career_Awareness_Score__c}</td>
+                            <td>{!v.baseLineAssessmentMark.Career_Awareness_Grade__c}</td>
+                            <aura:set attribute="else">
+                                <td colspan="2"><b>अनुपस्थित</b></td>
+                            </aura:set>
+                        </aura:if>
+                        <td>{!v.endLineAssessmentMark.Career_Awareness_Score__c}</td>
+                        <td>{!v.endLineAssessmentMark.Career_Awareness_Grade__c}</td>                        
+                    </tr>
+                    <tr>
+                        <td class="sectiontd">पालकांचा पाठिंबा</td>
+                        <aura:if isTrue="{!notequals(v.baseLineAssessmentMark, null)}">
+                            <td>{!v.baseLineAssessmentMark.Parent_Support_Score__c}</td>
+                            <td>{!v.baseLineAssessmentMark.Parent_Support_Grade__c}</td>
+                            <aura:set attribute="else">
+                                <td colspan="2"><b>अनुपस्थित</b></td>
+                            </aura:set>
+                        </aura:if>
+                        <td>{!v.endLineAssessmentMark.Parent_Support_Score__c}</td>
+                        <td>{!v.endLineAssessmentMark.Parent_Support_Grade__c}</td>                        
+                    </tr>
+                    <tr>
+                        <td class="sectiontd">करिअर नियोजन</td>
+                        <aura:if isTrue="{!notequals(v.baseLineAssessmentMark, null)}">
+                            <td>{!v.baseLineAssessmentMark.Career_Planning_Score__c}</td>
+                            <td>{!v.baseLineAssessmentMark.Career_Planning_Grade__c}</td>
+                            <aura:set attribute="else">
+                                <td colspan="2"><b>अनुपस्थित</b></td>
+                            </aura:set>
+                        </aura:if>
+                        <td>{!v.endLineAssessmentMark.Career_Planning_Score__c}</td>
+                        <td>{!v.endLineAssessmentMark.Career_Planning_Grade__c}</td>                        
+                    </tr>
+                    <tr style="background: #ffe599;">
+                        <td class="sectiontd">एकूण स्कोअर (%)</td>
+                        <aura:if isTrue="{!notequals(v.baseLineAssessmentMark, null)}">
+                            <td colspan="2"><b>{!v.baseLineAssessmentMark.Overall_Score__c}</b></td>
+                            <aura:set attribute="else">
+                                <td colspan="2"><b>अनुपस्थित</b></td>
+                            </aura:set>
+                        </aura:if>
+                        <td colspan="2"><b>{!v.endLineAssessmentMark.Overall_Score__c}</b></td>
+                    </tr>
+                    <tr style="background: #ffe599;">
+                        <td class="sectiontd">एकूण ग्रेड</td>
+                        <aura:if isTrue="{!notequals(v.baseLineAssessmentMark, null)}">
+                            <td colspan="2"><b>{!v.baseLineAssessmentMark.Overall_Grade__c}</b></td>
+                            <aura:set attribute="else">
+                                <td colspan="2"><b>अनुपस्थित</b></td>
+                            </aura:set>
+                        </aura:if>
+                        <td colspan="2"><b>{!v.endLineAssessmentMark.Overall_Grade__c}</b></td>
+                    </tr>
+                </table>                
+            </p>  
+          
+            <p style="font-style: italic;">
+                CareerAware कार्यक्रमात सहभागी झाल्यानंतर तुमचा स्कोअर कसा बदलला हे वरील टेबल दाखवते. टेबल सर्व चार गटांवर स्कोअर दाखवत आहे - सेल्फ अवेअरनेस, करिअर अवेअरनेस, पालकांचा पाठिंबा आणि करिअर प्लॅनिंग.
+            </p>
+           	<p>
+                <span class="slds-text-heading_medium resultContentHeader">वरील तक्त्यामध्ये दाखवल्याप्रमाणे तुमच्या स्कोअरमधील हालचाल काय दर्शवते?</span><br/>
+                वरील आलेखामध्ये दाखवलेला तुमचा एकूण करिअर स्कोअर तुमची सेल्फ अवेअरनेस, करिअरबद्दल जागरूकता, पालकांचा पाठिंबा आणि करिअर प्लॅनिंगचा स्तर कॅप्चर करतो. योग्य करिअर आणि शैक्षणिक निवडी आणि त्या दिशेने वाटचाल करण्यासाठी पावले उचलण्यासाठी हे महत्त्वाचे आहेत.<br/><br/>
+                <span class="slds-text-heading_medium resultContentHeader">फेरी 1:</span> <b> CareerAware</b> प्रोग्राम सुरू करण्यापूर्वी तुम्ही पहिल्यांदा ही परीक्षा दिली तेव्हा तुम्हाला मिळालेले स्कोअर हे दाखवते. जर तुमचा राऊंड 1 स्कोअर अनुपस्थित दाखवत असेल, तर याचा अर्थ असा की तुम्ही प्रोग्राम सुरू करण्यापूर्वी तुम्ही बेसलाइन टेस्ट दिली नाही.<br/><br/>
+        		<span class="slds-text-heading_medium resultContentHeader">फेरी 2:</span> करिअरअवेअर प्रोग्रामला उपस्थित राहिल्यानंतर तुम्ही दुसर्‍यांदा चाचणी दिल्यानंतर तुम्हाला मिळालेले गुण दाखवले जातात.<br/><br/>
+                टीप: वरीलपैकी कोणत्याही बकेटवर तुमच्या स्कोअरमध्ये झालेली सुधारणा दर्शवते की तुम्हाला त्या बकेटची चांगली समज आहे..<br/><br/>
+                उदाहरणार्थ: 
+                <ul style="margin-left : 20px;">
+                    <li style="list-style: disc;">राउंड 1 ते राऊंड 2 पर्यंत सेल्फ अवेअरनेस वर उच्च स्कोअर दर्शविते की तुम्हाला तुमची आवड, योग्यता आणि वास्तविकता अधिक चांगल्या प्रकारे समजली आहे.</li>
+                    <li style="list-style: disc;">करिअर अवेअरनेसवरील उच्च स्कोअर हे दर्शविते की तुम्हाला आता अधिक करिअर पर्यायांची जाणीव झाली आहे.</li>
+                    <li style="list-style: disc;">करिअर प्लॅनिंगमध्ये उच्च स्कोअर हे सूचित करते की तुम्ही आता तुमच्या करिअरच्या पुढील चरणांचे अधिक चांगल्या प्रकारे नियोजन करण्यास सक्षम आहात.</li>
+                    <li style="list-style: disc;">वरीलपैकी कोणत्याही बकेटवर स्कोअरमध्ये कोणताही बदल/घट नसल्यास, हे दर्शवते की तुम्हाला त्या विशिष्ट बकेटवर अधिक काम करण्याची आवश्यकता आहे.</li>
+                </ul>
+                <br/>
+                वरीलपैकी कोणत्याही बकेटवर काम करण्यासाठी कोणत्याही प्रकारच्या सपोर्टसाठी तुम्ही नेहमी <b>CareerAware Bot (Nantar Kay)</b> वापरू शकता. CareerAware बॉट वापरण्यासाठी, तुम्ही <b>Hi</b> टाइप करू शकता आणि <b>+917208473080</b> वर <b>WhatsApp</b> वर पाठवू शकता.
+        	</p><br/>     
+        
+            <p>
+                <span class="slds-text-heading_medium resultContentHeader">तुमच्या करिअरच्या निवडीकडे जाण्यासाठी 4 पायऱ्या लक्षात ठेवा</span><br/>
+            </p>
+            
+            <div class="main slds-grid slds-wrap" align="center">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                    <div class="numberCircle" >1</div>
+                    <div class="divrs" style="background : #d9ead3;"> आत्म जागरूकता</div>                    
+                    <div class="rcorners1" style="background: #ffe599;">
+                        <b>स्वतःबद्दल जाणून घेणे: </b><br/>
+                        <ul class="slds-list_dotted">
+                            <li class="li">ज्या गोष्टी/ काम तुम्हाला करायला आवडतात आणि ज्या गोष्टी/ काम करण्यामध्ये तुम्ही चांगले आहात.</li>
+                            <li class="li">ज्या गोष्टी तुम्हाला तुमच्या आवडीचे करिअर करण्यापासून रोखू शकतात</li>
+                        </ul>                         
+                    </div>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                    <div class="numberCircle">2</div>                    
+                    <div class="divrs" style="background : #ffd966;">करियर जागरुकता</div>                    
+                    <div class="rcorners1" style="background : #93c47d;">
+                        <b>करिअर बद्दल समजून घेणे:</b><br/>
+                        <ul class="slds-list_dotted">
+                            <li class="li">कोणत्या प्रकारच्या नोकऱ्या उद्योगात उपलब्ध आहेत</li>
+                            <li class="li">कोणत्या प्रकारचे काम तुम्हाला करावे लागेल जर तुम्ही ते करिअर करत असाल </li>
+                            <li class="li">आवश्यक असलेली पात्रता</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">                    
+                    <div class="numberCircle" >3</div>                    
+                    <div class="divrs" style="background : #93c47d;">पालकांचा पाठिंबा</div>                    
+                    <div class="rcorners1" style="background : #f1c232;">
+                        <b>पालकांचा पाठिंबा/परवानगी:</b><br/>
+                        <ul class="slds-list_dotted">
+                            <li class="li">हे आपल्या करिअर आणि शैक्षणिक निवडींसह पुढे जाण्यासाठी पालकांचा पाठिंबा मिळवण्याच्या आपल्या क्षमतेचा संदर्भ देते.</li>                            
+                        </ul>
+                    </div>                    
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">                    
+                    <div class="numberCircle">4</div>                    
+                    <div class="divrs" style="background : #bf9000">करिअरचे नियोजन</div>                    
+                    <div class="rcorners1" style="background : #b6d7a8;">
+                        <b>योग्य करिअर योजना बनवणे:</b><br/>
+                        <ul class="slds-list_dotted">
+                            <li class="li">आपल्या आवडी, सामर्थ्य आणि वास्तवाशी जुळणारे करिअर निवडणे</li>
+                            <li class="li">आपल्या करिअर निवडीशी जुळणारा योग्य शैक्षणिक मार्ग निवडणे</li>
+                        </ul>                         
+                    </div>
+                </div>                
+            </div>
+        	<br/>
+            
+            <div class="stepdiv">
+                <p>
+                    <br/>
+                	<span class="slds-text-heading_medium resultContentHeader">आपल्या आवडीच्या करिअरच्या दिशेने चार पावले:</span><br/>
+                </p>
+                <div class="contentDiv slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6 slds-large-size_1-of-6">
+                        <span>
+                            <img src="/sfsites/c/resource/AssessmentReportcard/images/selfAwareness.png" />
+                        </span>
+                    </div>
+                    
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_5-of-6" >
+                        <span class="slds-text-heading_medium resultContentHeader">
+                            आत्म जागरूकता<br/>
+                        </span>
+                        <ul class="slds-list_dotted">
+                            <li class="li" >आपल्याला आवडत असलेल्या व आपण जे करण्यात चांगले आहोत अशा गोष्टींबद्दल शिकणे</li>
+                            <li class="li">आपल्या आवडी, सामर्थ्य आणि सद्यपरिस्थितीशी जुळणारे निवडण्यासाठी स्वतःला आणि वास्तविकतेला समजून घेण</li>
+                            <li class="li">अंतरंगचा करियर यात्रा कार्यक्रम, योग्यता चाचण्या, करिअर मार्गदर्शन तज्ञ आणि समुपदेशक आपल्याला स्वतःबद्दल जाणून घेण्यास मदत करतील</li>
+                        </ul>
+                    </div>
+                </div>                
+                
+                <div class="contentDiv slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6 slds-large-size_1-of-6" >
+                        <span><img src="/sfsites/c/resource/AssessmentReportcard/images/careerAwareness.png" /></span>
+                    </div>
+                    
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_5-of-6" >
+                        <span class="slds-text-heading_medium resultContentHeader" >
+                            करियर जागरुकता<br/>
+                        </span>
+                        <ul class="slds-list_dotted">
+                            <li class="li">करिअरच्या विविध पर्यायांबद्दल  जागरुकता तुम्हाला तुमच्या सामर्थ्याशी आणि आवडीशी जुळणारे करिअर निवडण्यास मदत करेल</li>
+                            <li class="li">नोकरीचा प्रकार, आवश्यक पात्रता आणि क्षेत्राविषयी निगडित असलेल्या भूमिका आणि जबाबदाऱ्या तुमच्या करिअरचा निर्णय घेण्यास मदत करतील</li>
+                            <li class="li">करियर बद्दल अधिक जाणून घेण्यासाठी तुमच्या शाळेतील करियर मार्गदर्शन कार्यक्रमामध्ये उपस्थित रहा</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="contentDiv slds-grid slds-wrap" >
+                    <div  class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6 slds-large-size_1-of-6" >
+                       	<img src="/sfsites/c/resource/AssessmentReportcard/images/ParentSupport.png" />
+                    </div>
+                    
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_5-of-6" >
+                        <span class="slds-text-heading_medium resultContentHeader">
+                            पालकांचा पाठिंबा<br/>
+                        </span>
+                        <ul class="slds-list_dotted">
+                            <li class="li">आपल्या आवडीचे शिक्षण आणि करिअर कडे वाटचाल करण्यासाठी पालकांची परवानगी आणि पाठिंबा आवश्यक आहे</li>
+                            <li class="li">तुम्ही तुमच्या पालकांशी तुमच्या करियर आणि शिक्षणाशी संबंधित निर्णयाची चर्चा करून आणि तुमच्या शाळेत असलेल्या करिअरशी संबंधित कार्यक्रमात आणि बैठकांना उपस्थित राहून त्यांचा पाठिंबा मिळवा</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="contentDiv slds-grid slds-wrap" >
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-6 slds-large-size_1-of-6" >
+                        <span><img src="/sfsites/c/resource/AssessmentReportcard/images/CareerPlanning.png" /></span>
+                    </div>
+                    
+                    <div  class="slds-col slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_5-of-6" >
+                        <span class="slds-text-heading_medium resultContentHeader" >
+                            करिअरचे नियोजन<br/>
+                        </span>
+                        <ul class="slds-list_dotted">
+                            <li class="li">आपली आवड सामर्थ्य आणि वास्तविकतेची जुळणारे करिअर निवडणे</li>
+                            <li class="li">आपल्या करीयरच्या निवडीची जुळणारा योग्य शैक्षणिक मार्ग निवडणे</li>
+                            <li class="li">करिअरचे नियोजन तुम्हाला अधिक स्पष्टता देतो आणि तुमच्या आवडीच्या करियरच्या दिशेने पुढील योग्य पायर्‍या निवडण्यात तुम्हाला मदत करते</li>
+                        </ul>
+                    </div>
+                </div>
+              
+            </div>
+        </div>
+</aura:component>

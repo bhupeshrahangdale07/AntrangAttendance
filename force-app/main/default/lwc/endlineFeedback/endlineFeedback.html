@@ -1,0 +1,376 @@
+<template>
+    <lightning-card>
+
+        <!-- <div class="slds-box">
+            <h3 slot="title" class="slds-align_absolute-center">
+                <img alt="Antarang Logo" src={antarangImage} width="50px"/>
+                Feedback - Endline
+            </h3>
+        </div> -->
+        <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small"><b>Feedback</b></div>
+
+        <div>
+            <lightning-spinner alternative-text="Loading" size="medium" if:true={isLoading}></lightning-spinner>
+            <div class="slds-box">
+                <ul class="slds-p-horizontal_small">
+                    <li><b>School Name: </b> {seletedSchoolName}</li>
+                    <li><b>Grade: </b> {selectedGrade}</li>
+                    <li><b>Batch Code: </b> {selectedBatchNumber}</li>
+                    <li><b>Student Name: </b>{studentName}</li>
+                </ul>
+            </div>
+            <div class="formAptitude">
+                <p class="slds-m-bottom--medium slds-m-left--medium slds-m-right--medium">Please help us improve this program by giving us honest feedback. To what extent do you agree with each of the following statements:</p>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>1. My CareerAware Teacher makes me feel that they really care about me</label>
+                    <template for:each={feedbackOptions} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input name="Feedback1" variant="label-hidden"
+                                type="checkbox" class="Feedback1"
+                                data-value={obj.value} 
+                                onchange={feedbackHandler}>
+                                </lightning-input>
+                            </div>
+                            <div  >
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>2. My CareerAware Teacher wants us to share our thoughts</label>
+                    <template for:each={feedbackOptions} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input 
+                                name="Feedback2" variant="label-hidden"
+                                type="checkbox" class="Feedback2"
+                                data-value={obj.value} 
+                                onchange={feedbackHandler}>
+                            </lightning-input>
+                            </div>
+                            <div  >
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                        
+                    </template>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>3. I like the way we learn in the CareerAware class</label>
+                    <template for:each={feedbackOptions} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input 
+                                 name="Feedback3" variant="label-hidden"
+                                type="checkbox" class="Feedback3"
+                                data-value={obj.value} 
+                                onchange={feedbackHandler}>
+                            </lightning-input>
+                            </div>
+                            <div  >
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                       
+                    </template>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>4. My CareerAware teacher knows when the class understands, and when we do not</label>
+                    <template for:each={feedbackOptions} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input  variant="label-hidden"
+                                name="Feedback4"
+                                type="checkbox" class="Feedback4"
+                                data-value={obj.value} 
+                                onchange={feedbackHandler}>
+                            </lightning-input>
+                            </div>
+                            <div  >
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>5. We learn a lot in every CareerAware class</label>
+                    <template for:each={feedbackOptions} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input 
+                                name="Feedback5" variant="label-hidden"
+                                type="checkbox" class="Feedback5"
+                                data-value={obj.value} 
+                                onchange={feedbackHandler}>
+                            </lightning-input>
+                            </div>
+                            <div  >
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>6. My CareerAware teacher asks questions to be sure we are following along when they are teaching</label>
+                    <template for:each={feedbackOptions} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                name="Feedback6"
+                                type="checkbox" class="Feedback6"
+                                data-value={obj.value} 
+                                onchange={feedbackHandler}>
+                            </lightning-input>
+                            </div>
+                            <div  >
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>7. My CareerAware Teacher does not get angry in class</label>
+                    <template for:each={feedbackOptions} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                name="Feedback7"
+                                type="checkbox" class="Feedback7"
+                                data-value={obj.value} 
+                                onchange={feedbackHandler}>
+                            </lightning-input>
+                            </div>
+                            <div  >
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>8. The CareerAware program helped me know different career options.</label>
+                    <template for:each={feedbackOptions} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                name="Feedback8"
+                                type="checkbox" class="Feedback8"
+                                data-value={obj.value} 
+                                onchange={feedbackHandler}>
+                            </lightning-input>
+                            </div>
+                            <div  >
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>9. The CareerAware program helped me decide what I want to do after class 10th</label>
+                    <template for:each={feedbackOptions} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                name="Feedback9"
+                                type="checkbox" class="Feedback9"
+                                data-value={obj.value} 
+                                onchange={feedbackHandler}>
+                            </lightning-input>
+                            </div>
+                            <div  >
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>10. The CareerAware program helped me choose 1-2 career options best for me</label>
+                    <template for:each={feedbackOptions} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                name="Feedback10"
+                                type="checkbox" class="Feedback10"
+                                data-value={obj.value} 
+                                onchange={feedbackHandler}>
+                            </lightning-input>
+                            </div>
+                            <div  >
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>11. The CareerAware program helped me know how to find answers to my career related questions</label>
+                    <template for:each={feedbackOptions} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                name="Feedback11"
+                                type="checkbox" class="Feedback11"
+                                data-value={obj.value} 
+                                onchange={feedbackHandler}>
+                            </lightning-input>
+                            </div>
+                            <div  >
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>12. After the CareerAware program , my parents now support my career choices</label>
+                    <template for:each={feedbackOptions} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                name="Feedback12"
+                                type="checkbox" class="Feedback12"
+                                data-value={obj.value} 
+                                onchange={feedbackHandler}>
+                            </lightning-input>
+                            </div>
+                            <div  >
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                
+                
+                
+<!--                 
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <lightning-combobox 
+                    name="Feedback1"
+                    label="1. My CareerAware Teacher makes me feel that they really care about me"
+                    value={feedback1Value}
+                    options={feedbackOptions}
+                    required
+                    onchange={feedbackHandler} ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <lightning-combobox 
+                    name="Feedback2"
+                    label="2. My CareerAware Teacher wants us to share our thoughts"
+                    value={feedback2Value}
+                    options={feedbackOptions}
+                    required
+                    onchange={feedbackHandler} ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <lightning-combobox 
+                    name="Feedback3"
+                    label="3. I like the way we learn in the CareerAware class"
+                    value={feedback3Value}
+                    options={feedbackOptions}
+                    required
+                    onchange={feedbackHandler} ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <lightning-combobox 
+                    name="Feedback4"
+                    label="4. My CareerAware teacher knows when the class understands, and when we
+                    do not"
+                    value={feedback4Value}
+                    options={feedbackOptions}
+                    required
+                    onchange={feedbackHandler} ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <lightning-combobox 
+                    name="Feedback5"
+                    label="5. We learn a lot in every CareerAware class"
+                    value={feedback5Value}
+                    options={feedbackOptions}
+                    required
+                    onchange={feedbackHandler} ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <lightning-combobox 
+                    name="Feedback6"
+                    label="6. My CareerAware teacher asks questions to be sure we are following along
+                    when they are teaching"
+                    value={feedback6Value}
+                    options={feedbackOptions}
+                    required
+                    onchange={feedbackHandler} ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <lightning-combobox 
+                    name="Feedback7"
+                    label="7. My CareerAware Teacher does not get angry in class"
+                    value={feedback7Value}
+                    options={feedbackOptions}
+                    required
+                    onchange={feedbackHandler} ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <lightning-combobox 
+                    name="Feedback8"
+                    label="8. The CareerAware program helped me know different career options."
+                    value={feedback8Value}
+                    options={feedbackOptions}
+                    required
+                    onchange={feedbackHandler} ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <lightning-combobox 
+                    name="Feedback9"
+                    label="9. The CareerAware program helped me decide what I want to do after class
+                    10th"
+                    value={feedback9Value}
+                    options={feedbackOptions}
+                    required
+                    onchange={feedbackHandler} ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <lightning-combobox 
+                    name="Feedback10"
+                    label="10. The CareerAware program helped me choose 1-2 career options best for
+                    me"
+                    value={feedback10Value}
+                    options={feedbackOptions}
+                    required
+                    onchange={feedbackHandler} ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <lightning-combobox 
+                    name="Feedback11"
+                    label="11. The CareerAware program helped me know how to find answers to my
+                    career related questions"
+                    value={feedback11Value}
+                    options={feedbackOptions}
+                    required
+                    onchange={feedbackHandler} ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <lightning-combobox 
+                    name="Feedback12"
+                    label="12. After the CareerAware program , my parents now support my career
+                    choices"
+                    value={feedback12Value}
+                    options={feedbackOptions}
+                    required
+                    onchange={feedbackHandler} ></lightning-combobox>
+                </div> -->
+                <div slot="footer" class="footerDiv" style="display: grid;margin-left:50px;margin-right:50px;">
+                    <div class="footer slds-m-top--medium slds-m-bottom_xx-large" >
+                        <lightning-button label="Back"                                     
+                                        variant="brand"
+                                        onclick={backBtnHandler} style="float:left;"
+                        ></lightning-button>
+                        <lightning-button label="Submit"  
+                                        variant="brand"
+                                        onclick={SubmitBtnHandler}    style="float:right;"                                 
+                        ></lightning-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </lightning-card>
+</template>

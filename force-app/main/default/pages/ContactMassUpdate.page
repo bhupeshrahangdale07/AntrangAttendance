@@ -1,0 +1,228 @@
+<apex:page standardController="Batch__c" extensions="ContactMassUpdateController" sidebar="false" docType="html-5.0">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <apex:slds />
+        <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+        <body>
+            <div class="slds" style="margin:10px;">
+                <div class="slds-page-header" id="pg_header">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-custom-custom18" title="Take Attendance">
+                                <svg class="slds-icon slds-page-header__icon" aria-hidden="true">
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, "/assets/icons/custom-sprite/svg/symbols.svg#custom18")}" />
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="slds-media__body">
+                            <p class="slds-text-body_small slds-line-height_reset">Take Attendance</p>
+                            <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="{!Batch__c.Name}">{!Batch__c.Name}</h1>
+                        </div>
+                    </div>
+                </div>
+                
+                <apex:form id="frm">
+                    <apex:pagemessages ></apex:pagemessages>
+                    <div id="batch_detail">
+                        <div class="slds-form--compound" style="margin-top:20px;">
+                            <div class="slds-form-element__group">
+                                <div class="slds-form-element__row">
+                                    <div class="slds-form-element slds-has-divider--bottom slds-size--1-of-2" style="margin-right:10px;">
+                                        <label class="slds-form-element__label">Batch Name</label>
+                                        <div class="slds-form-element__control">
+                                            {!Batch__c.Name}
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element slds-has-divider--bottom slds-size--1-of-2" style="margin-right:10px;">
+                                        <label class="slds-form-element__label">Batch Number</label>
+                                        <div class="slds-form-element__control">
+                                            {!Batch__c.Batch_Number__c}  
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="slds-form-element slds-has-divider--bottom slds-size--1-of-2">
+                                        <label class="slds-form-element__label"> Number of students facilitated </label>
+                                        <div class="slds-form-element__control">
+                                            {!Batch__c.Number_of_students_facilitated__c}  
+                                        </div>
+                                       </div>
+                                </div>
+                                <div class="slds-form-element__row">
+                                    <div class="slds-form-element slds-has-divider--bottom slds-size--1-of-2" style="margin-right:10px;">
+                                        <label class="slds-form-element__label">School Name</label>
+                                        <div class="slds-form-element__control">
+                                            {!Batch__c.School_Name__r.Name}  
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element slds-has-divider--bottom slds-size--1-of-2" style="margin-right:10px;">
+                                        <label class="slds-form-element__label">Trainer Name</label>
+                                        <div class="slds-form-element__control">
+                                            {!Batch__c.Trainer_Name__r.Name}
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element slds-has-divider--bottom slds-size--1-of-2">
+                                        <label class="slds-form-element__label"> No of Students have Counselling Report </label>
+                                        <div class="slds-form-element__control">
+                                            {!Batch__c.No_of_students_have_counselling_report__c}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <center>
+                        <div id="page_buttons_top" style="margin-top:10px;">
+                            <apex:commandButton value="Save" action="{!Submit}" styleClass="slds-button slds-button--brand" status="Processing" reRender="frm"/>
+                            <apex:commandButton value="Cancel" action="{!Cancel}" reRender="frm" styleClass="slds-button slds-button_neutral" status="Processing"/>
+                            <apex:commandButton value="Print" onclick="window.print();" styleClass="slds-button slds-button_neutral"/>
+                        </div>
+                    </center>
+                    <div id="allContacts" style="margin-top:20px;">
+                        <table width="100%" id="tblRecords" class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered checkableTable" 
+                                style="border-spacing:0px !important;">
+                            <thead>
+                                <tr>
+                                    
+                                    <th width="40%"><b>Student Name</b></th>        
+                                    <th width="20%"><b>Bar Code</b></th>
+                                    <!--<th width="20%"><b>Recommended Status</b></th>-->
+                                    <th width="30%"><b>Grade</b></th>
+                                    <th width="30%">
+                                   
+                                        <span class="slds-checkbox">
+                                            <input id="checkAllBox" type="checkbox" onclick="toggleCheckAll(this);"/>
+                                            <label class="slds-checkbox__label" for="checkAllBox">
+                                                <span class="slds-checkbox_faux" id="spancheckAllBox"></span>
+                                                <span class="slds-form-element__label"><b>&nbsp;&nbsp;Counselling Session Attended?</b></span>   
+                                            </label>
+                                          </span>
+                                       <th width="20%"><b>Recommendation Report Status</b></th> 
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <apex:repeat value="{!lstContacts}" var="result" rendered="{!lstContacts != null && lstContacts.size > 0}">
+                                    <tr>
+                                        <td>
+                                            <a href="javascript:void(0);" data-id="{!result.Id}" onclick="openRecord(this);">{!result.Name}</a>
+                                        </td>
+                                        <!--<td>
+                                            <a href="javascript:void(0);" data-id="{!result.Account.Id}" onclick="openRecord(this);">{!result.Account.Name}</a>
+                                        </td>-->
+                                        <td>{!result.Bar_Code__c}</td>
+                                        <td>{!result.Current_Education__c}</td>
+                                        <td>
+                                            <span class="slds-checkbox">
+                                                <apex:inputCheckbox id="chkresult" value="{!result.Counselling_Session_Attended__c}"/>
+                                                <label class="slds-checkbox__label" for="{!$Component.chkresult}">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label"></span>
+                                                </label>
+                                            </span>
+                                        </td>
+                                       <td>{!result.Recommendation_Report_Status__c}</td> 
+                                    </tr>
+                                </apex:repeat>
+                                <tr style="display:{!if(lstContacts == null || lstContacts.size == 0, '','none')}">
+                                    <td colspan="100%"><i>No records to display.</i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <center>
+                        <div id="page_buttons_bottom" style="margin-top:10px;">
+                            <apex:commandButton value="Save" action="{!Submit}" styleClass="slds-button slds-button--brand" status="Processing" reRender="frm"/>
+                            <apex:commandButton value="Cancel" action="{!Cancel}" reRender="frm" styleClass="slds-button slds-button_neutral" status="Processing"/>
+                            <apex:commandButton value="Print" onclick="window.print();" styleClass="slds-button slds-button_neutral"/>
+                        </div>
+                    </center>
+                    <script>
+                        setFocus();
+                        function setFocus(){};
+                        
+                        function toggleCheckAll(checkAllBox) {
+                            $('.checkableTable :checkbox').prop('checked', checkAllBox.checked);
+                        }
+                        
+                        function openRecord(link){
+                            var dataid = $(link).attr('data-id');
+                            if(dataid != undefined && dataid != null && dataid != ''){
+                                sforce.one.navigateToSObject(dataid);
+                            }
+                        }
+                        
+                        function overridePageMessages(){    
+                            var textureEffect = '';
+                            //Uncomment below line for texture effect on page messages
+                            textureEffect = 'slds-theme--alert-texture';
+                                         
+                            $('.warningM3').addClass('slds-notify slds-notify--toast slds-theme--warning customMessage '+textureEffect);          
+                            $('.confirmM3').addClass('slds-notify slds-notify--alert slds-theme--success  customMessage '+textureEffect);    
+                            $('.errorM3').addClass('slds-notify slds-notify--alert slds-theme--error customMessage '+textureEffect);                  
+                            $('.infoM3').addClass('slds-notify slds-notify--toast customMessage '+textureEffect);    
+                                             
+                            $('.errorM3').removeClass('errorM3'); 
+                            $('.confirmM3').removeClass('confirmM3'); 
+                            $('.infoM3').removeClass('infoM3');   
+                            $('.warningM3').removeClass('warningM3');  
+                        }
+                    </script>
+                </apex:form>
+            </div>
+            <!------------- Start: Processing Div---------------------------------------->
+            <style>
+                @media print {
+                    body { 
+                        background: white; 
+                        font-size: 12pt; 
+                    }
+                    #pg_header {
+                        display:none;
+                    }
+                    #page_buttons_top {
+                        display:none;
+                    }
+                    #page_buttons_bottom {
+                        display:none;
+                    }
+                    a { 
+                        text-decoration: none !important;
+                    }
+                    #spancheckAllBox {
+                        display:none;
+                    }
+                }
+                .ProcessingBackground {
+                    background-color: #fff;
+                    opacity: 0.60;
+                    filter: alpha(opacity = 50);
+                    width: 100%;
+                    height: 100%;
+                    position: fixed;
+                    z-index: 8000;
+                    top:0;
+                    left:0;
+                }
+                .Processing {
+                    z-index: 8552;
+                    left: 50%;
+                    top: 50%;
+                    text-align: center;
+                    position: fixed;
+                } 
+               
+            </style>
+            <div id="divProcessing" style="display:none;">
+                <div class="ProcessingBackground"></div>
+                <div class="Processing">
+                    <!--/img/loading.gif-->
+                    <image alt="Processing" width="64" height="64" src="{!URLFOR($Asset.SLDS, '/assets/images/spinners/slds_spinner_brand.gif')}" />
+                </div>
+            </div>  
+            <apex:actionStatus id="Processing" onstart="document.getElementById('divProcessing').style.display = '';" onstop="document.getElementById('divProcessing').style.display = 'none';">                            
+            </apex:actionStatus>
+            <!------------- End: Processing Div---------------------------------------->
+        </body>
+    </html>
+</apex:page>

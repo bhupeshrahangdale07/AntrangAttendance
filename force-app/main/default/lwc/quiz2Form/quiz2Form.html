@@ -1,0 +1,260 @@
+<template>
+    <template if:true={showLoading}>
+        <lightning-spinner alternative-text="Loading" size="medium" class="spinnerClass"></lightning-spinner>
+    </template>
+    <lightning-card>
+        <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+                <b>Quiz 2 Data : Student Details</b>
+            </div>
+            <div class="slds-box">
+                <ul class="slds-p-horizontal_small">
+                    <li><b>School Name: </b> {seletedSchoolName}</li>
+                    <li><b>Grade: </b> {selectedGrade}</li>
+                    <li><b>Batch Code: </b> {selectedBatchNumber}</li>
+                    <li><b>Student Name: </b> {studentName}</li>
+                </ul>
+            </div>
+    <template if:false={showForm}>        
+        <div class="slds-var-p-around_medium">
+                <p>{studentSearchComponentLabel}</p>
+
+                <lightning-input type="search" 
+                label="" variant = "label-hidden"
+                value={studentName}
+                onchange={handleInputChangeStudent}>
+                </lightning-input>
+
+                <div class="resText"><span>{studentSearchResult}</span></div>
+            
+            <template if:true={showStudentList}>
+                <div class="slds-scrollable_y slds-box slds-box_xx-small lgc-bg" style="height:8.5rem">
+                    <ul>
+                    <template for:each={studentDisplay} for:item="con" for:index="index">
+                    <div class="slds-box slds-box_xx-small special" key={con} 
+                        onclick={handleClick}
+                        data-index={index} data-id={con.Id}>           
+                        <li>{con.Name}</li>
+                    </div>
+                    </template>
+                    </ul>
+                </div> 
+            </template> 
+                    
+        </div>
+        <lightning-button label="Back"  class="slds-align_absolute-center"
+                                    variant="brand"
+                                    onclick={onclickBack}                                     
+                    ></lightning-button>
+    </template>
+    <template if:true={showForm}>
+        <!-- Form -->
+        <div class="formAptitude">
+            <b class="slds-m-around--small">Instructions: </b>
+            <ul class="slds-m-around--small">
+                <li>Read the questions carefully and tick the correct answer for each question.</li>
+                <li>Answer the questions honestly. Tick ONLY 1 answer for each question.</li>
+            </ul>
+            <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>1. What does the Art, Design and Architecture Industry mean?</label>
+                <template for:each={quiz21Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.label}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input 
+                            name="quiz2-1"  variant="label-hidden"
+                            type="checkbox" class="quiz2-1"
+                            data-value={obj.value} 
+                            onchange={quiz2Handler}>
+                        </lightning-input>
+                        </div>
+                        <div>
+                            <span>{obj.label}</span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>2 .What does the Environment and Bioscience Industry mean?</label>
+                <template for:each={quiz22Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.label}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input 
+                            name="quiz2-2"  variant="label-hidden"
+                            type="checkbox" class="quiz2-2"
+                            data-value={obj.value} 
+                            onchange={quiz2Handler}>
+                        </lightning-input>
+                        </div>
+                        <div>
+                            <span>{obj.label}</span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>3. Select the correct option: Which set of careers match the industry? (Remember, all careers in the set should match)</label>
+                <template for:each={quiz23Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.label}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input 
+                            name="quiz2-3"  variant="label-hidden"
+                            type="checkbox" class="quiz2-3"
+                            data-value={obj.value} 
+                            onchange={quiz2Handler}>
+                        </lightning-input>
+                        </div>
+                        <div>
+                            <span>{obj.label}</span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>4. Select the correct option: Which set of careers match the industry?</label>
+                <template for:each={quiz24Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.label}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input 
+                            name="quiz2-4"  variant="label-hidden"
+                            type="checkbox" class="quiz2-4"
+                            data-value={obj.value} 
+                            onchange={quiz2Handler}>
+                        </lightning-input>
+                        </div>
+                        <div>
+                            <span>{obj.label}</span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>5. Knowing the financial , family and education situation at home is important while choosing a career because</label>
+                <template for:each={quiz25Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.label}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input 
+                            name="quiz2-5"  variant="label-hidden"
+                            type="checkbox" class="quiz2-5"
+                            data-value={obj.value} 
+                            onchange={quiz2Handler}>
+                        </lightning-input>
+                        </div>
+                        <div>
+                            <span>{obj.label}</span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+
+
+
+            
+            <!-- <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                <label class="slds-form-element__label" for="select-01">
+                    <abbr class="slds-required" title="required">* </abbr>2 .What does the Environment and Bioscience Industry mean?
+                </label>
+                <lightning-combobox 
+                name="quiz2-2"
+                label="quiz2-2"
+                value={quiz22Value} variant = "label-hidden"
+                options={quiz22Options}
+                required
+                onchange={quiz2Handler} ></lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                <label class="slds-form-element__label" for="select-01">
+                    <abbr class="slds-required" title="required">* </abbr>3. Select the correct option: Which set of careers match the industry? (Remember, all careers in the set should match) 
+                </label>
+                <lightning-combobox 
+                name="quiz2-3"
+                label="quiz2-3"
+                value={quiz23Value} variant = "label-hidden"
+                options={quiz23Options}
+                required
+                onchange={quiz2Handler} ></lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                <label class="slds-form-element__label" for="select-01">
+                    <abbr class="slds-required" title="required">* </abbr>4. Select the correct option: Which set of careers match the industry?
+                </label>
+                <lightning-combobox 
+                name="quiz2-4"
+                label="quiz2-4"
+                value={quiz24Value} variant = "label-hidden"
+                options={quiz24Options}
+                required
+                onchange={quiz2Handler} ></lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                <label class="slds-form-element__label" for="select-01">
+                    <abbr class="slds-required" title="required">* </abbr>5. Knowing the financial , family and education situation at home is important while choosing a career because
+                </label>
+                <lightning-combobox 
+                name="quiz2-5"
+                label="quiz2-5"
+                value={quiz25Value} variant = "label-hidden"
+                options={quiz25Options}
+                required
+                onchange={quiz2Handler} ></lightning-combobox>
+            </div> -->
+            <div slot="footer" style="display: grid;margin-left:50px;margin-right:50px;">
+                <div class="footer slds-m-top--medium slds-m-bottom_xx-large" >
+                    <lightning-button label="Back"  
+                                    variant="brand"
+                                    onclick={backBtnHandler}    style="float:left;"                                 
+                    ></lightning-button>
+                    <lightning-button label="Submit Quiz 2 Data"                                     
+                                    variant="brand"
+                                    onclick={submitBtnHandler} style="float:right;"
+                    ></lightning-button>
+                    
+        </div>
+            </div>
+           
+        </div>
+        
+
+    </template>
+        <!-- Showing/Displayiing Modal for Back Btn Functionality -->
+        <template if:true={isShowModal}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                <!-- modal header start -->
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Do you want to go back ?</h2>
+                    </header>
+                
+                    <!-- modal body start -->
+                    <div class="slds-modal__content slds-p-around_x-large slds-text-align_center" id="modal-content-id-1">
+                        <p>You will lose all the data entered. Are you sure you want to go
+                            back?</p>
+                    </div>
+
+                    <!-- modal footer start-->
+                    <footer class="slds-modal__footer">
+                        <div slot="footer">
+                            <div class="footer slds-m-top--medium slds-m-bottom--large" align="center">
+                                <lightning-button variant="brand" 
+                                class="slds-var-m-left_x-small" 
+                                label="Yes"  
+                                data-name="submitData"
+                                onclick={yesBackBtnHandler}></lightning-button>
+                
+                                <lightning-button variant="brand" 
+                                class="slds-var-m-left_x-small" 
+                                label="No"  
+                                data-name="editData"
+                                onclick={noBackBtnHandler}></lightning-button>
+                
+                            </div>
+                        </div>
+                    </footer>
+                
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+    </lightning-card>
+
+</template>

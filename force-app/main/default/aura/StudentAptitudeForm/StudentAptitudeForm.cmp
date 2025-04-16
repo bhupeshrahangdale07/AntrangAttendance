@@ -1,0 +1,252 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" 
+                controller="StudentIARFormCtrl">
+    
+    <aura:attribute name="StudentQuestions" type="object" />
+    <aura:attribute name="Student" type="object" />
+    
+    <aura:attribute name="contactId" type="String" />
+    <aura:attribute name="language" type="String" />
+    
+    <aura:attribute name="questions" type="object" />
+    <aura:attribute name="startPage" type="Integer" default="0"/>
+    <aura:attribute name="endPage" type="Integer"/>
+    <aura:attribute name="totalRecords" type="Integer"/>
+    <aura:attribute name="pageSize" type="Integer" default="9"/>
+    
+    <aura:attribute name="colorPalette" type="String[]" default="['41', '43', '45', '46', '47', '48']" />
+    <aura:attribute name="belowTxtBox" type="String[]" default="['41', '43', '45', '46', '47', '48']" />
+    
+    <aura:attribute name="submitConfirmation" type="Boolean" default="False"/>
+    <aura:attribute name="showIntro" type="Boolean" default="True"/>
+    <aura:attribute name="firstClick" type="Boolean" default="False"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:registerEvent name="progressbarEvent" type="c:LIProgressBarEvent" />
+    
+    <aura:registerEvent name="childTimerEvt" type="c:ChildTimerEvent"/>
+    <aura:handler event="c:ParentTimerEvent" action="{!c.handleParentTimerEvt}"/>
+    
+    <aura:attribute name="show" type="Boolean" default="false" />
+    <aura:handler name="change" value="{!v.show}" action="{!c.spinnerDisplayHandler}"/>	
+    <div class="slds-align_absolute-center">
+        <lightning:spinner aura:id="spinner" variant="brand" size="large" class="slds-hide"/>
+    </div> 
+    
+    <aura:html tag="style"> 
+        .comm-page-custom-aptitude:before{
+            background: url(/sfsites/c/resource/StudentExam/images/career-planning.png) center bottom no-repeat;
+            background-size: contain;
+            width: 100%;
+            height: 100%;
+            content: '';
+            position: fixed;
+            left: 0;
+            top: 0;
+            opacity: 0.1;
+        }
+    </aura:html>
+    
+    <section id="container">
+        
+        <aura:if isTrue="{!v.contactId}">
+            
+            <aura:if isTrue="{!v.showIntro}">
+                <!-- Modal/Popup Box starts here-->
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <!-- Modal/Popup Box Header Starts here-->
+                        <header class="slds-modal__header">
+                            <aura:if isTrue="{!v.language == 'eng'}">
+                            	<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Instructions</h2>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'hin'}">
+                            	<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">निर्देश</h2>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'mar'}">
+                            	<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">सूचना</h2>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'Urdu'}">
+                            	<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">ہدایات۔</h2>
+                            </aura:if>
+                        </header>
+                        <!--Modal/Popup Box Body Starts here-->
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            <aura:if isTrue="{!v.language == 'eng'}">
+                                <p>1. There are <b>48 questions</b> in the aptitude test</p>
+                                <p>2. You have <b>1 hour</b> to complete the test</p>
+                                <p>3. Before you start the test, keep a <b>notebook and pen</b> for rough work</p>
+                                <p>4. Answer all questions <b>honestly</b> to know what YOU are good at</p>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'hin'}">
+                                <p>1. एप्टीट्यूड टेस्ट में <b>48 प्रश्न</b> होते हैं</p>
+                                <p>2. परीक्षण पूरा करने के लिए आपके पास <b>1 घंटा</b> है</p>
+                                <p>3. परीक्षण शुरू करने से पहले, रफ काम के लिए एक <b>नोटबुक और पेन</b> रखें</p>
+                                <p>4. सभी सवालों के जवाब <b>ईमानदारी सेे</b> दें ताकि आप जान सकें की आप किस्में अच्छे हैैं</p>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'mar'}">
+                                <p>1. अभियोग्यता चाचणीमध्ये <b> 48 प्रश्न </b> आहेत</p>
+                                <p>2. आपल्याकडे चाचणी पूर्ण करण्यासाठी <b> 1 तास </b> आहे</p>
+                                <p>3. तुम्ही चाचणी सुरू करण्यापूर्वी, खडबडीत कामासाठी <b> नोटबुक आणि पेन </b> ठेवा</p>
+                                <p>4. आपण कशा बाबतीत चांगले आहेत हे जाणून घेण्यासाठी सर्व प्रश्नांची उत्तरे <b>प्रामाणिकपणे</b> द्या</p>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'Urdu'}">
+                                <p>1. قابلیت ٹیسٹ میں <b> 48 سوالات </b> ہیں۔</p>
+                                <p>2. آپ کے پاس ٹیسٹ مکمل کرنے کے لیے <b> 1 گھنٹہ </b> ہے۔</p>
+                                <p>3. Before you start the test, keep a <b> notebook and pen </b> for rough work</p>
+                                <p>4. تمام سوالات کے جوابات <b> ایمانداری سے </b> یہ جاننے کے لیے کہ آپ کس پر اچھے ہیں۔</p>
+                            </aura:if>
+                        </div>
+                        <!--Modal/Popup Box Footer Starts here-->
+                        <footer class="slds-modal__footer">
+                            <!--<lightning:button variant="neutral"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeModel }"/>-->
+                            <lightning:button variant="brand"
+                                              label="OK"
+                                              title="OK"
+                                              onclick="{!c.submitDetails}"/>
+                        </footer>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+                
+                
+                <aura:set attribute="else">
+                    <div class="container">
+                        
+                        <c:LIProgressBar allowTimer="true"/>
+                        
+                        <ul class="questList">
+                            <aura:iteration items="{!v.questions}" var="question" indexVar="index">
+                                <li>
+                                    <aura:if isTrue="{!question.fieldType != 'Label'}">
+                                        <div class="questTitle"> {!question.displayNumber}) <aura:unescapedHtml value="{!question.questionLabel}"/></div>
+                                        
+                                        <aura:iteration items="{!v.colorPalette}" var="col" indexVar="index">
+                                            <aura:if isTrue="{!question.displayNumber == col}">
+                                                <div style="width:350px;">
+                                                    <lightning:input name="input1" label="" />
+                                                </div>
+                                                
+                                                <aura:iteration items="{!v.belowTxtBox}" var="col" indexVar="index">
+                                                    <aura:if isTrue="{!question.displayNumber == col}">
+                                                        <aura:if isTrue="{!v.language == 'eng'}">
+                                                            <b>Once you finish writing, count how many real objects/things you have written and mark the number below.</b>
+                                                        </aura:if>
+                                                        <aura:if isTrue="{!v.language == 'hin'}">
+                                                            <b>लिखे हुए वास्तविक वस्तुओं को गिनें और नीचे दिए गए विकल्पों के आधार पर इस संख्या को अंकित करें.</b>
+                                                        </aura:if>
+                                                        <aura:if isTrue="{!v.language == 'mar'}">
+                                                            <b>आपण काढलेल्या किंवा लिहिलेल्या वस्तूंची संख्या मोजा आणि संबंधित पर्याय निवडा</b>
+                                                        </aura:if>
+                                                        <aura:if isTrue="{!v.language == 'Urdu'}">
+                                                            <b>لکھ لیں۔ جب آپ لکھنا ختم کرینگے ، گنیں کہ کتنی اصلی چیزیں آپ نے لکpھی ہیں اور نیچے دیے گئے نمبر کو نشان زد کریں۔</b>
+                                                        </aura:if>
+                                                    </aura:if>
+                                                </aura:iteration>
+                                            </aura:if>
+                                        </aura:iteration>
+                                        
+                                        
+                                        <div class="questCont">
+                                            <c:StudentIARAnswerSheet StudentAnswers="{!question.lstWrpStudentAnswer}"
+                                                                     questionId="{!question.questionId}"
+                                                                     fieldType="{!question.fieldType}"
+                                                                     answerValue="{!question.answerId}"/>
+                                            
+                                            <div class="questRgt">
+                                                <c:QuestionImage questionId="{!question.questionId}"/>
+                                            </div>
+                                        </div>
+                                        <aura:set attribute="else">
+                                            <div class="questTitle"><aura:unescapedHtml value="{!question.questionLabel}"/></div>
+                                        </aura:set>
+                                    </aura:if>
+                                </li>
+                            </aura:iteration>
+                        </ul>
+                        <div class="paginationbtn btnOuter">
+                            <aura:if isTrue="{!v.questions.length > 0}">
+                                <!--<aura:if isTrue="{!v.startPage != 0}">
+                                    <lightning:button variant="brand" 
+                                                      label="Previous"
+                                                      onclick="{!c.handlePrevious}"
+                                                      class="slds-m-left_x-small btn"
+                                                      iconName='utility:back'
+                                                      disabled="{!v.startPage == 0}">
+                                    </lightning:button>
+                                </aura:if>-->
+                                <aura:if isTrue="{!v.endPage + 1 >= v.totalRecords}">
+                                    <lightning:button variant="brand" 
+                                                      class="btn"
+                                                      label="Submit"
+                                                      onclick="{!c.handleSubmitConfirmation}">
+                                    </lightning:button>
+                                    <aura:set attribute="else">
+                                        <lightning:button variant="brand" 
+                                                          label="Next" 
+                                                          onclick="{!c.handleNext}"
+                                                          class="slds-m-left_x-small btn"
+                                                          iconName='utility:forward' 
+                                                          iconPosition='right'
+                                                          disabled="{!v.endPage + 1 >= v.totalRecords}">
+                                        </lightning:button>
+                                    </aura:set>
+                                </aura:if>
+                            </aura:if>
+                        </div>
+                    </div>
+                </aura:set>
+            </aura:if>
+            <aura:set attribute="else">
+                <div class="slds-align_absolute-center" style="padding: 110px 0px 110px 0px;font-size: x-large;">
+                    <b>You can not access this page without Authentication. Please contact your system administrator.</b>
+                </div>
+            </aura:set>
+        </aura:if>
+        
+        <aura:if isTrue="{!v.submitConfirmation}">
+            
+            <div class="popup" style="display:block;">
+                
+                <div class="popupInn">
+                    <div class="popupCont">
+                        <!--<a href="javascript:;" style="text-decoration:none;" class="popClose" onclick="{!c.hideConfirmation}">x</a>-->
+                        <div class="popupContInn">
+                            <h4>Are you sure?</h4>
+                            <p>You want to go ahead</p>
+                            <lightning:button variant="brand" 
+                                              class="btn"
+                                              label="Submit"
+                                              disabled="{!v.firstClick}"
+                                              onclick="{!c.handleSubmit}">
+                            </lightning:button>
+                            <!--<a href="result.html" class="btn">Submit</a>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aura:if>
+        
+        <!--<aura:if isTrue="{!v.submitConfirmation}">
+            <div class="popup" style="display:block;">
+                <div class="popupInn">
+                    <div class="popupCont">
+                        <a href="javascript:;" style="text-decoration:none;" onclick="{!c.hideConfirmation}" class="popClose">x</a>
+                        <div class="popupContInn">
+                            <h4>Are you sure?</h4>
+                            <p>You want to go ahead</p>
+                            <lightning:button variant="brand" 
+                                              class="btn"
+                                              label="Submit"
+                                              onclick="{!c.handleSubmit}">
+                            </lightning:button>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aura:if>-->
+    </section>
+</aura:component>

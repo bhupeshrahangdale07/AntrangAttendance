@@ -1,0 +1,5 @@
+<aura:event type="APPLICATION">
+    <aura:attribute name="totalDuration" type="Integer" default="00:00:00" />
+    <aura:attribute name="usedTime" type="Integer" default="00:00:00" />
+    <aura:attribute name="remaingTime" type="Integer" default="00:00:00" />
+</aura:event>

@@ -1,0 +1,103 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" extensions="FacilitatorPaymentInvoiceController" 
+           applyBodyTag="false" applyHtmlTag="false" renderAs="pdf"
+           standardController="contact"
+           >
+    
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />  
+        </head>
+        <body>
+            <div id="main">
+                
+                <div align="left">
+                    <div class="header">
+                        {!contact.Name},
+                    </div>
+                    
+                    <div class="row">
+                        <span> {!contact.MailingStreet}</span>
+                        <span> {!contact.MailingCity}</span>
+                        <span> {!contact.MailingState}</span>
+                        <span> {!contact.MailingPostalCode}</span>
+                    </div>
+                    <div class="row">
+                        <span> {!contact.npe01__WorkEmail__c}</span>
+                    </div>
+                    <div class="row">
+                        <span> {!contact.MobilePhone}</span>
+                    </div>
+                    <br/><br/>
+                    <div class="row">
+                        <lable><b>Bill To:</b> </lable>
+                        <span> Antarang Foundation</span><br/>
+                        <span> D-903, Ashok Tower,</span><br/>
+                        <span> Dr.S.S. Rao Road, Mumbai 400012</span>
+                    </div>
+                    
+                </div>
+                <br/><br/>
+                <div class="row" style="display:flex;">
+                    
+                    <div class="row" align="left">
+                        <lable><b>INVOICE No:</b>&nbsp;&nbsp;&nbsp;</lable>
+                        <span>-</span>
+                    </div>
+                    <div class="row" align="right">
+                        <lable><b>DATE:  </b>&nbsp;&nbsp;&nbsp;</lable>
+                        <span>{!invoiceDate}</span>
+                    </div>
+                    <!--<div class="row">
+                        <lable><b>FOR:</b>&nbsp;&nbsp;&nbsp;</lable>
+                        <span>Facilitation Charges</span>
+                    </div>-->
+                </div>
+                <br/><br/>
+                <div>
+                    <table border="1" style="table-layout: fixed;border-collapse: collapse;width:100%">
+                        <tr>
+                            <th align="center"><b>Detail</b></th>
+                            <th align="center"><b>Amount</b></th>                        
+                            
+                        </tr>
+                        
+                        <apex:repeat var="r" value="{!reslst}">
+                            <tr>
+                                <td align="center">{!r.description}</td>
+                                <td align="center">{!r.rate}</td>
+                            </tr>
+                            
+                        </apex:repeat>
+                        <tr>
+                            <td align="center"><b>Total</b></td>
+                            <td align="center"><b>{!total}</b></td>
+                        </tr>
+                        
+                    </table>
+                </div>
+                <br/><br/>
+                <div>
+                    <b> Bank Details:   </b>   <br/>
+                    <b> Bank  Account Number:</b>&nbsp; {!contact.Bank_Account_No__c}     <br/>
+                    <b> IFSC Code: </b>&nbsp;{!contact.IFSC_Code__c}     <br/>
+                    <b>Pan Number:</b>&nbsp; {!contact.PAN_Number__c} <br/>
+                    
+                </div>
+                <br/><br/>
+                <!--<div align="right">
+                    {!contact.Name}<br/>
+                    <apex:outputPanel rendered="{!IF(ISNULL(contact.Document_Id__c) , false , true)}">
+                    <apex:image url="{!fullRecordURL}/servlet/servlet.ImageServer?id={!contact.Document_Id__c}&oid={!strOrgId}" 
+                                style="height: 75px; width: 230px;" />
+                    </apex:outputPanel>
+                    
+                </div>-->
+                <br/><br/>
+                
+                <div align="center">
+                    <b>THANK YOU</b>
+                </div>
+            </div>
+        </body>
+    </html>
+</apex:page>

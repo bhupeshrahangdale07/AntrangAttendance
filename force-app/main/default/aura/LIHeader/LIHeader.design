@@ -1,0 +1,7 @@
+<design:component label="Header">
+	<design:attribute name="allowTimer" label="allowTimer" />
+    <design:attribute name="isInterestPage" label="Is Interest Page" />
+    <design:attribute name="isAptitudePage" label="Is Aptitude Page" />
+    <design:attribute name="isRealityPage" label="Is Reality Page" />
+    <design:attribute name="isInterestHomePage" label="Is Interest Home Page" />
+</design:component>

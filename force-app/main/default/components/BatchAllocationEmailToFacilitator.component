@@ -1,0 +1,22 @@
+<apex:component access="global" controller="BatchAllocationEmailToFacilitator">
+    
+    <apex:attribute name="ContactIdValue" type="String" description="This is the Id of the account" assignTo="{!ContactId}" access="global" />
+    
+    <apex:repeat value="{!schoolWithBatches}" var="pos">
+        
+        School Name : {!schoolWithBatches[pos].School_Name__c} <br/>
+        School Principal : {!schoolWithBatches[pos].School_Name__r.Principal_Name__c} <br/>
+        School Phone : {!schoolWithBatches[pos].School_Name__r.Phone} <br/>
+        
+        <table class="table">                
+                <tr>
+                    <apex:repeat value="{!schoolWithBatches[pos]}" var="batch">
+                        <td>       
+                            {!batch.Batch_Number__c}
+                        </td> 
+                    </apex:repeat> 
+                </tr>
+        </table>
+    </apex:repeat>
+    
+</apex:component>

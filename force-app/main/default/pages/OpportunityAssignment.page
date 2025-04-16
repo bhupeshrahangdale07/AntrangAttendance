@@ -1,0 +1,37 @@
+<apex:page standardController="Contact"  standardStylesheets="false"  docType="html-5.0">
+
+      <meta charset="utf-8" />
+      <meta http-equiv="x-ua-compatible" content="ie=edge" />
+      <title>Opportunity Assignment</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+       <!-- Import the Design System style sheet -->
+       <apex:slds />
+
+     <apex:includeLightning />
+     <div class="slds-scope">
+
+         <div id="oppAssignment"></div> 
+     
+     </div> 
+     
+     <script>
+     
+    $Lightning.use("c:OpportunityAssignmentApp", function() {
+    
+    $Lightning.createComponent("c:OpportunityAssignmentComponent",
+    { 
+      // Set Lightning Component Attributes Property before creating Lightning Component In Visualforce page 
+        "recordId" : "{!$CurrentPage.parameters.id}"
+    },
+   "oppAssignment",
+    function(component) {
+        // create component Callback, Lightning Component has been Created,
+        // Now you can set more lightning Component attributes here,
+        // and do more cool stuff here
+        component.set("v.recordId" , '{!$CurrentPage.parameters.id}');
+    });
+ });
+ </script>
+ 
+</apex:page>

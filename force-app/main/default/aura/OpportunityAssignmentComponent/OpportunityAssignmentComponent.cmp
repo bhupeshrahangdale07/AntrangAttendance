@@ -1,0 +1,173 @@
+<aura:component controller="OpportunityAssignments" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global" >
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Opportunity Assignment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="contactName" type="String" />
+    <aura:attribute name="wrapperList" type="List"/>
+    <aura:attribute name="isListExist" type="Boolean" default="true"/>
+    
+    <aura:attribute name="message" type="String" />
+    <aura:attribute name="messageType" type="String" />
+    <aura:attribute name="Spinner" type="boolean" default="false"/>
+    
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    
+    
+     <!--loading spinner start... style=Brand Medium (blue dots)-->
+ <aura:if isTrue="{!v.Spinner}">
+    <div aura:id="spinnerId" class="slds-spinner_container">
+       <div class="slds-spinner_brand  slds-spinner slds-spinner_large slds-is-relative" role="alert">
+         <span class="slds-assistive-text">Loading</span>
+         <div class="slds-spinner__dot-a"></div>
+         <div class="slds-spinner__dot-b"></div>
+       </div>
+    </div>
+ </aura:if>
+  <!-- Loading spinner end-->   
+    
+    
+    <div class="slds-page-header">
+        <div class="slds-grid">
+            <div class="slds-col slds-has-flexi-truncate">
+                <div class="slds-media slds-no-space slds-grow">
+                    <div class="slds-media__figure">
+                        <lightning:icon iconName="action:add_contact" size="small" alternativeText="Contacts"/>
+                    </div>
+                    <div class="slds-media__body">
+                        <nav>
+                            <ol class="slds-breadcrumb slds-line-height_reset">
+                                <li class="slds-breadcrumb__item">
+                                    <span>Contacts</span>
+                                </li>
+                            </ol>
+                        </nav>
+                        <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate" title="{!v.contactName}">{!v.contactName}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-no-flex slds-grid slds-align-top">
+                
+                <div class="slds-button-group" role="group">
+                    <button class="slds-button slds-button_neutral" onclick="{!c.saveOppAssignment}" >Save</button>
+                    
+                    <button class="slds-button slds-button_neutral" onclick="{!c.backtoContact}" >Back</button>
+                </div>
+            </div>
+        </div>        
+    </div>
+    
+    <c:CustomMessage type="{!v.messageType}" message="{!v.message}" />
+    
+    
+    
+    <table class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal">
+        <thead>
+            <tr class="slds-text-title_caps">
+                <th class="slds-cell-shrink" scope="col">
+                    <div class="slds-truncate" title="Action">Action</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-cell-wrap" title="Opportunity Name">Opportunity Name</div>
+                </th>
+                <!-- <th scope="col">
+                    <div class="slds-truncate" title="Gender">Gender</div>
+                </th> -->
+                <th scope="col">
+                    <div class="slds-truncate slds-cell-wrap" title="Type of Linkage">Type of Linkage</div>
+                </th>
+                 <th scope="col">
+                    <div class="slds-truncate slds-cell-wrap" title="Work Day">Work Day</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-cell-wrap" title="Working Hours">Working Hours</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-cell-wrap" title="Education Level">Education Level</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-cell-wrap" title="Additional Courses">Additional Courses</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-cell-wrap" title="English Fluency">English Fluency</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-cell-wrap" title="Digital Literacy">Digital Literacy</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" title="Zone">Zone</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-cell-wrap" title="Work Experience">Work Experience</div>
+                </th>                
+                <!-- <th scope="col">
+                    <div class="slds-truncate" title="Profession">Profession</div>
+                </th> -->
+                <th scope="col">
+                    <div class="slds-truncate" title="Score">Score</div>
+                </th>                
+            </tr>
+        </thead>
+        <tbody>
+            <aura:if isTrue="{!v.isListExist}">
+                <tr class="slds-hint-parent">
+                    <td colspan="13"> 
+                        <i>No matching Opportunity records found for this Student.</i>
+                    </td>
+                </tr>
+            </aura:if>
+            
+            <aura:iteration items="{!v.wrapperList}" var="obj">
+                <tr class="slds-hint-parent">
+                    <td scope="row" data-label="Action">                    
+                        <lightning:input class="slds-truncate" type="checkbox" name="Gender" checked="{!obj.isadded}" />
+                    </td>
+                    <td data-label="Opportunity Name">
+                        <div class="slds-truncate" title="{!obj.OpportunityName}">{!obj.OpportunityName}</div>
+                    </td>
+                    <!-- <td data-label="Gender">
+                        <lightning:input class="{!if(obj.gender,'slds-truncate clschecked','slds-truncate')}" type="checkbox" name="Gender" checked="{!obj.gender}" disabled="true"/>
+                    </td> -->
+                    <td data-label="Type of Linkage">
+                        <lightning:input class="{!if(obj.typeofopportunity,'slds-truncate clschecked','slds-truncate')}" type="checkbox" name="Type of Linkage" checked="{!obj.typeofopportunity}" disabled="true"/>
+                    </td>
+					<td data-label="Work Day">
+                        <lightning:input class="{!if(obj.workdays,'slds-truncate clschecked','slds-truncate')}" type="checkbox" name="Work Day" checked="{!obj.workdays}" disabled="true"/>
+                    </td>
+                    <td data-label="Working Hours">
+                        <lightning:input class="{!if(obj.workinghours,'slds-truncate clschecked','slds-truncate')}" type="checkbox" name="Working Hours" checked="{!obj.workinghours}" disabled="true"/>
+                    </td>					
+                    <td data-label="Education Level">
+                        <lightning:input class="{!if(obj.educationlevel,'slds-truncate clschecked','slds-truncate')}" type="checkbox" name="Education Level" checked="{!obj.educationlevel}" disabled="true"/>
+                    </td>
+                    <td data-label="Additional Courses">
+                        <lightning:input class="{!if(obj.additionalcourses,'slds-truncate clschecked','slds-truncate')}" type="checkbox" name="Additional Courses" checked="{!obj.additionalcourses}" disabled="true"/>
+                    </td>
+					<td data-label="English Fluency">
+                        <lightning:input class="{!if(obj.english,'slds-truncate clschecked','slds-truncate')}" type="checkbox" name="English Fluency" checked="{!obj.english}" disabled="true"/>
+                    </td>
+                    <td data-label="Digital Literacy">
+                        <lightning:input class="{!if(obj.digital,'slds-truncate clschecked','slds-truncate')}" type="checkbox" name="Digital Literacy" checked="{!obj.digital}" disabled="true"/>
+                    </td>
+					<td data-label="Zone">
+                        <lightning:input class="{!if(obj.zone,'slds-truncate clschecked','slds-truncate')}" type="checkbox" name="Zone" checked="{!obj.zone}" disabled="true"/>
+                    </td>
+                    <td data-label="Work Experience">
+                        <lightning:input class="{!if(obj.workexperience,'slds-truncate clschecked','slds-truncate')}" type="checkbox" name="Work Experience" checked="{!obj.workexperience}" disabled="true"/>
+                    </td>
+                    <!-- <td data-label="Profession">
+                        <lightning:input class="{!if(obj.profession,'slds-truncate clschecked','slds-truncate')}" type="checkbox" name="Profession" checked="{!obj.profession}" disabled="true"/>
+                    </td> -->
+                    <td data-label="Score">
+                        <div class="slds-truncate" title="Score">{!obj.score}</div>
+                    </td>
+                </tr>
+            </aura:iteration>
+        </tbody>
+    </table>
+</aura:component>

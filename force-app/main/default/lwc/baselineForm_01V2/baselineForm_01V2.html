@@ -1,0 +1,232 @@
+<template>
+    <lightning-card>
+        <!-- <div class="slds-box">
+            <h3 slot="title" class="slds-align_absolute-center">
+               <lightning-icon icon-name="utility:connected_apps" size="small"></lightning-icon>
+                <img alt="Antarang Logo" src={antarangImage} width="50px"/>
+            </h3>
+        </div> -->
+        <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+            <b>
+                {formTitle}
+                <!-- New Student : Data Entry -->
+            </b>
+        </div>
+        <div class="slds-box slds-m-bottom_large">
+            <ul class="slds-p-horizontal_small">
+                <li>
+                    <b>
+                        <!-- School Name: -->
+                        {schoolNameLabel}:
+                    </b> {schoolName}
+                </li>
+                <li><b>
+                        <!-- Grade: -->
+                        {gradeLabel}:
+                    </b> {grade}</li>
+                <li>
+                    <b>
+                        <!-- Batch Code: -->
+                        {batchCodeLabel}:
+                    </b> {batchNumber}
+                </li>
+            </ul>
+
+        </div>
+        <template if:true={showLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium" class="spinnerClass"></lightning-spinner>
+        </template>
+        <div class="contactForm">
+            <div class="slds-grid slds-wrap">
+                <div class="slds-p-horizontal--small slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <div class="slds-form-element">
+                        <lightning-input name="First Name:" label={fieldLabels.firstName} value={firstName}
+                            onchange={contactChangeVal} required="true"></lightning-input>
+                        <!-- <lightning-input label="First Name:" value={firstName} onchange={contactChangeVal} required="true"></lightning-input> -->
+                    </div>
+                </div>
+                <div class="slds-p-horizontal--small slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <div class="slds-form-element">
+                        <lightning-input label={fieldLabels.lastName} name="Last Name:" value={lastName}
+                            onchange={contactChangeVal} required="true"></lightning-input>
+                    </div>
+                </div>
+                <div class="slds-p-horizontal--small slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required"
+                                title="required">* </abbr>
+                            <!-- Year of Birth: --> {fieldLabels.yearOfBirth}
+                        </label>
+                        <lightning-combobox name="yrOfBirth" variant="label-hidden" value={value}
+                            placeholder={selectPlaceholder} options={yrOfBirthOptions}
+                            onchange={onchangeyrOfBirth}></lightning-combobox>
+
+                    </div>
+                </div>
+                <div class="slds-p-horizontal--small slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="select-01">
+                            <!-- Currently Studying In: -->
+                            {fieldLabels.currentlyStudyingIn}
+                        </label>
+                        <lightning-combobox name="currStuIn" variant="label-hidden" value={cuurrValue}
+                            placeholder={selectPlaceholder} options={currStuInOptions} onchange={onchangeCurrStuIn}
+                            read-only="true"></lightning-combobox>
+
+                    </div>
+                </div>
+                <div class="slds-p-horizontal--small slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required"
+                                title="required">* </abbr>
+                            <!-- Gender: -->
+                            {fieldLabels.gender}
+                        </label>
+                        <lightning-combobox name="gender" variant="label-hidden" value={value}
+                            placeholder={selectPlaceholder} options={genderOptions}
+                            onchange={onchangeGender}></lightning-combobox>
+                    </div>
+                </div>
+                <template if:true={isEnableCurrentlyStudying}>
+                    <div class="slds-p-horizontal--small slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                        <div class="slds-form-element">
+                            <!-- <label class="slds-form-element__label" for="select-01">What are you currently studying ?</label> -->
+                            <label class="slds-form-element__label" for="select-01">
+                                <abbr class="slds-required" title="required">* </abbr>
+                                {fieldLabels.studying}
+                            </label>
+                            <lightning-combobox name="whatCurrStuIn" variant="label-hidden" value={whatCurrStuIn}
+                                placeholder="Select…" options={whatCurrStuInOptions}
+                                onchange={onchangewhatCurrStuIn} ></lightning-combobox>
+                        </div>
+                    </div>
+                </template>
+                <div class="slds-p-horizontal--small slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <div class="slds-form-element">
+                        <lightning-input label={fieldLabels.whatsAppNumber} name="WhatsApp Number:" value={wuppNo}
+                            onchange={contactChangeVal} type="phone"></lightning-input>
+                    </div>
+                </div>
+                <div class="slds-p-horizontal--small slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <div class="slds-form-element">
+                        <lightning-input label={fieldLabels.alternateWhatsAppNumber} name="Alternate WhatsApp Number:"
+                            value={alterWuppNo} onchange={contactChangeVal} type="phone"></lightning-input>
+                    </div>
+                </div>
+            </div>
+            <div slot="footer" style="display:grid;">
+                <div class="footer slds-m-top--medium slds-m-bottom_xx-large">
+                    <lightning-button variant="brand" class="slds-var-m-left_x-small" style="float:left;" label="Back"
+                        data-name="backButton" onclick={handleBackButton}></lightning-button>
+
+                    <lightning-button variant="brand" class="slds-var-m-left_x-small" label="View" style="float:right;"
+                        data-name="view" onclick={handleView}></lightning-button>
+
+                </div>
+            </div>
+            <template if:true={isShowModal}>
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                    aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <!-- modal header start -->
+                        <header class="slds-modal__header">
+                            <!--<button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={hideModalBox}>
+                    <lightning-icon icon-name="utility:close"
+                        alternative-text="close"
+                        variant="inverse"
+                        size="small" ></lightning-icon>
+                    <span class="slds-assistive-text">Close</span>
+                    </button> -->
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                                {studentDetailConfirmPageHeader}
+                                <!-- Student Details : Confirmation Page -->
+                            </h2>
+                        </header>
+
+                        <!-- modal body start -->
+                        <div class="slds-modal__content slds-p-around_x-large" id="modal-content-id-1">
+                            <p class="slds-m-bottom_medium">
+                                <!-- Please click on Submit Student Data to save student details -->
+                                {submitDialogMessage}
+                            </p>
+                            <table>
+                                <tr>
+                                    <td>
+                                        {fieldLabels.firstName}
+                                        <!-- First Name -->
+                                    </td>
+                                    <td>{firstName}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {fieldLabels.lastName}
+                                        <!-- Last Name -->
+                                    </td>
+                                    <td>{lastName}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {fieldLabels.yearOfBirth}
+                                        <!-- Year Of Birth -->
+                                    </td>
+                                    <td>{yrOfBirth}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {fieldLabels.currentlyStudyingIn}
+                                        <!-- Currently Studying In -->
+                                    </td>
+                                    <td>{cuurrValue}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {fieldLabels.gender}
+                                        <!-- Gender -->
+                                    </td>
+                                    <td>{gender}</td>
+                                </tr>
+                                <tr lwc:if={isEnableCurrentlyStudying}>
+                                    <!-- <td>What are you currently studying ?</td> -->
+                                    <td>{fieldLabels.studying}</td>
+                                    <td>{whatCurrStuIn}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {fieldLabels.whatsAppNumber}
+                                        <!-- WhatsApp Number -->
+                                    </td>
+                                    <td>{wuppNo}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {fieldLabels.alternateWhatsAppNumber}
+                                        <!-- Alternate WhatsApp Number -->
+                                    </td>
+                                    <td>{alterWuppNo}</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- modal footer start-->
+                        <footer class="slds-modal__footer">
+                            <div slot="footer">
+                                <div class="footer slds-m-top--medium slds-m-bottom--large" align="center">
+                                    <lightning-button variant="brand" class="slds-var-m-left_x-small"
+                                        label="Submit Student Data" data-name="submitData"
+                                        onclick={submitData}></lightning-button>
+
+                                    <lightning-button variant="brand" class="slds-var-m-left_x-small"
+                                        label="Edit Student Data" data-name="editData"
+                                        onclick={hideModalBox}></lightning-button>
+
+                                </div>
+                            </div>
+                        </footer>
+
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

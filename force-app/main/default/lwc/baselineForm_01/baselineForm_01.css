@@ -1,0 +1,50 @@
+h1 {
+    font-size: 24px;
+    text-align: center;
+}
+.contactForm {
+    width: 80%;
+    margin: auto;
+}
+header.slds-modal__header{
+    background-color: #73BC4C;
+    color: #ffffff;
+}
+table, th, td {
+    border: 1px solid #80808052;
+}
+td{
+    padding: 5px 16px;
+    width: 50%;
+}
+tr td:first-child {
+    font-weight: bold;
+}
+ul.slds-p-horizontal_small {
+    text-align: center;
+}
+ul.slds-p-horizontal_small li {
+    display: inline;
+    padding: 10px;
+}
+@media (max-width: 767px) {
+    ul.slds-p-horizontal_small li {
+        display: block;
+        padding: 3px;
+    }
+    div ul.slds-p-horizontal_small {
+        text-align: left !important;
+    }
+    .slds-align_absolute-center.slds-m-bottom_small.slds-box {
+        display: block;
+    }
+    ul.slds-p-horizontal_small {
+        padding-left: 3px;
+    }
+  }
+.spinner{
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}

@@ -1,0 +1,37 @@
+<apex:page standardController="Opportunity_Assignment__c" sidebar="false">
+     <apex:form >
+        <script>
+         window.onload = function () {
+             var OppAssignId = '{!Opportunity_Assignment__c.Id}';
+             var remainingOpenings = {!Opportunity_Assignment__c.Opportunity__r.No_of_remaining_Openings__c};
+             console.log('OppAssignId: ' + OppAssignId);
+             console.log('No of remaining openings: ' + remainingOpenings);
+             
+             
+             
+             var date1 = new Date();
+             var date2 = new Date('{!Opportunity_Assignment__c.CreatedDate}');
+             console.log('date1: ' + date1);
+             console.log('date2: ' + date2);
+             var Difference_In_Time = date1.getTime() - date2.getTime();
+             var DiffInDays = Math.floor(Difference_In_Time / 86400000);
+             var DiffInMins = Math.round(((Difference_In_Time % 86400000) % 3600000) / 60000);
+             console.log('DiffInDays: ' + DiffInDays);
+             console.log('DiffInMins: ' + DiffInMins);
+             
+             
+             
+             
+             if(parseInt(remainingOpenings) < 2 && DiffInDays == 0 && DiffInMins < 1){
+                 alert('This opportunity has only one more opening left. Please make sure you increase the no of openings if required.');
+             }
+             
+         }
+
+           
+
+        </script>
+
+
+    </apex:form>
+</apex:page>

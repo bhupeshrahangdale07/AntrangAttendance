@@ -1,0 +1,25 @@
+<aura:component access="global">
+    
+    <aura:attribute name="message" description="Message content, can be HTML"
+                    type="String" default=""/>
+    <aura:attribute name="type"
+                    description="Message type, can be error/warning/info/success"                    
+                    type="String" default="info"/>
+    
+
+    <aura:if isTrue="{!and(v.message != '' , v.message != null)}">
+        
+        <div class="{!'slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_'+v.type }" role="alert">
+            
+            <lightning:icon iconName="{! 'utility:'+ v.type }" size="medium"
+                            alternativeText="{!v.type}" Class="iconContainer"/>&nbsp;
+            <span class="slds-text-body–regular">
+                <aura:unescapedHtml value="{!v.message}"/>
+            </span>
+            
+        </div>
+        
+        
+        
+    </aura:if>
+</aura:component>

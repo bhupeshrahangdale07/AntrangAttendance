@@ -1,0 +1,29 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+    
+    <aura:attribute name="allowTimer" type="boolean" />
+    <aura:attribute name="selectedProgressBar" type="Integer" default="0"/>
+    <aura:attribute name="totalProgressBar" type="List" default="0"/>
+    <aura:handler event="c:LIProgressBarEvent" action="{!c.handleProgressBarEvent}"/>
+        
+    <div class="loaderWrap">
+        <div class="loader" id="loader">
+            <ul>
+                <aura:iteration items="{!v.totalProgressBar}" var="bar">
+                    <aura:if isTrue="{!v.selectedProgressBar >= bar}">
+                        <li class="active">{!bar}</li>
+                        <aura:set attribute="else">
+                            <li>{!bar - 1}</li>
+                        </aura:set>
+                    </aura:if>
+                </aura:iteration>
+            </ul>
+            
+            <aura:if isTrue="{!v.allowTimer}">
+                <div>
+                    <c:ExamTimer pageNumber="{!v.startPage}" pageType="Aptitude" aura:id="examTimerChildCmp"/>
+                </div>
+            </aura:if>
+        </div>
+    </div>
+    
+</aura:component>

@@ -1,0 +1,19 @@
+<aura:component >
+	<aura:attribute name="ltngTimmer" type="Integer" default="00:00:00" />
+    <aura:attribute name="totalDuration" type="Integer" default="00:00:00" />
+    <aura:attribute name="usedTime" type="Integer" default="00:00:00" />
+    <aura:attribute name="remaingTime" type="Integer" default="00:00:00" />
+    <aura:attribute name="pageNumber" type="Integer" default="0" />
+    <aura:attribute name="pageType" type="String" default="" />
+    <aura:attribute name="nextclicked" type="Boolean" default="false" />
+    <!--<aura:method name="childMessageMethod" action="{!c.getMessage}" access="public">
+        <aura:attribute name="btnAction" type="String" default="" />
+    </aura:method>-->
+    
+    <aura:registerEvent name="appEvent" type="c:ParentTimerEvent"/>
+    <aura:handler event="c:ChildTimerEvent" action="{!c.callChildEvent}"/>
+    <div class="slds-col slds-size_1-of-1 slds-align_absolute-center timer" >
+        {!v.ltngTimmer}
+    </div>
+    
+</aura:component>

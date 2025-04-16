@@ -1,0 +1,180 @@
+<template>
+    <lightning-card>
+        <lightning-spinner alternative-text="Loading" size="medium" if:true={isLoading}></lightning-spinner>
+        <lightning-layout multiple-rows>
+
+            <lightning-layout-item size="12">
+                <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+                    <b>
+                        <template if:true={isEnglish}>Quiz 1 : Summary</template>    
+                        <template if:false={isEnglish}>प्रश्नावली 1 : सारांश</template>
+                    </b>
+                </div>
+                <div>
+                    <p class="slds-align_absolute-center slds-m-around_small">
+                         <template if:true={isEnglish}>This form is used to fill the Quiz Data for Students. Make sure to fill the answers as selected by the student</template>    
+                        <template if:false={isEnglish}>इस फॉर्म का उपयोग छात्रों के लिए क्विज़ डेटा भरने के लिए किया जाता है। छात्र द्वारा चयनित उत्तरों को भरना सुनिश्चित करें</template>
+                    </p>                 
+                </div>
+                <div class="slds-box">
+                    <ul class="slds-p-horizontal_small">
+                        <li><b>
+                                <template if:true={isEnglish}>School Name : </template>    
+                                <template if:false={isEnglish}>स्कूल के नाम : </template>
+                            </b>
+                            {schoolName}
+                        </li>
+                        <li><b>
+                                <template if:true={isEnglish}>Grade : </template>    
+                                <template if:false={isEnglish}>श्रेणी : </template>
+                            </b>
+                            {grd}
+                        </li>
+                        <li><b>
+                                <template if:true={isEnglish}>Batch Code : </template>    
+                                <template if:false={isEnglish}>बैच कोड : </template>
+                            </b>
+                            {batchNumber}
+                        </li>
+                    </ul>
+    
+            </div>
+                <div class="slds-m-top_medium">
+                    <p class="slds-align_absolute-left slds-m-left_medium slds-m-right_medium ">
+                        <template if:true={isEnglish}>Total Students : {batchTotalStudents}</template>    
+                        <template if:false={isEnglish}>कुल छात्र : {batchTotalStudents}</template>
+                    </p>
+                    <p class="slds-align_absolute-left slds-m-bottom_small slds-m-left_medium slds-m-right_medium">
+                        <template if:true={isEnglish}>Quiz 1 Data is filled : {realityCount}</template>    
+                        <template if:false={isEnglish}>प्रश्नावली 1 डेटा भर गया है : {realityCount}</template>
+                    </p>
+                </div>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" style="text-align: center; margin-bottom:15px;">
+                <!-- <lightning-button variant="brand" 
+                    label="Add Quiz 1 Data" disabled={getStudentCount}
+                    data-name="addAssement"
+                    onclick={addAssementHandler} 
+                    class="slds-m-left_x-small slds-m-top_small">
+                </lightning-button> -->
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" style="text-align: center;">
+                <lightning-button variant="brand" 
+                    label="Back"
+                    data-name="backButton"
+                    onclick={handleBackButton} 
+                    class="slds-m-left_x-small slds-m-top_small slds-m-bottom_medium">
+                </lightning-button>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12">   
+                <div class="slds-box_xx-small">
+                    
+                    <!-- <div style="margin: 15px;height:400px;">
+                        <lightning-datatable
+                        key-field="id"
+                        data={tableData}
+                        columns={tableColumns}
+                        hide-checkbox-column="true">
+                        </lightning-datatable>
+                    </div> -->
+
+                    <template if:true={rowData}>
+                        <p class="slds-align_absolute-left slds-m-top_small slds-m-right_medium slds-m-bottom_medium slds-m-left_medium">
+                            <template if:true={isEnglish}>'Tick mark' indicates that the student's Quiz 1 Assessment Data has been filled.</template>    
+                            <template if:false={isEnglish}>नीचे वे छात्र हैं जिनका बेसलाइन असेसमेंट डेटा पहले ही भरा हुआ है</template>
+                        </p>
+                        <div>
+                            <div class="slds-align_absolute-left slds-m-top_small slds-m-right_medium slds-m-bottom_medium slds-m-left_medium"> 
+                                <p>
+                                    Type the first 4 letters of the student name and wait for the drop down to select the student
+                                </p>
+                                <lightning-input type="search" 
+                                                placeholder="Please enter Student here"
+                                                variant="label-hidden" 
+                                                label="Select Student" 
+                                                value={searchKey}
+                                                onchange={handleSearchKeyChange}></lightning-input>
+                            </div>
+
+                            <div class="slds-scrollable">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <template for:each={tableColumns} for:item="column">
+                                                <th key={column.fieldName} class={column.class}>
+                                                    <h3 class="slds-text-align_center">
+                                                        {column.label}
+                                                    </h3>
+                                                </th>
+                                            </template>
+                                        </tr>
+                                    </thead>
+                                    <tbody >
+                                        <template for:each={tableData} for:item="row">
+                                            <tr key={row.id} class="slds-hint-parent">
+                                                <td class="slds-text-align_center"> {row.rowNumber} </td>
+                                                <td> {row.Name} </td>
+
+                                                <td class="slds-text-align_center">
+                                                
+                                                    <template if:true={row.submission}>
+                                                        <button class="slds-button slds-button_icon slds-button_icon-bare"
+                                                            title="You have already filled the data for this student. If you think this is a mistake fill the support form."
+                                                            disabled={row.submission}>
+                                                            <svg class="slds-button__icon slds-button__icon_large slds-icon-text-success" aria-hidden="true">
+                                                                <use xlink:href={NEWICON}></use>
+                                                            </svg>
+                                                            <span class="slds-assistive-text">
+                                                                You have already filled the data for this student. If you think this is a mistake fill the support form.
+                                                            </span>
+                                                        </button>
+                                                
+                                                
+                                                    </template>
+                                                    <template if:false={row.submission}>
+                                                        <lightning-button-icon icon-name="utility:new"  icon-class="slds-icon-text-success" size="large" 
+                                                            variant="bare" alternative-text="Add Assessment Data" class="slds-m-left_xx-small" title="Add Assessment Data"
+                                                            disabled={row.submission} value={row.Id}
+                                                            onclick={addAssementHandler} ></lightning-button-icon>
+                                                    </template>
+                                                </td>
+
+                                                <td class="slds-text-align_center"> 
+                                                    <template if:true={row.submission}>
+                                                        <lightning-input type="checkbox"
+                                                                        disabled
+                                                                        checked></lightning-input>
+                                                    </template> 
+                                                    <template if:false={row.submission}>
+                                                        <lightning-input type="checkbox"
+                                                                        disabled></lightning-input>
+                                                    </template> 
+                                                </td>
+                                                <!-- <td class="slds-text-align_center" style="min-width:200px;">
+                                                    <lightning-button variant="brand" 
+                                                                    disabled={row.submission}
+                                                                    title="Add Assessment Data"
+                                                                    label="Add Assessment Data" value={row.Id}
+                                                                    onclick={addAssementTableButtonHandler} 
+                                                                    class="slds-m-around_small" ></lightning-button>
+
+                                                </td> -->
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={rowData}>
+                        <p>No Student Found</p>
+                    </template>
+                </div>
+            </lightning-layout-item>
+
+        </lightning-layout>    
+    </lightning-card>
+</template>

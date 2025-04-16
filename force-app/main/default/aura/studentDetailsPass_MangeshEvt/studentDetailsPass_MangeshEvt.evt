@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT">
+    <aura:attribute name="fieldIdentifier" type="String"/>
+    <aura:attribute name="fieldValue" type="String"/>
+</aura:event>

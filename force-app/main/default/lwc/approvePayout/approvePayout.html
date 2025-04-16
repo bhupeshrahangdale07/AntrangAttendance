@@ -1,0 +1,149 @@
+<template>
+    <lightning-card>
+        <div slot="actions">
+            <lightning-button
+                            class="signOut"
+                            variant="destructive"
+                            aura:id="btnsubmit"
+                            type="submit"
+                            label="Sign Out"
+                            onclick={signOut}
+                            ></lightning-button> 
+        </div>
+        
+        <lightning-spinner alternative-text="Loading" size="medium" if:true={isLoading}></lightning-spinner>
+        <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small"><b>Approve Payout</b></div>
+        <div class="slds-box">
+            <div class="slds-grid slds-wrap">
+ 
+                <div class="slds-p-horizontal--small slds-col slds-size_6-of-12 slds-m-bottom--medium">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>District</label>
+                        <lightning-combobox name="district" label="District" value={selectedDistrict} placeholder="Select District" options={districtOptions} onchange={handleChange} variant="label-hidden" required></lightning-combobox>
+                    </div>
+                </div>
+       
+                <div class="slds-p-horizontal--small slds-col slds-size_6-of-12 slds-m-bottom--medium">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>Invoice Date</label>
+                        <lightning-input type="date" label="Invoice Date" name="invoiceDate" placeholder="Enter Invoice Date" value={selectedInvoiceDate} onchange={handleChange} variant="label-hidden" required></lightning-input>
+                    </div>
+                </div>
+       
+                <div class="slds-p-horizontal--small slds-col slds-size_6-of-12 slds-m-bottom--medium">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>Month</label>
+                        <lightning-combobox name="month" label="Month" value={selectedMonth} placeholder="Select Month" options={monthOptions} onchange={handleChange} variant="label-hidden" required disabled></lightning-combobox>
+                    </div>
+                </div>
+            </div>
+            <div align="center" class="slds-m-around_medium">
+                <lightning-button class="slds-m-around_medium" label="Show Facilitator" variant="brand" onclick={handleShowFacilitator} align="center"></lightning-button>        
+            </div>
+        </div>
+        <div if:true={showFacilatorData} class="slds-p-around_large slds-m-bottom_large slds-box"  width="100%" >
+            <div class="tableScroll">
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-top_medium slds-m-bottom_large">
+                    <thead>
+                        <tr class="slds-line-height_reset" >
+                            <th class="slds-cell-wrap" scope="col">
+                                <div class="slds-line-clamp slds-text-align_center" title="Name">
+                                </div>
+                            </th>
+                            <th  class="slds-cell-wrap" scope="col">
+                                <div class="slds-line-clamp" title="Facilitator Name">
+                                    Fac. Name 
+                                </div>
+                            </th>
+                            <th  class="slds-cell-wrap" scope="col">
+                                <div class="slds-line-clamp" title="Facilitator Name">
+                                    Month
+                                </div>
+                            </th>
+                            <th  class="slds-cell-wrap" scope="col">
+                                <div class="slds-line-clamp" title="Fixed Amount">
+                                    Fixed Amount 
+                                </div>
+                            </th>
+                            <th  class="slds-cell-wrap" scope="col">
+                                <div class="slds-line-clamp" title="Amt to be paid">
+                                    Amount Paid
+                                </div>
+                            </th>
+                            <th  class="slds-cell-wrap" scope="col">
+                                <div class="slds-line-clamp" title="Amt to be paid">
+                                    Amount to be Paid this Month 
+                                </div>
+                            </th>
+                            <th  class="slds-cell-wrap" scope="col">
+                                <div class="slds-line-clamp" title="Reason">
+                                    Reason 
+                                </div>
+                            </th>
+                            <th  class="slds-cell-wrap" scope="col">
+                                <div class="slds-line-clamp" title="Reason">
+                                    Status 
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template if:true={dataNotFound}>
+                            <p class="noDataFound">NO RECORDS FOUND</p>
+                        </template>
+                        <template if:false={dataNotFound} for:each={facilitatorData} for:item="item" for:index=index>
+                           
+                            <tr aria-selected="false" class="slds-hint-parent"  key={item.FacilitatorId}>
+                                <td class="slds-cell_action-mode slds-cell-wrap" data-label="Checkbox" scope="row" role="gridcell">
+                                    <div class="slds-line-clamp" >
+                                        <lightning-input  variant = "label-hidden" type="Checkbox" data-index={index} data-id ={item.FacilitatorId} disabled=true name="FacilitatorCheckbox" title={item.Checkbox} checked={item.Checkbox} onchange={handleChange}></lightning-input>
+                                    </div>
+                                </td>
+                                <td class="slds-cell_action-mode slds-cell-wrap" data-label="FacilitatorName" title={item.FacilitatorName} scope="row" role="gridcell">
+                                    <div class="slds-line-clamp" >
+                                        {item.FacilitatorName}
+                                    </div>
+                                </td>
+                                <td class="slds-cell_action-mode slds-cell-wrap" data-label="FacilitatorName" title={item.FacilitatorName} scope="row" role="gridcell">
+                                    <div class="slds-line-clamp" >
+                                        {item.MonthYear}
+                                    </div>
+                                </td>
+                                <td class="slds-cell_action-mode slds-cell-wrap" data-label="FixedAmount" title={item.FacilitatorFixedAmount} scope="row" role="gridcell">
+                                    <div class="slds-line-clamp" >
+                                        {item.FacilitatorFixedAmount}
+                                    </div>
+                                </td>
+                                <td class="slds-cell_action-mode slds-cell-wrap" data-label="AmtPaidLastMonth" title={item.FacilitatorFixedAmount} scope="row" role="gridcell">
+                                    <div class="slds-line-clamp" >
+                                        {item.PreviousAmountPaid}
+                                    </div>
+                                </td>
+                                <td class="slds-cell_action-mode slds-cell-wrap" data-label="AmtToBePaid" title={item.FacilitatorAmtToBePaid} scope="row" role="gridcell">
+                                    <div class="slds-line-clamp" >
+                                        {item.AmountPaidToThisMonth}
+                                    </div>
+                                </td>
+                                <td class="slds-cell_action-mode slds-cell-wrap" data-label="Reason" scope="row" role="gridcell">
+                                    <div class="slds-line-clamp" >
+                                        {item.Reason}
+                                    </div>
+                                </td>
+                                <td class="slds-cell_action-mode slds-cell-wrap" data-label="Reason" scope="row" role="gridcell">
+                                    <div class="slds-line-clamp" >
+                                        {item.SalaryStatus}
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="slds-m-around_medium slds-align_absolute-center" if:false={dataNotFound}>
+                <lightning-button label="Reject" variant="destructive" class="slds-m-around_medium" if:false={readOnlyMode} onclick={handleRejectPayout}></lightning-button> &nbsp; 
+                <lightning-button label="Approve" variant="brand" class="slds-m-around_medium" if:false={readOnlyMode} onclick={handleApprovePayout}></lightning-button>       
+            </div>
+        </div>
+    </lightning-card>
+</template>

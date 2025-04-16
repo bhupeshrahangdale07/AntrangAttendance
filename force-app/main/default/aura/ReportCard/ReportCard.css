@@ -1,0 +1,51 @@
+.THIS.main .numberCircle {
+    margin: 5px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    
+    background: #fff;
+    border: 2px solid #666;
+    color: #666;
+    
+    font: 20px Arial, sans-serif;
+} 
+
+
+.THIS.main .rcorners1 {
+    margin: 5px;
+    border-radius: 25px;
+    background: #73AD21;
+    padding: 20px;
+    /*width: 295px;*/
+    height: 170px;
+}
+
+.THIS.main .divrs {
+    text-align: center;
+    font-weight: bold;
+    margin: 5px;
+    border: 2px solid ;
+    padding: 10px;
+    /* width: 175px; */
+    border-radius: 10px 0px;
+    
+}
+
+.THIS .image{
+    
+    padding-left: 50px;
+}
+
+.THIS .contentDiv{
+    margin-top: 30px;
+}
+
+.THIS .li{
+    list-style-type: disc;
+}
+
+.THIS .span{
+    text-decoration: underline;
+}

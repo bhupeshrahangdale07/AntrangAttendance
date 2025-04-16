@@ -1,0 +1,364 @@
+<template>
+    <lightning-card>
+        
+        <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+            <b>
+                {formTitle}
+            </b>
+        </div>
+        <div class="slds-box slds-m-bottom_large">
+            <ul class="slds-p-horizontal_small">
+                <li>
+                    <b>
+                        {schoolNameLabel}:
+                    </b> {schoolName}
+                </li>
+                <li><b>
+                        {gradeLabel}:
+                    </b> {grade}
+                </li>
+                <li>
+                    <b>
+                        {batchCodeLabel}:
+                    </b> {batchNumber}
+                </li>
+            </ul>
+
+        </div>
+        <template if:true={showLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium" class="spinnerClass"
+                variant="brand"></lightning-spinner>
+        </template>
+
+        <template if:true={showDefaultScreen}>
+            <div>
+                <!-- <div>
+                    <p class="slds-p-left_large" title="">
+                        {tagLine}{contacts_count}
+                    </p>
+                </div> -->
+
+                <div>
+                    <div class="slds-p-around_medium slds-align_absolute-center">
+                        <p>{subTitle}</p>
+                    </div>
+
+                    <lightning-layout>
+                        <lightning-layout-item class="slds-align_absolute-center" alignment-bump="right">
+                            <div >
+                                <div >
+                                    <lightning-button variant="brand" class="btnstyle slds-var-m-left_small" label="Back" data-name="backButton"
+                                        onclick={handleBackButton}></lightning-button>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item lwc:if={contacts} class="slds-align_absolute-center" alignment-bump="left">
+                            <div >
+                                <div >
+                                    <lightning-button lwc:if={contacts} variant="brand" class="btnstyle slds-var-m-left_small"
+                                        label="Link Students" data-name="linkButton" onclick={handleLink}></lightning-button>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+
+                <div lwc:if={contacts}>
+                    
+                    <div>
+                        <div class="slds-p-around_small"> 
+                            <lightning-input class="slds-p-around_small" type="search" placeholder="Search Student..."
+                                variant="label-hidden" label="Search Students" value={searchKey}
+                                onchange={handleSearchKeyChange}></lightning-input>
+                        </div>
+
+                        <div class="slds-align_absolute-center" style="width: 90%;">
+                            <div class="slds-scrollable" style="max-height: 450px; min-height: 200px;">
+                                <lightning-datatable key-field="Id" data={data} columns={columns}
+                                    onrowaction={handleRowAction} selected-rows={selectedRows} wrap-table-header>
+                                </lightning-datatable>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div lwc:else>
+                    <div class="slds-m-around_large slds-align_absolute-center" style="font-size: large;">
+                        <b style="color:red">
+                            No Records Found
+                        </b>
+                    </div>
+                </div>
+            </div>
+
+        </template>
+
+        <template if:true={showSelectedDocumentsScreen}>
+            <div>
+                <div class="slds-align_absolute-center" style="width: 90%;">
+                    <div class="slds-scrollable" style="max-height: 450px; min-height: 200px;">
+                        <lightning-datatable key-field="Id" data={displaySelectedRecords} columns={columns}
+                            hide-checkbox-column="true" wrap-table-header>
+                        </lightning-datatable>
+                    </div>
+                </div>
+
+                <div>
+                    <lightning-layout>
+                        <lightning-layout-item class="slds-align_absolute-center" alignment-bump="right">
+                            <div class='slds-p-around_medium'>
+                                <div class="slds-p-left_small">
+                                    <lightning-button variant="brand" class="btnstyle slds-var-m-left_small" label="Back"
+                                        data-name="tempBackButton" onclick={handleBackButton}></lightning-button>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-align_absolute-center" alignment-bump="left">
+                            <div class='slds-p-around_medium'>
+                                <div class="slds-p-right_small">
+                                    <lightning-button variant="brand" class="btnstyle slds-var-m-left_small"
+                                        label="Confirm & Proceed" data-name="tempBackButton"
+                                        onclick={handleSubmitLink}></lightning-button>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+            </div>
+        </template>
+
+
+        <!--         
+        <template if:true={showSelectedDocumentsScreen}>
+            <div class="slds-m-left_large slds-p-around_medium">
+                <div style="width: 90%;">
+                    <div style="height:500px;">
+                        <lightning-datatable key-field="Id" data={displaySelectedRecords} columns={columns}
+                            hide-checkbox-column="true">
+                        </lightning-datatable>
+                    </div>
+
+                    <!- - <div class="slds-align_absolute-center">
+                        <lightning-button variant="brand" class="slds-var-m-left_small" label="Back"
+                            data-name="tempBackButton" onclick={handleBackButton}></lightning-button>
+
+                        <lightning-button variant="brand" class="slds-var-m-left_small" label="Confirm & Proceed"
+                            data-name="tempBackButton" onclick={handleSubmitLink}></lightning-button>
+                    </div> - ->
+                </div>
+                <div>
+                    <lightning-layout>
+                        <lightning-layout-item alignment-bump="right">
+                            <div class='slds-p-around_medium'>
+                                <div class="slds-p-left_small">
+                                    <lightning-button variant="brand" class="slds-var-m-left_small" label="Back"
+                                        data-name="tempBackButton" onclick={handleBackButton}></lightning-button>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item alignment-bump="left">
+                            <div class='slds-p-around_medium'>
+                                <div class="slds-p-right_small">
+                                    <lightning-button variant="brand" class="slds-var-m-left_small"
+                                        label="Confirm & Proceed" data-name="tempBackButton"
+                                        onclick={handleSubmitLink}></lightning-button>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+
+            </div>
+        </template> -->
+
+
+        <template if:true={showSavedDocumentsScreen}>
+            <p class="slds-align_absolute-center slds-p-around_medium">{pageSubHeader}</p>
+            <div style="position: relative;">
+                <div style="width: 90%;">
+                    <div class="slds-scrollable slds-m-around_large" style="width:100%; max-height: 450px; min-height: 270px;">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered"
+                            aria-labelledby="element-with-table-label other-element-with-table-label">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Name">
+                                            Name
+                                        </div>
+                                    </th>
+
+                                    <template if:true={isGrade10}>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title={g9_whatsapp_Label}>
+                                                {g9_whatsapp_Label}
+                                            </div>
+                                        </th>
+
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title={g10_whatsapp_Label}>
+                                                {g10_whatsapp_Label}
+                                                <p>
+                                                   <i>{colSubHeading}</i> &nbsp;
+                                               </p>
+                                            </div>
+                                        </th>
+                                    </template>
+
+                                    <template if:true={isGrade11}>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title={g10_whatsapp_Label}>
+                                                {g10_whatsapp_Label}
+                                            </div>
+                                        </th>
+
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title={g11_whatsapp_Label}>
+                                                {g11_whatsapp_Label}
+                                               <p>
+                                                   <i>{colSubHeading}</i> &nbsp;
+                                               </p>
+                                            </div>
+                                        </th>
+
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title={What_are_you_currently_studying_Label}>
+                                                <abbr class="slds-required" title="required">* </abbr>{What_are_you_currently_studying_Label}
+                                            </div>
+                                        </th>
+                                    </template>
+
+                                    <template if:true={isGrade12}>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title={g11_whatsapp_Label}>
+                                                {g11_whatsapp_Label}
+                                            </div>
+                                        </th>
+
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title={g12_whatsapp_Label}>
+                                                {g12_whatsapp_Label}
+                                                <p>
+                                                   <i>{colSubHeading}</i> &nbsp; &nbsp;
+                                               </p>
+                                            </div>
+                                        </th>
+
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title={What_are_you_currently_studying_Label}>
+                                                <abbr class="slds-required" title="required">* </abbr>{What_are_you_currently_studying_Label}
+                                            </div>
+                                        </th>
+                                    </template>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template if:true={savedContacts}>
+                                    <template for:each={savedContacts} for:item="Item" for:index="index">
+                                        <tr key={Item.Id} class="slds-hint-parent">
+                                            <th data-label="Opportunity Name" scope="row">
+                                                <div class="slds-truncate" title={Item.Name}>
+                                                    {Item.Name}
+                                                </div>
+                                            </th>
+
+                                            <template if:true={isGrade10}>
+                                                <td class="" scope="col">
+                                                    <div class="slds-truncate" title={Item.G9_Whatsapp_Number__c}>
+                                                        {Item.G9_Whatsapp_Number__c}
+                                                    </div>
+                                                </td>
+
+                                                <td class="" scope="col">
+                                                    <div class="slds-truncate" title={Item.G10_Whatsapp_Number__c}>
+                                                        <lightning-input type="tel" max-length='10' message-when-too-long="Please enter a 10-digit WhatsApp number."  message-when-too-short="Please enter a 10-digit WhatsApp number." min-length='10'   message-when-pattern-mismatch="Please enter a valid number" pattern="^[0-9]*$"
+                                                            variant="label-hidden" value={Item.G10_Whatsapp_Number__c}
+                                                            onchange={handleUpdateField} data-rowindex={index}
+                                                            data-fieldapi={g10_whatsapp.fieldApiName}></lightning-input>
+                                                    </div>
+                                                </td>
+                                            </template>
+
+                                            <template if:true={isGrade11}>
+                                                <td class="" scope="col">
+                                                    <div class="slds-truncate" title={Item.G10_Whatsapp_Number__c}>
+                                                        {Item.G10_Whatsapp_Number__c}
+                                                    </div>
+                                                </td>
+
+                                                <td class="" scope="col">
+                                                    <div class="slds-truncate" title={Item.G11_Whatsapp_Number__c}>
+                                                        <!-- {Item.G11_Whatsapp_Number__c} -->
+                                                        <lightning-input type="tel" max-length='10' message-when-too-long="Please enter a 10-digit WhatsApp number."  message-when-too-short="Please enter a 10-digit WhatsApp number." min-length='10'   message-when-pattern-mismatch="Please enter a valid number" pattern="^[0-9]*$"
+                                                            variant="label-hidden" value={Item.G11_Whatsapp_Number__c}
+                                                            onchange={handleUpdateField} data-rowindex={index}
+                                                            data-fieldapi={g11_whatsapp.fieldApiName}></lightning-input>
+                                                    </div>
+                                                </td>
+
+                                                <td class="" scope="col">
+                                                    <div class="" title={Item.What_are_you_currently_studying__c}  style="width: 240px;">
+                                                        <!-- {Item.What_are_you_currently_studying__c} -->
+
+                                                        <lightning-combobox variant="label-hidden"
+                                                            value={Item.What_are_you_currently_studying__c}
+                                                            options={whatCurrStuInOptions} placeholder="Select"
+                                                            onchange={handleUpdateField} data-rowindex={index}
+                                                            data-fieldapi={What_are_you_currently_studying.fieldApiName} required="true"></lightning-combobox>
+                                                    </div>
+                                                </td>
+                                            </template>
+
+                                            <template if:true={isGrade12}>
+                                                <td class="" scope="col">
+                                                    <div class="slds-truncate" title={Item.G11_Whatsapp_Number__c}>
+                                                        {Item.G11_Whatsapp_Number__c}
+                                                    </div>
+                                                </td>
+
+                                                <td class="" scope="col">
+                                                    <div class="slds-truncate" title={Item.G12_Whatsapp_Number__c} >
+                                                        <!-- {Item.G12_Whatsapp_Number__c} -->
+                                                        <lightning-input type="tel" max-length='10' message-when-too-long="Please enter a 10-digit WhatsApp number."  message-when-too-short="Please enter a 10-digit WhatsApp number." min-length='10'   message-when-pattern-mismatch="Please enter a valid number" pattern="^[0-9]*$"
+                                                            variant="label-hidden" value={Item.G12_Whatsapp_Number__c}
+                                                            onchange={handleUpdateField} data-rowindex={index}
+                                                            data-fieldapi={g12_whatsapp.fieldApiName}></lightning-input>
+                                                    </div>
+                                                </td>
+
+                                                <td class="" scope="col">
+                                                    <div class="" title={Item.What_are_you_currently_studying__c} style="width: 240px;">
+                                                        <!-- {Item.What_are_you_currently_studying__c} -->
+                                                        <lightning-combobox variant="label-hidden"
+                                                            value={Item.What_are_you_currently_studying__c}
+                                                            options={whatCurrStuInOptions} onchange={handleUpdateField}
+                                                            data-rowindex={index}
+                                                            data-fieldapi={What_are_you_currently_studying.fieldApiName} required="true"></lightning-combobox>
+                                                    </div>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                </template>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <template if:true={savedContacts}>
+                    <div class="slds-align_absolute-center">
+                        <div class="slds-m-top_small">
+                            <lightning-button class="btnstyle" variant="brand" label="Submit" data-name="submit"
+                                onclick={handleSubmitUpdate}></lightning-button>
+                            <!-- onclick={handleSubmitUpdate} -->
+                        </div>
+                    </div>
+                </template>
+
+            </div>
+        </template>
+
+    </lightning-card>
+</template>

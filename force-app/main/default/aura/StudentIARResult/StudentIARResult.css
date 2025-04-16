@@ -1,0 +1,19 @@
+.THIS th {
+    font-size: 25px;
+}
+
+.THIS .tableWidth {
+    width : 50%;
+}
+
+@media only screen and (max-width: 1023px){
+    .THIS .tableWidth {
+        width : 100%;
+    }
+}
+
+@media only screen and (max-width: 767px){
+    .THIS .tableWidth {
+        width : 100%;
+    }
+}

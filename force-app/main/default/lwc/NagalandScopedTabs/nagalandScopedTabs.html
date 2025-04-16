@@ -1,0 +1,16 @@
+<template>
+    <template if:true={tabsNames}>
+        <lightning-tabset variant="scoped"  >
+        <template for:each={tabsNames} for:item="tab">
+            <lightning-tab label={tab} value={tab} key={tab} onactive={tabActiveHandler}>
+                <template for:each={fieldsFetchedArr} for:item="fieldName">
+                    <div key={fieldName}>
+                        {fieldName}
+                    </div>
+                </template>
+            </lightning-tab>
+        </template>
+    </lightning-tabset>
+    </template>
+
+</template>

@@ -1,0 +1,321 @@
+<template>
+    <lightning-card>
+
+        <!-- <div class="slds-box">
+            <h3 slot="title" class="slds-align_absolute-center">
+                 <lightning-icon icon-name="utility:connected_apps" size="small"></lightning-icon>
+                <img alt="Antarang Logo" src={antarangImage} width="50px"/>
+                OMR-CDM2
+            </h3>
+        </div> -->
+        <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+            <b>
+                <template if:true={isEnglish}>Baseline Career Decision Making-2</template>    
+                <template if:false={isEnglish}>आधारभूत करियर के निर्णय - 2</template>
+            </b>
+        </div>
+        <div slot="footer" style="display: grid;">
+            <div>
+                <lightning-button variant="brand" 
+                class="slds-var-m-left_x-small" 
+                label="Back"  
+                data-name="backButton"
+                onclick={handleBackButton} style="float: left;"></lightning-button>
+
+                <lightning-button variant="brand" 
+                class="slds-var-m-left_x-small" 
+                label="Submit"  
+                data-name="saveButton"
+                disabled={freeze}
+                onclick={handleSaveButton}></lightning-button>
+
+                <!-- <lightning-button variant="brand" 
+                class="slds-var-m-left_x-small" 
+                label="Submit"  
+                data-name="submitButton"
+                disabled={freeze}
+                onclick={handleSubmitButton} style="float: right;"></lightning-button>  -->
+
+                <!-- <lightning-button variant="brand" 
+                class="slds-m-left_x-small" 
+                label="Submit"  
+                data-name="continueButton"
+                onclick={handleContinueButton} style="float: right;"></lightning-button> -->
+
+            </div>
+        </div>
+
+        <div>
+            <lightning-spinner alternative-text="Loading" size="medium" if:true={isLoading}></lightning-spinner>
+            <div class="slds-box">
+                <ul class="slds-p-horizontal_small" style="text-align: center;">
+                    <li><b>
+                        <template if:true={isEnglish}>School Name : </template>    
+                        <template if:false={isEnglish}>स्कूल के नाम : </template>
+                    </b>
+                    {sch}
+                </li>
+                <li><b>
+                    <template if:true={isEnglish}>Grade :  </template>    
+                    <template if:false={isEnglish}>श्रेणी : </template>
+                    </b>
+                    {grd}
+                </li>
+                <li><b>
+                    <template if:true={isEnglish}>Batch Code :  </template>    
+                    <template if:false={isEnglish}>बैच कोड : </template>
+                    </b>
+                    {batchNumber}
+                </li>
+                <li if:true={studentName}>
+                    <b>
+                        <template if:true={isEnglish}> Student Name : </template>    
+                        <template if:false={isEnglish}>छात्र का नाम : </template> 
+                    </b>
+                    {studentName}
+                </li>
+                </ul>
+                
+            </div>
+
+            <div class="slds-box">
+                <span><abbr class="slds-required" title="required">* </abbr>{question05}</span>
+                <template for:each={q05_Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.optionName}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input type="checkbox" variant="label-hidden"
+                            data-id={obj.optionName}
+                            checked={obj.answer}
+                            disabled={freeze}
+                            onchange={handleQ05} ></lightning-input>                        
+                        </div>
+                        <div>
+                            <span>{obj.optionValue}</span>
+                        </div>
+                    </div>  
+                </template>            
+            </div>
+
+            <div class="slds-box">
+                <span>
+                    <!-- <abbr class="slds-required" title="required">* </abbr> -->
+                    {block_06_01}</span>
+                <div class="slds-box">
+                    <span> <abbr class="slds-required" title="required">* </abbr> {question06_01}</span>
+                    <template for:each={q06_01_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" variant="label-hidden"
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ06_01} ></lightning-input>                        
+                            </div>
+                            <div>
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+                
+                <div class="slds-box">
+                    <span><abbr class="slds-required" title="required">* </abbr>{question06_02}</span>
+                    <template for:each={q06_02_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" variant="label-hidden"
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ06_02} ></lightning-input>                        
+                            </div>
+                            <div>
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>  
+
+                <div class="slds-box">
+                    <span><abbr class="slds-required" title="required">* </abbr>{question06_03}</span>
+                    <template for:each={q06_03_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" variant="label-hidden"
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ06_03} ></lightning-input>                        
+                            </div>
+                            <div>
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+                <div class="slds-box">
+                    <span><abbr class="slds-required" title="required">* </abbr>{question06_04}</span>
+                    <template for:each={q06_04_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" variant="label-hidden"
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ06_04} ></lightning-input>                        
+                            </div>
+                            <div>
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div> 
+
+                <div class="slds-box">
+                    <span><abbr class="slds-required" title="required">* </abbr>{question06_05}</span>
+                    <template for:each={q06_05_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" variant="label-hidden"
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ06_05} ></lightning-input>                        
+                            </div>
+                            <div>
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div> 
+
+                <div class="slds-box">
+                    <span><abbr class="slds-required" title="required">* </abbr>{question06_06}</span>
+                    <template for:each={q06_06_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" variant="label-hidden"
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ06_06} ></lightning-input>                        
+                            </div>
+                            <div>
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div> 
+            <!-- </div> -->
+            <div class="slds-box">
+                    <span><abbr class="slds-required" title="required">* </abbr>{question06_07}</span>
+                    <template for:each={q06_07_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" variant="label-hidden"
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ06_07} ></lightning-input>                        
+                            </div>
+                            <div>
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div> 
+
+                <div class="slds-box">
+                    <span><abbr class="slds-required" title="required">* </abbr>{question06_08}</span>
+                    <template for:each={q06_08_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" variant="label-hidden"
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ06_08} ></lightning-input>                        
+                            </div>
+                            <div>
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div> 
+
+                <div class="slds-box">
+                    <span><abbr class="slds-required" title="required">* </abbr>{question06_09}</span>
+                    <template for:each={q06_09_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" variant="label-hidden"
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ06_09} ></lightning-input>                        
+                            </div>
+                            <div>
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div> 
+                <div class="slds-box">
+                    <span><abbr class="slds-required" title="required">* </abbr>{question06_10}</span>
+                    <template for:each={q06_10_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" variant="label-hidden"
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ06_10} ></lightning-input>                        
+                            </div>
+                            <div>
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div> 
+
+                <div class="slds-box">
+                    <span><abbr class="slds-required" title="required">* </abbr>{question06_11}</span>
+                    <template for:each={q06_11_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" variant="label-hidden"
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ06_11} ></lightning-input>                        
+                            </div>
+                            <div>
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div> 
+
+                <div class="slds-box">
+                    <span><abbr class="slds-required" title="required">* </abbr>{question06_12}</span>
+                    <template for:each={q06_12_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" variant="label-hidden"
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ06_12} ></lightning-input>                        
+                            </div>
+                            <div>
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div> 
+            </div>
+            
+            
+        </div>
+    </lightning-card>
+</template>

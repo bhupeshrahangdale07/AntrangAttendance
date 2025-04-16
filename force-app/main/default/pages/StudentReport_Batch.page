@@ -1,0 +1,78 @@
+<apex:page renderAs="PDF" standardController="Batch__c" extensions="StudentReportBatchController" showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false"
+            contentType="application/msword#Batch_{!Batch__c.Batch_Number__c}.doc"><!---->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+            <style>
+                body {
+                    width:100%;
+                    font-family: Arial Unicode MS; 
+                    font-size: 10pt;
+                }
+                @page {
+                    size: A4;
+                    margin: 0;
+                }
+                .header {
+                    text-transform:uppercase;
+                    text-align: center;
+                    font-size:22pt;
+                    font-weight:bold;
+                }
+                .row {
+                    text-align: left;
+                }
+                .row lable {
+                    font-weight:bold;
+                }
+                .breakrow {
+                    margin-top:5pt;
+                    border-bottom: 1px solid black;
+                    width:100%;
+                    margin-bottom:10pt;
+                }
+                
+                .divtable {
+                    display: table;
+                    width:100%;
+                }
+                
+                .divtable .tablerow {
+                    display: table-row;
+                    width:100%;
+                }
+                
+                .divtable .tablerow .tablecell {
+                    display: table-cell;
+                    width:33.33%;
+                }
+                
+                .rowheader {
+                    font-size:15pt;
+                    font-weight:bold;
+                }
+                
+                .blacktd {
+                    background-color:black;
+                    color:white;
+                    padding:5px;
+                    width:50%;
+                }
+                table {table-layout:fixed;page-break-after:auto}
+                table td {
+                    word-wrap:break-word;
+                }
+                
+            </style>
+        </head>
+        <body>
+            <apex:variable value="{!0}" var="index"/>
+            <apex:repeat value="{!lstStudentReports}" var="result">
+                <div style="{!if(index == 0, '','page-break-before: always;')}">
+                    <c:StudentReportComponent studentreport="{!result}"></c:StudentReportComponent>
+                </div>
+                <apex:variable value="{!index+1}" var="index"/>
+            </apex:repeat>
+        </body>
+    </html>
+</apex:page>

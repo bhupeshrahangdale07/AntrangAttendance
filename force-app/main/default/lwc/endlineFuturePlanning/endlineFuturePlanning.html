@@ -1,0 +1,457 @@
+<template>
+    <lightning-card>
+
+        <!-- <div class="slds-box">
+            <h3 slot="title" class="slds-align_absolute-center">
+                <img alt="Antarang Logo" src={antarangImage} width="50px"/>
+                Planning for Future - Endline
+            </h3>
+        </div> -->
+        <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small"><b>Planning for Future</b></div>
+        <div>
+            <lightning-spinner alternative-text="Loading" size="medium" if:true={isLoading}></lightning-spinner>
+            <div class="slds-box">
+                <ul class="slds-p-horizontal_small">
+                    <li><b>School Name: </b> {seletedSchoolName}</li>
+                    <li><b>Grade: </b> {selectedGrade}</li>
+                    <li><b>Batch Code: </b> {selectedBatchNumber}</li>
+                    <li><b>Student Name: </b>{studentName}</li>
+                </ul>
+            </div>
+            <div class="formAptitude">
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>17. What do you think you will be doing in the next 3 years? (Tick ONLY 1 option)
+                    </label>
+                    <template for:each={que17Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input 
+                                    name="que17"
+                                    type="checkbox" class="que17"
+                                    data-value={obj.value} variant="label-hidden"
+                                    onchange={futurePlanningHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                        
+                    </template>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>18. To build my professional networks and find opportunities in the career of my choice I know I have to (Tick ONLY 1option)
+                    </label>
+                    <div class="slds-m-left--medium slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>(i) Make my Linkedin profile</label>
+                        <template for:each={que18Options} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                        name="que18_1"
+                                        type="checkbox" class="que18_1"
+                                        data-value={obj.value} variant="label-hidden"
+                                        onchange={futurePlanningHandler}>
+                                    </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-m-left--medium slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>(ii) Do internships/apprenticeships/jobs</label>
+                        <template for:each={que18Options} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                        name="que18_2"
+                                        type="checkbox" class="que18_2"
+                                        data-value={obj.value} variant="label-hidden"
+                                        onchange={futurePlanningHandler}>
+                                    </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-m-left--medium slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>(iii) Only focus on doing my job well as that would be sufficient for people to notice me</label>
+                        <template for:each={que18Options} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                        name="que18_3"
+                                        type="checkbox" class="que18_3"
+                                        data-value={obj.value} variant="label-hidden"
+                                        onchange={futurePlanningHandler}>
+                                    </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-m-left--medium slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>(iv) Speak to people working in my chosen career</label>
+                        <template for:each={que18Options} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                        name="que18_4"
+                                        type="checkbox" class="que18_4"
+                                        data-value={obj.value} variant="label-hidden"
+                                        onchange={futurePlanningHandler}>
+                                    </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-m-left--medium slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>(v) Focus on making maximum friends</label>
+                        <template for:each={que18Options} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                        name="que18_5"
+                                        type="checkbox" class="que18_5"
+                                        data-value={obj.value} variant="label-hidden"
+                                        onchange={futurePlanningHandler}>
+                                    </lightning-input>
+                                </div>
+                                <div >
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-m-left--medium slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>(vi) Speak to people who may be able to connect me to people working in my chosen career</label>
+                        <template for:each={que18Options} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                        name="que18_6"
+                                        type="checkbox" class="que18_6"
+                                        data-value={obj.value} variant="label-hidden"
+                                        onchange={futurePlanningHandler}>
+                                    </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-m-left--medium slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>(vii) Interact with colleagues or teammates only when spoken to or when I need their help</label>
+                        <template for:each={que18Options} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                        name="que18_7"
+                                        type="checkbox" class="que18_7"
+                                        data-value={obj.value} variant="label-hidden"
+                                        onchange={futurePlanningHandler}>
+                                    </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-m-left--medium slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>(viii) Take the help of a mentor</label>
+                        <template for:each={que18Options} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                        name="que18_8"
+                                        type="checkbox" class="que18_8"
+                                        data-value={obj.value} variant="label-hidden"
+                                        onchange={futurePlanningHandler}>
+                                    </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-m-left--medium slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>(ix) Join college which gives scope to participate in many cultural activities</label>
+                        <template for:each={que18Options} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                        name="que18_9"
+                                        type="checkbox" class="que18_9"
+                                        data-value={obj.value} variant="label-hidden"
+                                        onchange={futurePlanningHandler}>
+                                    </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-m-left--medium slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>(x) Attend career talks/ workshops</label>
+                        <template for:each={que18Options} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                        name="que18_10"
+                                        type="checkbox" class="que18_10"
+                                        data-value={obj.value} variant="label-hidden"
+                                        onchange={futurePlanningHandler}>
+                                    </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-m-left--medium slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>(xi) Look at job websites/portals</label>
+                        <template for:each={que18Options} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                        name="que18_11"
+                                        type="checkbox" class="que18_11"
+                                        data-value={obj.value} variant="label-hidden"
+                                        onchange={futurePlanningHandler}>
+                                    </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <!--<lightning-combobox
+                    name="que18_1" class="slds-form-element slds-m-left--medium slds-m-bottom--small"
+                    label="1. Make my Linkedin profile"
+                    value={que18_1Value}
+                    options={que18Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>
+                    <lightning-combobox
+                    name="que18_2" class="slds-form-element slds-m-left--medium slds-m-bottom--small"
+                    label="2. Do internships/apprenticeships/jobs"
+                    value={que18_2Value}
+                    options={que18Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>
+                    <lightning-combobox
+                    name="que18_3" class="slds-form-element slds-m-left--medium slds-m-bottom--small"
+                    label="3. Only focus on doing my job well as that would be sufficient for people
+                    to notice me"
+                    value={que18_3Value}
+                    options={que18Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>
+                    <lightning-combobox
+                    name="que18_4" class="slds-form-element slds-m-left--medium slds-m-bottom--small"
+                    label="4. Speak to people working in my chosen career"
+                    value={que18_4Value}
+                    options={que18Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>
+                    <lightning-combobox
+                    name="que18_5" class="slds-form-element slds-m-left--medium slds-m-bottom--small"
+                    label="5. Focus on making maximum friends"
+                    value={que18_5Value}
+                    options={que18Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>
+                    <lightning-combobox
+                    name="que18_6" class="slds-form-element slds-m-left--medium slds-m-bottom--small"
+                    label="6. Speak to people who may be able to connect me to people working in
+                    my chosen career"
+                    value={que18_6Value}
+                    options={que18Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>
+                    <lightning-combobox
+                    name="que18_7" class="slds-form-element slds-m-left--medium slds-m-bottom--small"
+                    label="7. Interact with colleagues or teammates only when spoken to or when I
+                    need their help"
+                    value={que18_7Value}
+                    options={que18Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>
+                    <lightning-combobox
+                    name="que18_8" class="slds-form-element slds-m-left--medium slds-m-bottom--small"
+                    label="8. Take the help of a mentor"
+                    value={que18_8Value}
+                    options={que18Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>
+                    <lightning-combobox
+                    name="que18_9" class="slds-form-element slds-m-left--medium slds-m-bottom--small"
+                    label="9. Join college which gives scope to participate in many cultural activities"
+                    value={que18_9Value}
+                    options={que18Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>
+                    <lightning-combobox
+                    name="que18_10" class="slds-form-element slds-m-left--medium slds-m-bottom--small"
+                    label="10. Attend career talks/ workshops"
+                    value={que18_10Value}
+                    options={que18Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>
+                    <lightning-combobox
+                    name="que18_11" class="slds-form-element slds-m-left--medium slds-m-bottom--small"
+                    label="11. Look at job websites/portals"
+                    value={que18_11Value}
+                    options={que18Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>-->
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                   <!-- <lightning-combobox
+                    name="que19"
+                    label="19. I would build professional networks because"
+                    value={que19Value}
+                    options={que19Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>-->
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>19. I would build professional networks because (Tick ONLY 1 option)</label>
+                    <template for:each={que19Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input 
+                                    name="que19"
+                                    type="checkbox" class="que19" variant="label-hidden"
+                                    data-value={obj.value} 
+                                    onchange={futurePlanningHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                        
+                    </template>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                   <!-- <lightning-combobox
+                    name="que20"
+                    label="20. How often do you believe you need to upgrade/improve your career knowledge to keep growing in
+                    your career?"
+                    value={que20Value}
+                    options={que20Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>-->
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>20. How often do you believe you need to upgrade/improve your career knowledge to keep growing in your career? (Tick ONLY 1 option)</label>
+                    <template for:each={que20Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                    name="que20"
+                                    type="checkbox" class="que20"
+                                    data-value={obj.value} 
+                                    onchange={futurePlanningHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                        
+                    </template>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <!--<lightning-combobox
+                    name="que21"
+                    label="21. What will you be doing after 12th standard?"
+                    value={que21Value}
+                    options={que21Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>-->
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>21. What will you be doing after 12th standard? (Tick ONLY 1 option)
+                    </label>
+                    <template for:each={que21Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                     name="que21"
+                                    type="checkbox" class="que21"
+                                    data-value={obj.value} 
+                                    onchange={futurePlanningHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                        
+                    </template>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <!--<lightning-combobox
+                    name="que22"
+                    label="Do you have an idea of the name of the degree/diploma/apprenticeship you want to take up?"
+                    value={que22Value}
+                    options={que22Options}
+                    required
+                    onchange={futurePlanningHandler} ></lightning-combobox>-->
+                    <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>22. Do you have an idea of the name of the degree/diploma/apprenticeship you want to take up? (Tick ONLY 1 option)                    </label>
+                    <template for:each={que22Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                 name="que22"
+                                type="checkbox" class="que22"
+                                data-value={obj.value} 
+                                onchange={futurePlanningHandler}>
+                            </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                        
+                    </template>
+                </div>
+                <div slot="footer" style="display: grid;" class="slds-m-left--large slds-m-right--large">
+                    <div class="footer slds-m-top--medium slds-m-bottom_xx-large" >
+                        <lightning-button label="Back"                                     
+                                        variant="brand"
+                                        onclick={backBtnHandler} style="float:left;"
+                        ></lightning-button>
+                        <lightning-button label="Save & Continue"  
+                                        variant="brand"
+                                        onclick={SubmitBtnHandler}    style="float:right;"                                 
+                        ></lightning-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </lightning-card>
+</template>

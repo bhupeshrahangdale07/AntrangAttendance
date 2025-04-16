@@ -1,0 +1,53 @@
+<template>
+    <lightning-spinner alternative-text="Loading" size="medium" if:true={isLoading}></lightning-spinner>
+    <div class="container">
+        <div class="slds-box slds-theme_default">
+            <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+                <b>OMR Submission Login</b>
+            </div>
+            <!--<div>
+                <p class="slds-align_absolute-center">This form allows you to record all student forms that have been filled as a part of the program.</p>
+                <p class="slds-align_absolute-center slds-m-bottom_small">This form is to be used only by Facilitators/ Teachers. Please DO NOT share this form with students.</p>
+            </div>-->
+            <div class="slds-form">
+                <div class="slds-form-element slds-form-element_stacked">
+                    <div class="slds-form-element__control">
+                        <!---->
+                        <lightning-input label="Type your Antarang email address to login"
+                                         aura:id="email"
+                                         type="email"
+                                         name="email"
+                                         value={trainerEmail}
+                                         placeholder="Enter email address"
+                                         required="true"
+                                         message-when-value-missing="Email is required!"
+                                         onchange={handleEmailChange}
+                                        ></lightning-input>
+                            
+                        <lightning-input label="Password"
+                                        aura:id="password"
+                                        type="password"
+                                        name="password"
+                                        value={trainerPassword}
+                                        placeholder="Enter Password"
+                                        required="true"
+                                        message-when-value-missing="Password is required!"
+                                        onchange={handlePasswordChange}
+                                        ></lightning-input>
+                    </div>
+                   
+                </div>
+            </div>
+            <div class="slds-align_absolute-center">
+                <lightning-button
+                                  variant="brand"
+                                  aura:id="btnsubmit"
+                                  type="submit"
+                                  label="Login"
+                                  onclick={checkemail}
+                                  ></lightning-button>
+            </div>
+        </div>
+    </div>
+
+</template>

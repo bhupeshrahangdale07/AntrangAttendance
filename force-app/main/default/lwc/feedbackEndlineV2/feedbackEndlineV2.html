@@ -1,0 +1,339 @@
+<template>
+    <lightning-card>
+        <template if:true={showLoading}>
+                <lightning-spinner alternative-text="Loading" size="medium" class="spinnerClass"></lightning-spinner>
+        </template>
+        <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+            <b>
+                <template if:true={isEnglish}>Endline Feedback</template>    
+                <template if:false={isEnglish}>एंडलाइन प्रतिपुष्टि</template>
+            </b>
+        </div>
+        <div class="slds-box">
+            <ul class="slds-p-horizontal_small">
+                <li><b>
+                    <template if:true={isEnglish}>School Name : </template>    
+                    <template if:false={isEnglish}>स्कूल के नाम : </template>
+                </b>
+                {seletedSchoolName}
+                </li>
+                <li><b>
+                    <template if:true={isEnglish}>Grade : </template>    
+                    <template if:false={isEnglish}>श्रेणी : </template>
+                    </b>
+                    {selectedGrade}
+                </li>
+                <li><b>
+                    <template if:true={isEnglish}>Batch Code : </template>    
+                    <template if:false={isEnglish}>बैच कोड : </template>
+                    </b>
+                    {selectedBatchNumber}
+                </li>
+                <li lwc:if={studentName}>
+                    <b>
+                        <template if:true={isEnglish}> Student Name : </template>    
+                        <template if:false={isEnglish}>छात्र का नाम : </template> 
+                    </b>
+                    {studentName}
+                </li>
+            </ul>
+        </div>
+
+        <div class="formAptitude">
+            <div class="slds-section slds-is-open slds-p-bottom--small">
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01">
+                        <abbr class="slds-required" title="required">*</abbr>
+                        {question_F1}
+                    </label>
+                
+                    <template for:each={queF1Options} for:item="obj">
+                        <div class="slds-m-left_medium slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                    name="queF1"
+                                    type="checkbox" class="queF1"
+                                    data-value={obj.value}
+                                    onchange={feedbackHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01">
+                        <abbr class="slds-required" title="required">*</abbr>
+                        {question_F2}
+                    </label>
+                
+                    <template for:each={queF2Options} for:item="obj">
+                        <div class="slds-m-left_medium slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                    name="queF2"
+                                    type="checkbox" class="queF2"
+                                    data-value={obj.value}
+                                    onchange={feedbackHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01">
+                        <abbr class="slds-required" title="required">*</abbr>
+                        {question_F3}
+                    </label>
+                
+                    <template for:each={queF3Options} for:item="obj">
+                        <div class="slds-m-left_medium slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                    name="queF3"
+                                    type="checkbox" class="queF3"
+                                    data-value={obj.value}
+                                    onchange={feedbackHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01">
+                        <abbr class="slds-required" title="required">*</abbr>
+                        {question_F4}
+                    </label>
+                
+                    <template for:each={queF4Options} for:item="obj">
+                        <div class="slds-m-left_medium slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                    name="queF4"
+                                    type="checkbox" class="queF4"
+                                    data-value={obj.value}
+                                    onchange={feedbackHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01">
+                        <abbr class="slds-required" title="required">*</abbr>
+                        {question_F5}
+                    </label>
+                
+                    <template for:each={queF5Options} for:item="obj">
+                        <div class="slds-m-left_medium slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                    name="queF5"
+                                    type="checkbox" class="queF5"
+                                    data-value={obj.value}
+                                    onchange={feedbackHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01">
+                        <abbr class="slds-required" title="required">*</abbr>
+                        {question_F6}
+                    </label>
+                
+                    <template for:each={queF6Options} for:item="obj">
+                        <div class="slds-m-left_medium slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                    name="queF6"
+                                    type="checkbox" class="queF6"
+                                    data-value={obj.value}
+                                    onchange={feedbackHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01">
+                        <abbr class="slds-required" title="required">*</abbr>
+                        {question_F7}
+                    </label>
+                
+                    <template for:each={queF7Options} for:item="obj">
+                        <div class="slds-m-left_medium slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                    name="queF7"
+                                    type="checkbox" class="queF7"
+                                    data-value={obj.value}
+                                    onchange={feedbackHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01">
+                        <abbr class="slds-required" title="required">*</abbr>
+                        {question_F8}
+                    </label>
+                
+                    <template for:each={queF8Options} for:item="obj">
+                        <div class="slds-m-left_medium slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                    name="queF8"
+                                    type="checkbox" class="queF8"
+                                    data-value={obj.value}
+                                    onchange={feedbackHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01">
+                        <abbr class="slds-required" title="required">*</abbr>
+                        {question_F9}
+                    </label>
+                
+                    <template for:each={queF9Options} for:item="obj">
+                        <div class="slds-m-left_medium slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                    name="queF9"
+                                    type="checkbox" class="queF9"
+                                    data-value={obj.value}
+                                    onchange={feedbackHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01">
+                        <abbr class="slds-required" title="required">*</abbr>
+                        {question_F10}
+                    </label>
+                
+                    <template for:each={queF10Options} for:item="obj">
+                        <div class="slds-m-left_medium slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                    name="queF10"
+                                    type="checkbox" class="queF10"
+                                    data-value={obj.value}
+                                    onchange={feedbackHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01">
+                        <abbr class="slds-required" title="required">*</abbr>
+                        {question_F11}
+                    </label>
+                
+                    <template for:each={queF11Options} for:item="obj">
+                        <div class="slds-m-left_medium slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                    name="queF11"
+                                    type="checkbox" class="queF11"
+                                    data-value={obj.value}
+                                    onchange={feedbackHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                    <label class="slds-form-element__label" for="select-01">
+                        <abbr class="slds-required" title="required">*</abbr>
+                        {question_F12}
+                    </label>
+                
+                    <template for:each={queF12Options} for:item="obj">
+                        <div class="slds-m-left_medium slds-grid slds-gutters" key={obj.label}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input variant="label-hidden"
+                                    name="queF12"
+                                    type="checkbox" class="queF12"
+                                    data-value={obj.value}
+                                    onchange={feedbackHandler}>
+                                </lightning-input>
+                            </div>
+                            <div>
+                                <span>{obj.label}</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <div slot="footer" style="display: grid;">
+            <div>
+                <lightning-button variant="brand" 
+                                  class="slds-var-m-left_x-small" 
+                                  label="Back"  
+                                  data-name="backButton"
+                                  onclick={backBtnHandler} style="float: left;"></lightning-button>
+
+                <lightning-button variant="brand" 
+                                  class="slds-m-left_x-small" 
+                                  label="Submit"  
+                                  data-name="continueButton"
+                                  onclick={SubmitBtnHandler}></lightning-button>
+
+            </div>
+        </div>
+    </lightning-card>
+</template>

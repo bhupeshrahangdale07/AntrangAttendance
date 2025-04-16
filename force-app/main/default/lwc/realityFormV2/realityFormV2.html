@@ -1,0 +1,357 @@
+<template>
+	<template if:true={showLoading}>
+		<lightning-spinner alternative-text="Loading" size="medium" class="spinnerClass"></lightning-spinner>
+	</template>
+	<lightning-card>
+		<div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+			<b>
+                <template if:true={isEnglish}>Reality</template>    
+                <template if:false={isEnglish}>वास्तविकता</template>
+            </b>
+		</div>
+		<div class="slds-box">
+			<ul class="slds-p-horizontal_small">
+				<li>
+					<b>
+                        <template if:true={isEnglish}>School Name : </template>    
+                        <template if:false={isEnglish}>स्कूल के नाम : </template>
+                        </b>
+					{seletedSchoolName}
+				</li>
+
+				<li><b>
+                        <template if:true={isEnglish}>Grade : </template>    
+                    <template if:false={isEnglish}>श्रेणी : </template>
+                        </b> {selectedGrade}</li>
+				<li><b>
+                        <template if:true={isEnglish}>Batch Code : </template>    
+                    <template if:false={isEnglish}>बैच कोड : </template>
+                        </b> {selectedBatchNumber}</li>
+				<li if:true={studentName}><b>
+                        <template if:true={isEnglish}> Student Name : </template>    
+                        <template if:false={isEnglish}>छात्र का नाम : </template> 
+                        </b> {studentName}</li>
+			</ul>
+		</div>
+		<!-- <template if:false={showForm}>
+			<div class="slds-var-p-around_medium">
+				<p>{studentSearchComponentLabel}</p>
+
+				<lightning-input type="search" label="" variant="label-hidden" value={studentName}
+					onchange={handleInputChangeStudent}>
+				</lightning-input>
+
+				<div class="resText"><span>{studentSearchResult}</span></div>
+
+				<template if:true={showStudentList}>
+					<div class="slds-scrollable_y slds-box slds-box_xx-small lgc-bg" style="height:8.5rem">
+						<ul>
+							<template for:each={studentDisplay} for:item="con" for:index="index">
+								<div class="slds-box slds-box_xx-small special" key={con} onclick={handleClick}
+									data-index={index} data-id={con.Id}>
+									<li>{con.Name}</li>
+								</div>
+							</template>
+						</ul>
+					</div>
+				</template>
+
+			</div>
+			<div style="text-align:center;">
+				<lightning-button label="Back" variant="brand" onclick={onclickBack}></lightning-button>
+			</div>
+		</template> -->
+		<template if:true={showForm}>
+			<!-- Form -->
+			<div class="formAptitude">
+
+				<!-- <div class="slds-section slds-is-open">
+                <h3 class="slds-section__title slds-theme_shade slds-m-around--medium">
+                <span class="slds-truncate slds-p-horizontal_small" title="Section Title">Self Form</span>
+                </h3>
+                <div aria-hidden="false" class="slds-section__content slds-p-bottom--small">
+                    <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>1. I will get married only after 22 year of age</label>
+                        <template for:each={realityOptions} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input variant="label-hidden"
+                                    name="selfQue1"
+                                    type="checkbox" class="selfQue1"
+                                    data-value={obj.value} 
+                                    onchange={realityHandler}>
+                                </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>2. I do not have to earn for my family for the next 3 years</label>
+                        <template for:each={realityOptions} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                    name="selfQue2" variant="label-hidden"
+                                    type="checkbox" class="selfQue2"
+                                    data-value={obj.value} 
+                                    onchange={realityHandler}>
+                                </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>3. I have shared my aspiration with my family</label>
+                        <template for:each={realityOptions} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                    name="selfQue3" variant="label-hidden"
+                                    type="checkbox" class="selfQue3"
+                                    data-value={obj.value} 
+                                    onchange={realityHandler}>
+                                </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>4. In my last two examinations I scored</label>
+                        <template for:each={realitySelfFor4Options} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                    name="selfQue4" variant="label-hidden"
+                                    type="checkbox" class="selfQue4"
+                                    data-value={obj.value} 
+                                    onchange={realityHandler}>
+                                </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                </div>
+            </div> -->
+
+				<!-- <div class="slds-section slds-is-open">
+                <h3 class="slds-section__title slds-theme_shade slds-m-around--medium">
+                <span class="slds-truncate slds-p-horizontal_small" title="Section Title">Family Form</span>
+                </h3>
+                <div aria-hidden="false" class="slds-section__content slds-m-around--medium slds-p-bottom--small">
+                    <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>1. Someone in my family has studied till 12th grade</label>
+                        <template for:each={realityOptions} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                    name="familyQue1" variant="label-hidden"
+                                    type="checkbox" class="familyQue1"
+                                    data-value={obj.value} 
+                                    onchange={realityHandler}>
+                                </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>2. I am allowed to work post 10PM</label>
+                        <template for:each={realityOptions} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                    name="familyQue2" variant="label-hidden"
+                                    type="checkbox" class="familyQue2"
+                                    data-value={obj.value} 
+                                    onchange={realityHandler}>
+                                </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>3. My family will be able to pay for my education</label>
+                        <template for:each={realityOptions} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                    name="familyQue3" variant="label-hidden"
+                                    type="checkbox" class="familyQue3"
+                                    data-value={obj.value} 
+                                    onchange={realityHandler}>
+                                </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_12-of-12 slds-m-bottom--medium">
+                        <label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>4. My average montly family income is</label>
+                        <template for:each={realityFamilyfor4Options} for:item="obj">
+                            <div class="slds-grid slds-gutters" key={obj.label}>
+                                <div class="slds-var-m-left_x-small">
+                                    <lightning-input 
+                                    name="familyQue4" variant="label-hidden"
+                                    type="checkbox" class="familyQue4"
+                                    data-value={obj.value} 
+                                    onchange={realityHandler}>
+                                </lightning-input>
+                                </div>
+                                <div>
+                                    <span>{obj.label}</span>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </div>
+                    
+                </div>
+            </div> -->
+
+
+				<div class="slds-section slds-is-open slds-p-bottom--small">
+					<h3 class="slds-section__title slds-theme_shade slds-m-around--medium">
+						<span class="slds-truncate slds-p-horizontal_small" title="Section Title">{selfForm}</span>
+					</h3>
+
+					<template for:each={RealityQuestions.Self} for:item="question">
+						<div class="slds-col slds-size_12-of-12 slds-m-bottom--medium"
+							key={question.Sequence_Number__c}>
+							<label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>
+                            <template if:true={isEnglish}>{question.Question_Label_English__c}</template>
+                            <template if:false={isEnglish}>{question.Question_Label_Hindi__c}</template>
+                        </label>
+							<template for:each={question.Assessment_Question_Options__r} for:item="option">
+								<div class="slds-m-left_medium slds-grid slds-gutters" key={option.Sequence_Number__c}>
+									<div class="slds-var-m-left_x-small">
+										<lightning-input name={question.Sequence_Number__c} variant="label-hidden"
+											type="checkbox" class={question.Sequence_Number__c}
+											data-value={option.Sequence_Number__c} onchange={handleCheckBox}>
+										</lightning-input>
+									</div>
+									<div>
+										<template if:true={isEnglish}>{option.Option_Label_English__c}</template>
+										<template if:false={isEnglish}>{option.Option_Label_Hindi__c}</template>
+									</div>
+								</div>
+							</template>
+						</div>
+					</template>
+				</div>
+
+				<div class="slds-section slds-is-open">
+					<h3 class="slds-section__title slds-theme_shade slds-m-around--medium">
+						<span class="slds-truncate slds-p-horizontal_small" title="Section Title">{familyForm}</span>
+					</h3>
+
+					<template for:each={RealityQuestions.Family} for:item="question">
+						<div class="slds-col slds-size_12-of-12 slds-m-bottom--medium"
+							key={question.Sequence_Number__c}>
+							<label class="slds-form-element__label" for="select-01"><abbr class="slds-required" title="required">* </abbr>
+                            <template if:true={isEnglish}>{question.Question_Label_English__c}</template>
+                            <template if:false={isEnglish}>{question.Question_Label_Hindi__c}</template>
+                        </label>
+							<template for:each={question.Assessment_Question_Options__r} for:item="option">
+								<div class="slds-m-left_medium slds-grid slds-gutters" key={option.Sequence_Number__c}>
+									<div class="slds-var-m-left_x-small">
+										<lightning-input name={question.Sequence_Number__c} variant="label-hidden"
+											type="checkbox" class={question.Sequence_Number__c}
+											data-value={option.Sequence_Number__c} onchange={handleCheckBox}>
+										</lightning-input>
+									</div>
+									<div>
+										<template if:true={isEnglish}>{option.Option_Label_English__c}</template>
+										<template if:false={isEnglish}>{option.Option_Label_Hindi__c}</template>
+									</div>
+								</div>
+							</template>
+						</div>
+					</template>
+				</div>
+
+				<div slot="footer" class="footerDiv" style="display: grid;margin-left:50px;margin-right:50px;">
+					<div class="footer slds-m-top--medium slds-m-bottom_xx-large">
+						<lightning-button label="Back" variant="brand" onclick={backBtnHandler} style="float:left;">
+						</lightning-button>
+						<lightning-button label="Submit" variant="brand" onclick={submitBtnHandler}
+							style="float:right;"></lightning-button>
+
+					</div>
+				</div>
+
+			</div>
+
+
+		</template>
+		<!-- Showing/Displayiing Modal for Back Btn Functionality -->
+		<template if:true={isShowModal}>
+			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+				aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+				<div class="slds-modal__container">
+					<!-- modal header start -->
+					<header class="slds-modal__header">
+						<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+							<template if:true={isEnglish}>Do you want to go back ?</template>
+							<template if:false={isEnglish}>क्या आप वापस जाना चाहते हैं?</template>
+						</h2>
+					</header>
+
+					<!-- modal body start -->
+					<div class="slds-modal__content slds-p-around_x-large slds-text-align_center"
+						id="modal-content-id-1">
+						<p>
+							<template if:true={isEnglish}>You will lose all the data entered. Are you sure you want to
+								go back?</template>
+							<template if:false={isEnglish}>आप दर्ज किया गया सारा डेटा खो देंगे. क्या आप वाकई वापस जाना
+								चाहते हैं?</template>
+						</p>
+					</div>
+
+					<!-- modal footer start-->
+					<footer class="slds-modal__footer">
+						<div slot="footer">
+							<div class="footer slds-m-top--medium slds-m-bottom--large" align="center">
+								<lightning-button variant="brand" class="slds-var-m-left_x-small" label={yesLabel}
+									data-name="submitData" onclick={yesBackBtnHandler}></lightning-button>
+
+								<lightning-button variant="brand" class="slds-var-m-left_x-small" label={noLabel}
+									data-name="editData" onclick={noBackBtnHandler}></lightning-button>
+
+							</div>
+						</div>
+					</footer>
+
+				</div>
+			</section>
+			<div class="slds-backdrop slds-backdrop_open"></div>
+		</template>
+
+	</lightning-card>
+
+</template>

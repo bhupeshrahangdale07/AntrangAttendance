@@ -1,0 +1,15 @@
+.THIS .headerInn{
+    	font-size: 25px;
+    }
+
+.THIS .clscenter {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+@media only screen and (max-width: 767px){
+    .THIS .headerInn{
+        float:none;
+    }
+}

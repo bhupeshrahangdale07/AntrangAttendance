@@ -1,0 +1,14 @@
+.THIS tr.disabled {
+    background-color: #f0f0f0;
+    pointer-events: none;
+}
+.THIS .accordionSection{
+    background-color: #f1f1f1;;
+}
+.THIS .signOut{
+    float: right;
+}
+.THIS .scrollmenu {  
+    overflow: auto;
+    white-space: nowrap;
+}

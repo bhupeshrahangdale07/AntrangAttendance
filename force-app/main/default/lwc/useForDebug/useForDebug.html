@@ -1,0 +1,496 @@
+<template>
+    <lightning-card>
+        <div class="slds-box">
+            <h3 slot="title" class="slds-align_absolute-center">
+                <!-- <lightning-icon icon-name="utility:connected_apps" size="small"></lightning-icon> -->
+                <img alt="Antarang Logo" src={antarangImage} width="50px"/>
+                Career Skills   
+            </h3>
+        </div>
+
+        <div slot="footer" style="display: grid;">
+            <div>
+                <lightning-button variant="brand" 
+                class="slds-var-m-left_x-small" 
+                label="Back"  
+                data-name="backButton"
+                onclick={handleBackButton} style="float: left;"></lightning-button>
+
+                <lightning-button variant="brand" 
+                class="slds-var-m-left_x-small" 
+                label="Save"  
+                data-name="saveButton"
+                disabled={freeze}
+                onclick={handleSaveButton}></lightning-button>
+
+                <!-- <lightning-button variant="brand" 
+                class="slds-var-m-left_x-small" 
+                label="Submit"  
+                data-name="submitButton"
+                disabled={freeze}
+                onclick={handleSubmitButton} style="float: right;"></lightning-button> -->
+
+                <!-- <lightning-button variant="brand" 
+                class="slds-m-left_x-small" 
+                label="Save & Continue"  
+                data-name="continueButton"
+                onclick={handleContinueButton}></lightning-button> -->
+
+            </div>
+        </div>
+
+        <div>
+            <lightning-spinner alternative-text="Loading" size="medium" if:true={isLoading}></lightning-spinner>
+            <div class="slds-box">
+                <p class="slds-var-p-horizontal_small" align="center">
+                Student Name: {studentName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Grade: {grd}</p>
+            </div>
+
+            <!-- <div class="slds-box">
+                <span>{question11}</span>
+                <template for:each={q11_Options} for:item="obj">
+                    <div class="slds-m-bottom_small" key={obj.optionName}>
+                        <div class="slds-m-left_x-small">
+                            <span>{obj.optionValue}</span>
+                        </div>
+                        <div class="slds-m-left_x-small">
+                            <lightning-combobox 
+                            data-id={obj.optionName}
+                            value={obj.answer}
+                            disabled={freeze}
+                            options={q11PicklistOptions}
+                            onchange={handleQ11} 
+                            variant="label-hidden" ></lightning-combobox>                        
+                        </div>
+                    </div>  
+                </template>            
+            </div> -->
+
+            <div class="slds-box">
+                <span>{question11}</span>
+
+                <div class="slds-box">
+                    <span>{question11_01}</span>
+                    <template for:each={q11_01_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ11_01} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question11_02}</span>
+                    <template for:each={q11_02_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ11_02} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question11_03}</span>
+                    <template for:each={q11_03_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ11_03} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question11_04}</span>
+                    <template for:each={q11_04_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ11_04} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question11_05}</span>
+                    <template for:each={q11_05_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ11_05} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question11_06}</span>
+                    <template for:each={q11_06_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ11_06} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question11_07}</span>
+                    <template for:each={q11_07_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ11_07} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question11_08}</span>
+                    <template for:each={q11_08_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ11_08} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question11_09}</span>
+                    <template for:each={q11_09_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ11_09} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+            </div>
+
+            <div class="slds-box">
+                <span>{question12}</span>
+                <template for:each={q12_Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.optionName}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input type="checkbox" 
+                            data-id={obj.optionName}
+                            checked={obj.answer}
+                            disabled={freeze}
+                            onchange={handleQ12} ></lightning-input>                        
+                        </div>
+                        <div class="slds-col">
+                            <span>{obj.optionValue}</span>
+                        </div>
+                    </div>  
+                </template>
+            </div>
+
+            <div class="slds-box">
+                <span>{question13}</span>
+                <template for:each={q13_Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.optionName}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input type="checkbox" 
+                            data-id={obj.optionName}
+                            checked={obj.answer}
+                            disabled={freeze}
+                            onchange={handleQ13} ></lightning-input>                        
+                        </div>
+                        <div class="slds-col">
+                            <span>{obj.optionValue}</span>
+                        </div>
+                    </div>  
+                </template>            
+            </div>
+
+            <div class="slds-box">
+                <span>{question14}</span>
+                <template for:each={q14_Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.optionName}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input type="checkbox" 
+                            data-id={obj.optionName}
+                            checked={obj.answer}
+                            disabled={freeze}
+                            onchange={handleQ14} ></lightning-input>                        
+                        </div>
+                        <div class="slds-col">
+                            <span>{obj.optionValue}</span>
+                        </div>
+                    </div>  
+                </template>            
+            </div>
+
+            <!-- <div class="slds-box">
+                <span>{question15}</span>
+                <template for:each={q15_Options} for:item="obj">
+                    <div class="slds-m-bottom_small" key={obj.optionName}>
+                        <div class="slds-m-left_x-small">
+                            <span>{obj.optionValue}</span>
+                        </div>
+                        <div class="slds-m-left_x-small">
+                            <lightning-combobox 
+                            data-id={obj.optionName}
+                            value={obj.answer}
+                            disabled={freeze}
+                            options={q15PicklistOptions}
+                            onchange={handleQ15} 
+                            variant="label-hidden" ></lightning-combobox>                        
+                        </div>
+                    </div>  
+                </template>            
+            </div> -->
+
+            <div class="slds-box">
+                <span>{question15}</span>
+
+                <div class="slds-box">
+                    <span>{question15_01}</span>
+                    <template for:each={q15_01_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ15_01} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question15_02}</span>
+                    <template for:each={q15_02_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ15_02} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question15_03}</span>
+                    <template for:each={q15_03_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ15_03} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question15_04}</span>
+                    <template for:each={q15_04_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ15_04} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question15_05}</span>
+                    <template for:each={q15_05_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ15_05} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question15_06}</span>
+                    <template for:each={q15_06_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ15_06} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question15_07}</span>
+                    <template for:each={q15_07_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ15_07} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question15_08}</span>
+                    <template for:each={q15_08_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ15_08} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+
+                <div class="slds-box">
+                    <span>{question15_09}</span>
+                    <template for:each={q15_09_Options} for:item="obj">
+                        <div class="slds-grid slds-gutters" key={obj.optionName}>
+                            <div class="slds-var-m-left_x-small">
+                                <lightning-input type="checkbox" 
+                                data-id={obj.optionName}
+                                checked={obj.answer}
+                                disabled={freeze}
+                                onchange={handleQ15_09} ></lightning-input>                        
+                            </div>
+                            <div class="slds-col">
+                                <span>{obj.optionValue}</span>
+                            </div>
+                        </div>  
+                    </template>            
+                </div>
+            </div>
+
+            <div class="slds-box">
+                <span>{question16}</span>
+                <template for:each={q16_Options} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.optionName}>
+                        <div class="slds-var-m-left_x-small">
+                            <lightning-input type="checkbox" 
+                            data-id={obj.optionName}
+                            checked={obj.answer}
+                            disabled={freeze}
+                            onchange={handleQ16} ></lightning-input>                        
+                        </div>
+                        <div class="slds-col">
+                            <span>{obj.optionValue}</span>
+                        </div>
+                    </div>  
+                </template>            
+            </div>
+
+        </div>
+
+    </lightning-card>
+</template>

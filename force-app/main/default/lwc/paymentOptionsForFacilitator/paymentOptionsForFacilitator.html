@@ -1,0 +1,53 @@
+<!-- <template>
+    <lightning-card>
+    <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small"><b>Faciliator Payment Selection</b></div>
+        <p class="slds-align_absolute-center slds-m-bottom_small">Please select an options</p>
+        <div class="slds-p-around_small" align="center">
+            <lightning-button variant="brand" label="Fixed Pay" title="Primary action" onclick={handleFixedPayClick} class="slds-m-left_x-small"></lightning-button>
+        </div>
+        <div class="slds-p-bottom_small" align="center">
+            <lightning-button variant="brand" label="Variable Pay" title="Primary action" onclick={handleVariablePayClick} class="slds-m-left_x-small"></lightning-button>
+        </div>
+        </lightning-card>
+</template> -->
+
+<template>
+    <template if:true={showLoading}>
+        <lightning-spinner alternative-text="Loading" size="medium" class="spinnerClass"></lightning-spinner>
+    </template>
+    <lightning-card>
+        <div slot="actions">
+            <lightning-button
+                            class="signOut"
+                            variant="destructive"
+                            aura:id="btnsubmit"
+                            type="submit"
+                            label="Sign Out"
+                            onclick={signOut}
+                            ></lightning-button> 
+        </div>
+        <lightning-spinner alternative-text="Loading" size="medium" if:true={isLoading}></lightning-spinner>
+        <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small"><b> Faciliator Variable Payment Selection </b></div>
+        <div class="slds-box">
+            <div class="slds-grid slds-wrap" style="display: block;">
+                <div class="slds-p-around_small" align="center">
+                    <lightning-button variant="brand" label="Fixed Pay" title="Primary action" onclick={handleFixedPayClick} class="slds-m-left_x-small"></lightning-button>
+                </div>
+                <div class="slds-p-bottom_small" align="center">
+                    <lightning-button variant="brand" label="Variable Pay" title="Primary action" onclick={handleVariablePayClick} class="slds-m-left_x-small"></lightning-button>
+                </div>
+                
+            </div>
+        </div>
+
+
+        <!-- <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small"><b>Faciliator Payment Selection</b></div>
+        <p class="slds-align_absolute-center slds-m-bottom_small">Please select an options</p>
+        <div class="slds-p-around_small" align="center">
+            <lightning-button variant="brand" label="Generate Invoice Form" title="Primary action" onclick={handleGenrateClick} class="slds-m-left_x-small"></lightning-button>
+        </div>
+        <div class="slds-p-bottom_small" align="center">
+            <lightning-button variant="brand" label="Confirm Payment Form" title="Primary action" onclick={handleConfirmClick} class="slds-m-left_x-small"></lightning-button>
+        </div> -->
+        </lightning-card>
+</template>

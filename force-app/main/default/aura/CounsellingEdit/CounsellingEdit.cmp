@@ -1,0 +1,177 @@
+<aura:component access="global" >    
+    <aura:attribute name="showSaveCancelBtn" type="boolean"/>
+    <aura:attribute name="isValid" type="boolean" default="true"/>
+    
+    <aura:attribute name="showErrorClass" type="boolean" default="false"/>
+    <aura:attribute name="sNo" type="string" />
+    <aura:attribute name="singleRec" type="object" />
+    <aura:attribute name="nameEditMode" type="boolean" default="false" />
+    <aura:attribute name="ratingEditMode" type="boolean" default="false" />
+    <aura:attribute name="latestLink" type="string"/>
+    <aura:attribute name="selGrade" type="string"/>
+    
+    <aura:attribute name="counselingType" type="String[]" />
+    <aura:attribute name="status" type="String[]" />
+    <aura:attribute name="careerAspiration" type="String[]" />
+    <aura:attribute name="reason" type="String[]" />
+    <aura:attribute name="firstStepAfterClass10" type="String[]" />
+    <aura:attribute name="guardianParentAttend" type="String[]" />
+    <aura:attribute name="studentAttend" type="String[]" />
+    
+    <aura:handler name="cmpEvent" event="c:SelectChange" action="{!c.handleComponentEvent}"/>
+    
+    <tr>
+        
+        <td style="width:120px;">
+            <lightning:input name="Name" 
+                             aura:id="sessionEdit"
+                             value="{!v.singleRec.studentName}"
+                             disabled="true"/>
+        </td>
+        
+        <td style="width:120px;">
+            <lightning:textarea name="Name" 
+                                aura:id="sessionEdit"
+                                value="{!v.singleRec.studentContact}"
+                                disabled="true"/>
+        </td>
+        
+        <td style="width:120px;">
+            <lightning:input name="whatsappnum" 
+                             type="tel"
+                             aura:id="sessionEdit"
+                             value="{!v.singleRec.whatsappnum}"
+                             disabled="{!v.singleRec.isAllVisible}"/>
+        </td>
+        
+        <td style="width:120px;">
+            <lightning:input type="date" name="counsellingDate" 
+                             aura:id="sessionEdit"
+                             value="{!v.singleRec.counsellingDate}" 
+                             onchange="{!c.handleChange}"
+                             disabled="{!v.singleRec.isAllVisible}"
+                             />
+        </td>
+        
+        <td style="width:100px;">
+            <lightning:input type="time" name="counsellingTime"
+                             aura:id="sessionEdit"
+                             value="{!v.singleRec.counsellingTime}" 
+                             onchange="{!c.handleChange}"
+                             disabled="{!v.singleRec.isAllVisible}"/>
+        </td>
+        
+        <td style="width:100px;">
+            <lightning:select
+                              aura:id="counsellingcounselingType"
+                              name="CounselingType"
+                              label=""
+                              value="{!v.singleRec.counselingType}"
+                              onchange="{!c.handleChange}"
+                              disabled="true"
+                              >
+                <aura:iteration items="{!v.counselingType}" var="ct">
+                    <option value="{!ct.value}"
+                            >{!ct.label}</option
+                        >
+                </aura:iteration>
+            </lightning:select>
+        </td>
+        
+        
+        <!--<td style="width:100px;">
+            <lightning:select
+                              aura:id="counsellingStatus"
+                              name="Status"
+                              label=""
+                              value="{!v.singleRec.status}"
+                              disabled="{!or(v.singleRec.isAllVisible,v.singleRec.isPhoneFieldsVisible)}"
+                              >
+                <aura:iteration items="{!v.status}" var="st">
+                    <option value="{!st.value}"
+                            >{!st.label}</option
+                        >
+                </aura:iteration>
+            </lightning:select>
+        </td>
+        
+        <td style="width:150px;">
+            <lightning:select
+                              aura:id="CareerAspiration"
+                              name="Career Aspiration"
+                              label=""
+                              value="{!v.singleRec.careerAspiration}"
+                              onchange="{!c.handleChange}"
+                              disabled="{!or(v.singleRec.isPhoneFieldsVisible,v.singleRec.isAllVisible)}"
+                              >
+                <aura:iteration items="{!v.careerAspiration}" var="ca">
+                    <option value="{!ca.value}"
+                            >{!ca.label}</option
+                        >
+                </aura:iteration>
+            </lightning:select>
+        </td>
+        
+        <td>
+            <aura:if isTrue="{!or(v.singleRec.isPhoneFieldsVisible,v.singleRec.isAllVisible)}">
+                <div style="padding-top:19px;pointer-events: none;opacity: 0.4;">
+                    <c:MultiSelectPickList mslabel="" msoptions="{!v.singleRec.reason}" isVisible="{!v.singleRec.isPhoneFieldsVisible}" selectedOptions="{!v.singleRec.seletedReasonList}"/>
+                </div>
+                <aura:set attribute="else">
+                    <div style="padding-top:19px;">
+                        <c:MultiSelectPickList mslabel="" msoptions="{!v.singleRec.reason}" isVisible="{!v.singleRec.isPhoneFieldsVisible}" selectedOptions="{!v.singleRec.seletedReasonList}"/>
+                    </div>
+                </aura:set>
+            </aura:if>
+        </td>
+        
+        <td style="width:10%;">
+            <lightning:select
+                              aura:id="FirststepafterClass10"
+                              name="First step after Class 10"
+                              label=""
+                              value="{!v.singleRec.firstStepAfter10}"
+                              onchange="{!c.handleChange}"
+                              disabled="{!or(v.singleRec.isPhoneFieldsVisible,v.singleRec.isAllVisible)}"
+                              >
+                <aura:iteration items="{!v.firstStepAfterClass10}" var="fi">
+                    <option value="{!fi.value}"
+                            >{!fi.label}</option
+                        >
+                </aura:iteration>
+            </lightning:select>
+        </td>-->
+        
+        <td style="width:10%;">
+            <lightning:select
+                              aura:id="GuardianParentAttendance"
+                              name="Guardian Parent Attendance"
+                              label=""
+                              value="{!v.singleRec.selGuardianParentAtt}"
+                              disabled="{!or(v.singleRec.isParentVisible,v.singleRec.isAllVisible)}"
+                              >
+                <aura:iteration items="{!v.guardianParentAttend}" var="fi">
+                    <option value="{!fi.value}"
+                            >{!fi.label}</option
+                        >
+                </aura:iteration>
+            </lightning:select>
+        </td>
+        <td style="width:10%;">
+            <lightning:select
+                              aura:id="StudentAttendance"
+                              name="Student Attendance"
+                              label=""
+                              value="{!v.singleRec.selStudentAtt}"
+                              disabled="{!or(v.singleRec.isParentVisible,v.singleRec.isAllVisible)}"
+                              >
+                <aura:iteration items="{!v.studentAttend}" var="fi">
+                    <option value="{!fi.value}"
+                            >{!fi.label}</option
+                        >
+                </aura:iteration>
+            </lightning:select>
+        </td>
+        
+    </tr>
+</aura:component>

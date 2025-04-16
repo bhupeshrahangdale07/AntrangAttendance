@@ -1,0 +1,368 @@
+<apex:page controller="PicklistManagementCtrl" showHeader="true" sidebar="false" lightningStylesheets="true" cache="false">
+    <html>
+        <head>
+          
+            <apex:slds />
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+            <script></script>
+        </head>
+        
+        
+        <apex:form >
+            <apex:actionfunction name="objectSelection" action="{!objectSelected}" rerender="optErrorMsg,optPicklistMgmt" status="Processing"/ >
+            <apex:actionfunction name="operationSelection" action="{!OperationSelected}" rerender="optErrorMsg,optPicklistMgmt" status="Processing"/ >
+            <apex:actionfunction name="PicklistSelection" action="{!PicklistSelected}" rerender="optErrorMsg,optPicklistMgmt" status="Processing"/ >    
+                
+                <apex:outputpanel id="optPicklistMgmt">
+                    
+                    <!-- Output Panel for Error Message -->
+                    <apex:outputpanel id="optErrorMsg" style="height:4rem;" rendered="{!showError}">
+                        <div class="slds-notify_container slds-is-relative">
+                            <div class="slds-notify slds-notify_toast slds-theme_error" role="status">
+                                <div class="slds-notify__content slds-align_absolute-cente">
+                                    <h2 class="slds-text-heading_small ">Please provide required input</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </apex:outputpanel>
+                    
+                    
+                    <!-- Output Panel for callout Response -->
+                    <apex:outputPanel rendered="{!showResponseMessage}">
+                        <div class="demo-only" style="height:4rem">
+                            <div class="slds-notify_container slds-is-relative">
+                                <div class="slds-notify slds-notify_toast slds-theme_{!calloutStatus}" role="status">
+                                    <span class="slds-assistive-text">success</span>
+                                    <span class="slds-icon_container slds-icon-utility-{!calloutStatus} slds-m-right_small slds-no-flex slds-align-top" title="Description of icon when needed">
+                                      
+                                    </span>
+                                    <div class="slds-notify__content">
+                                        <h2 class="slds-text-heading_small ">{!calloutResponse}</h2>
+                                    </div>
+                                    <div class="slds-notify__close">
+                                        <button class="slds-button slds-button_icon slds-button_icon-inverse" title="Close">
+                                           
+                                            <span class="slds-assistive-text">Close</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                    
+                    
+                    <!-- Select Object, picklist and operation -->
+                    <apex:outputPanel id="optSelectObject" rendered="true">
+                        
+                        <div class="slds-box slds-p-bottom_x-large" style="padding:0.5rem;background:#16325c">
+                            <div class="slds-text-heading_medium slds-theme--alt-inverse">
+                                Picklist Management
+                            </div>
+                        </div>
+                        
+                        <div class="slds-form-element slds-box">
+                            <table>
+                                <tr>
+                                    <td width="10%">
+                                        <article >
+                                            <div class="slds-card__body slds-card__body_inner slds-text-align_right">
+                                                <span>  Object: </span> 
+                                            </div>
+                                        </article></td>
+                                    <td>
+                                        <article >
+                                            <div class="slds-card__body slds-card__body_inner">
+                                                <span>
+                                                    <apex:selectList value="{!selectedObject}"  multiselect="false" size="1" onchange="objectSelectionFun();">
+                                                        <apex:selectOption itemValue="" itemLabel="--Select Object--"/>
+                                                        <apex:selectOption itemValue="Contact" itemLabel="Contact"/>
+                                                        <apex:selectOption itemValue="Opportunity__c" itemLabel="Opportunity"/>
+                                                        <apex:selectOption itemValue="Opportunity_Assignment__c" itemLabel="Opportunity Assignment"/>
+                                                    </apex:selectList>
+                                                </span>
+                                            </div>
+                                        </article>
+                                    </td>
+                                </tr>
+                                
+                                
+                                <tr>
+                                    <td>
+                                    <article >
+                                        <div class="slds-card__body slds-card__body_inner slds-text-align_right">
+                                            <span> Picklist Field </span></div>
+                                    </article>
+                                    </td>
+                                    <td> 
+                                        <article >
+                                            <div class="slds-card__body slds-card__body_inner">
+                                                <span>
+                                                    <apex:selectList value="{!selectedPicklistField}" size="1" onchange="picklistSelectionFun();">
+                                                        <apex:selectOptions value="{!ListofPicklist}"></apex:selectOptions>
+                                                    </apex:selectList>
+                                                </span>
+                                            </div>
+                                        </article>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>
+                                        <article >
+                                            <div class="slds-card__body slds-card__body_inner  slds-text-align_right">
+                                                <span> Operation:</span>
+                                            </div>
+                                        </article>
+                                    </td> 
+                                    <td> 
+                                        <article >
+                                            <div class="slds-card__body slds-card__body_inner">
+                                                <span>
+                                                    <apex:selectList value="{!selectedOperation}"  multiselect="false" size="1" onchange="operationSelectionFun();">
+                                                        <apex:selectOption itemValue="" itemLabel="--Select Operation--"/>
+                                                        <apex:selectOption itemValue="Add" itemLabel="Add New Value"/>
+                                                        <apex:selectOption itemValue="Remove" itemLabel="Remove Value"/>
+                                                        <apex:selectOption itemValue="Replace" itemLabel="Replace Value"/>
+                                                    </apex:selectList>
+                                                </span>
+                                            </div>
+                                        </article>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </apex:outputPanel>
+                    
+                    
+                    
+                    <!-- Provide Values -->
+                    
+                    <apex:outputPanel rendered="{!IF(OR(showAddNewValue,showRemoveValue,showReplaceValue),true,false)}">
+                        <div class="slds-box slds-p-bottom_x-large" style="padding:0.5rem;background:#16325c">
+                            <div class="slds-text-heading_medium slds-theme--alt-inverse">
+                                {!operationHeading}
+                            </div>
+                        </div>
+                        
+                        <div class="slds-form-element slds-box ">
+                            
+                            
+                                
+                           
+                            
+                            <!-- Add new value -->
+                            <apex:outputpanel id="optAddNewValue" rendered="{!showAddNewValue}">
+                                <table>
+                                    <tr>
+                                        <td width="10%">
+                                            <article >
+                                                <div class="slds-card__body slds-card__body_inner  slds-text-align_right">
+                                                    <span> New Value: </span>
+                                                </div>
+                                                 <div class="slds-card__body slds-card__body_inner  slds-text-align_right">
+                                                    <span> Add order: </span>
+                                                </div>
+
+                                            </article>
+                                        </td>
+                                         <td>
+                                            <article >
+                                                <div class="slds-card__body slds-card__body_inner ">
+                                                    <span> <apex:inputText value="{!newValue}" html-placeholder="Add new value" /> </span>
+                                                </div>
+                                                 <div class="slds-card__body slds-card__body_inner ">
+                                                    <span> <apex:inputText value="{!order}" html-placeholder="Add order" /> </span>
+                                                </div>
+
+                                            </article>
+                                        </td>
+                              
+                                    </tr>
+                                </table>
+                            </apex:outputpanel>
+                            
+                            
+                            <!-- Remove value -->
+                            <apex:outputpanel id="optRemoveVale" rendered="{!showRemoveValue}">
+                                <table>
+                                    <tr>
+                                        <td width="10%">
+                                            <article >
+                                                <div class="slds-card__body slds-card__body_inner  slds-text-align_right">
+                                                    <span>  Existing Value:  </span>
+                                                </div>
+                                            </article>
+                                        </td>
+                                        <td >
+                                            <article >
+                                                <div class="slds-card__body slds-card__body_inner">
+                                                    <span> <apex:selectList value="{!oldValue}" size="1">
+                                                        <apex:selectOptions value="{!PicklistValues}"></apex:selectOptions>
+                                                        </apex:selectList>  
+                                                    </span>
+                                                </div>
+                                            </article>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </apex:outputpanel>
+                            
+                            
+                            <!-- Replace value -->
+                            <apex:outputpanel id="optReplaceValue" rendered="{!showReplaceValue}">
+                                <table>
+                                    <tr>
+                                        <td width="10%">
+                                            <article >
+                                                <div class="slds-card__body slds-card__body_inner  slds-text-align_right">
+                                                    <span>  Existing Value:  </span>
+                                                </div>
+                                            </article>
+                                        </td>
+                                        
+                                        <td>
+                                            <article >
+                                                <div class="slds-card__body slds-card__body_inner  ">
+                                                    <span>  <apex:selectList value="{!oldValue}" size="1">
+                                                        <apex:selectOptions value="{!PicklistValues}"></apex:selectOptions>
+                                                        </apex:selectList>  
+                                                    </span>
+                                                </div>
+                                            </article>
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>
+                                            <article >
+                                                <div class="slds-card__body slds-card__body_inner slds-text-align_right ">
+                                                    <span>Replace with:</span>
+                                                </div>
+                                            </article>
+                                        </td>
+                                        <td>
+                                            <article >
+                                                <div class="slds-card__body slds-card__body_inner  ">
+                                                    <span><apex:inputText value="{!newValue}" html-placeholder="New value" /></span>
+                                                </div>
+                                            </article>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </apex:outputpanel>
+                            
+                            
+                            <table>
+                                    <tr>
+                                        <td width="10%">
+                                            
+                                        </td>
+                                        <td >
+                                            <article >
+                                                <div class="slds-card__body slds-card__body_inner">
+                                                    <span> <apex:commandButton styleclass="slds-button slds-button_brand"
+                                                    title="Save"
+                                                    value="Save"
+                                                    action="{!savePicklistChanges}"
+                                                    status="Processing"/> 
+                                                    </span>
+                                                </div>
+                                            </article>
+                                        </td>
+                                    </tr>
+                                </table>
+                            
+                           
+                        </div>
+                    </apex:outputPanel>
+                    
+                    
+                    
+                    <!------------- Start: Processing Div---------------------------------------->
+                    <style>
+                        .ProcessingBackground {
+                        background-color: #fff;
+                        opacity: 0.60;
+                        filter: alpha(opacity = 50);
+                        width: 100%;
+                        height: 100%;
+                        position: fixed;
+                        z-index: 9998;
+                        top:0;
+                        left:0;
+                        }
+                        .Processing {
+                        z-index: 9999;
+                        left: 47.5%;
+                        top: 50%;
+                        text-align: center;
+                        position: fixed;
+                        } 
+                        
+                    </style>
+                    <div id="divProcessing" style="display:none;">
+                        <div class="ProcessingBackground"></div>
+                        <div class="Processing">           
+                            <apex:image value="/img/loading.gif" title="Processing..."/>
+                        </div>
+                        <apex:actionStatus id="Processing" onstart="document.getElementById('divProcessing').style.display = '';" onstop="document.getElementById('divProcessing').style.display = 'none';">                            
+                        </apex:actionStatus>
+                    </div>  
+                    <!------------- End: Processing Div---------------------------------------->
+                    
+                </apex:outputpanel>
+        </apex:form>
+        
+        <script type="text/javascript">
+        
+        function objectSelectionFun(){
+            objectSelection();
+            return false;
+        }
+                
+        function picklistSelectionFun(){
+            PicklistSelection();
+            return false;
+        }                
+                
+        function operationSelectionFun(){
+            operationSelection();
+            return false;
+        }
+        </script>
+    </html>
+</apex:page>
+            
+            
+            <!--div class="slds-form-element slds-box " >
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <span> Select Object: 
+                                    <apex:selectList value="{!selectedObject}"  multiselect="false" size="1" onchange="objectSelectionFun();">
+                                        <apex:selectOption itemValue="" itemLabel="--Select Object--"/>
+                                        <apex:selectOption itemValue="Contact" itemLabel="Contact"/>
+                                        <apex:selectOption itemValue="Opportunity" itemLabel="Opportunity"/>
+                                        <apex:selectOption itemValue="Opportunity_Assignment__c" itemLabel="Opportunity Assignment"/>
+                                    </apex:selectList>
+                                </span>
+                            </div>
+                            <div class="slds-col">
+                                <span>Select Picklist Field
+                                    <apex:selectList value="{!selectedPicklistField}" size="1" onchange="picklistSelectionFun();">
+                                        <apex:selectOptions value="{!ListofPicklist}"></apex:selectOptions>
+                                    </apex:selectList>
+                                </span>
+                            </div>
+                            <div class="slds-col">
+                                <span>Select Operation: 
+                                    <apex:selectList value="{!selectedOperation}"  multiselect="false" size="1" onchange="operationSelectionFun();">
+                                        <apex:selectOption itemValue="" itemLabel="--Select Operation--"/>
+                                        <apex:selectOption itemValue="Add" itemLabel="Add New Value"/>
+                                        <apex:selectOption itemValue="Remove" itemLabel="Remove Value"/>
+                                        <apex:selectOption itemValue="Replace" itemLabel="Replace Value"/>
+                                    </apex:selectList>
+                                </span>
+                            </div>
+                        </div>
+                    </div-->

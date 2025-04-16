@@ -1,0 +1,314 @@
+<template>
+    <template if:true={startPage}>
+        <div class="container slds-text-color_weak">
+            <div class="slds-box slds-theme_default">
+                <div class="slds-form">
+                    <div class="slds-form-element slds-form-element_stacked">
+                        <div class="slds-form-element__control clsbold">
+
+                            <div class="slds-form">
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control clsbold">
+                                        <lightning-input 
+                                                        type="email" 
+                                                        label="Approver Email"
+                                                        name="email"
+                                                        value=''
+                                                        onchange={handleTrainerEmail}
+                                                        placeholder="Enter email address"
+                                                        required="true"
+                                                        message-when-value-missing="Email is required!"
+                                                        
+                                                        ></lightning-input>
+                                        <div class="slds-align_absolute-center slds-p-around_small">
+                                            <lightning-button
+                                                                variant="brand"
+                                                                type="submit"
+                                                                label="Login"
+                                                                onclick={checkemail}
+                                                                ></lightning-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template if:true={data}>
+            
+        <div class="slds-box slds-theme_default slds-text-color_weak">
+            <div class="slds-float_right slds-p-around_small">
+                <span>
+                    <lightning-button
+                                    class="signOut"
+                                    variant="destructive"
+                                    aura:id="btnsubmit"
+                                    type="submit"
+                                    label="Sign Out"
+                                    onclick={signOut}
+                                    ></lightning-button>
+                </span>
+            </div>
+
+            <div class="slds-float_right slds-p-around_small">
+                <lightning-button-group>
+                    <lightning-button label="Approve" name="Approved" variant="Brand" onclick={handleBulkAction} disabled={bulkAction}></lightning-button>
+                    &nbsp;
+                    <lightning-button label="Reject" name="Rejected" variant="destructive" onclick={handleBulkAction} disabled={bulkAction}></lightning-button>
+                </lightning-button-group>
+            </div>
+            <br/>
+
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-text-color_weak">
+                <thead>
+                    <tr>
+                        <th width="5%" class="" scope="col"></th>
+                        <template for:each={columns} for:item="header">
+                            <th class=""  key={header.value} scope="col">
+                                <div class="slds-truncate" title={header.label}>{header.label}</div>
+                            </th>
+                        </template>
+                          
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={data} for:item="record" for:index="index">
+                        <!-- <div key={record.ContactObj.Id}> -->
+                            <template if:true={record.ContactObj.Id}>
+                                <tr key={record.ContactObj.Id}>
+                                    <td></td>
+                                    <td>{record.clonedContact.UID__c}</td>
+                                    <td>{record.ContactObj.FirstName}</td>
+                                    <td>{record.ContactObj.LastName}</td>
+                                    <td>{record.ContactObj.Gender__c}</td>
+                                    <td>{record.ContactObj.Birthdate}</td>
+                                    <!--
+                                        <td>{record.ContactObj.MobilePhone}</td>
+                                    -->
+                                    <td>{record.ContactObj.Currently_Studying_In__c}</td>
+
+                                    <template if:true={record.grade9}>
+                                        <td>
+                                            <template if:true={record.ContactObj.Batch_Code__c}>
+                                                {record.ContactObj.Batch_Code__r.Batch_Number__c}
+                                            </template>
+                                        </td>
+                                        <td>
+                                            <template if:true={record.ContactObj.G9_Whatsapp_Number__c}>
+                                                {record.ContactObj.G9_Whatsapp_Number__c}
+                                            </template>
+                                        </td>
+                                        <td>
+                                            <template if:true={record.ContactObj.G9_Alternate_Mobile_No__c}>
+                                                {record.ContactObj.G9_Alternate_Mobile_No__c}
+                                            </template>
+                                        </td>
+                                    </template>
+
+                                    <template if:true={record.grade10}>
+                                        <td>
+                                            <template if:true={record.ContactObj.G10_Batch_Code__c}>
+                                                {record.ContactObj.G10_Batch_Code__r.Batch_Number__c}
+                                            </template>
+                                        </td>
+                                        <td>
+                                            <template if:true={record.ContactObj.G10_Whatsapp_Number__c}>
+                                                {record.ContactObj.G10_Whatsapp_Number__c}
+                                            </template>
+                                        </td>
+                                        <td>
+                                            <template if:true={record.ContactObj.G10_Alternate_Mobile_No__c}>
+                                                {record.ContactObj.G10_Alternate_Mobile_No__c}
+                                            </template>
+                                        </td>
+                                    </template>
+
+                                    <template if:true={record.grade11}>
+                                        <td>
+                                            <template if:true={record.ContactObj.G11_Batch_Code__c}>
+                                                {record.ContactObj.G11_Batch_Code__r.Batch_Number__c}
+                                            </template>
+                                        </td>
+                                        <td>
+                                            <template if:true={record.ContactObj.G11_Whatsapp_Number__c}>
+                                                {record.ContactObj.G11_Whatsapp_Number__c}
+                                            </template>
+                                        </td>
+                                        <td>
+                                            <template if:true={record.ContactObj.G11_Alternate_Mobile_No__c}>
+                                                {record.ContactObj.G11_Alternate_Mobile_No__c}
+                                            </template>
+                                        </td>
+                                    </template>
+
+                                </tr>
+                            </template>
+                            
+                            <template if:true={record.clonedContact}>
+                                <tr key={record.clonedContact.Id} >
+                                    <td>
+                                        <lightning-input type="Checkbox" onchange={handleRowAction} name="Checkbox" data-index={index} title="Checkbox" ></lightning-input>
+                                    </td>
+                                    <td>{record.clonedContact.UID__c}</td>
+                                    <td>{record.clonedContact.FirstName__c}</td>
+                                    <td>{record.clonedContact.LastName__c}</td>
+                                    <td>{record.clonedContact.Gender__c}</td>
+                                    <td>{record.clonedContact.Birthdate__c}</td>
+                                    <!--
+                                        <td>{record.clonedContact.MobilePhone__c}</td>
+                                    -->
+                                    <td>{record.clonedContact.Currently_Studying_In__c}</td>
+                                    
+                                    
+
+                                    <template if:true={record.grade9}>
+                                        <td>
+                                            <template if:true={record.clonedContact.Batch_Code__c}>
+                                                {record.clonedContact.Batch_Code__r.Batch_Number__c}
+                                            </template>
+                                        </td>
+                                        <td>
+                                            <template if:true={record.clonedContact.G9_Whatsapp_Number__c}>
+                                                {record.clonedContact.G9_Whatsapp_Number__c}
+                                            </template>
+                                        </td>
+                                        <td>
+                                            <template if:true={record.clonedContact.G9_Alternate_Mobile_No__c}>
+                                                {record.clonedContact.G9_Alternate_Mobile_No__c}
+                                            </template>
+                                        </td>
+                                    </template>
+
+                                    <template if:true={record.grade10}>
+                                        <td>
+                                            <template if:true={record.clonedContact.G10_Batch_Code__c}>
+                                                {record.clonedContact.G10_Batch_Code__r.Batch_Number__c}
+                                            </template>
+                                        </td>
+                                        <td>
+                                            <template if:true={record.clonedContact.G10_Whatsapp_Number__c}>
+                                                {record.clonedContact.G10_Whatsapp_Number__c}
+                                            </template>
+                                        </td>
+                                        <td>
+                                            <template if:true={record.clonedContact.G10_Alternate_Mobile_No__c}>
+                                                {record.clonedContact.G10_Alternate_Mobile_No__c}
+                                            </template>
+                                        </td>
+                                    </template>
+
+                                    <template if:true={record.grade11}>
+                                        <td>
+                                            <template if:true={record.clonedContact.G11_Batch_Code__c}>
+                                                {record.clonedContact.G11_Batch_Code__r.Batch_Number__c}
+                                            </template>
+                                        </td>
+                                        <td>
+                                            <template if:true={record.clonedContact.G11_Whatsapp_Number__c}>
+                                                {record.clonedContact.G11_Whatsapp_Number__c}
+                                            </template>
+                                        </td>
+                                        <td>
+                                            <template if:true={record.clonedContact.G11_Alternate_Mobile_No__c}>
+                                                {record.clonedContact.G11_Alternate_Mobile_No__c}
+                                            </template>
+                                        </td>
+                                    </template>
+                                </tr>
+                                    <!--
+                                        <td>
+                                        <lightning-button
+                                                        variant="brand"
+                                                        data-index={index} 
+                                                        label="Approve"
+                                                        onclick={handleRowAction}
+                                                        ></lightning-button> &nbsp;
+                                        <lightning-button
+                                                        variant="destructive"
+                                                        data-index={index} 
+                                                        label="Reject"
+                                                        onclick={handleRowAction}
+                                                        ></lightning-button>
+                                    </td>
+                                    -->
+                                
+
+                                <tr class="blank_row" key={record.clonedContact.Name}>
+                                    <td bgcolor="#FFFFFF" colspan="11">&nbsp;</td>
+                                </tr>
+                               <!-- <tr key={record.clonedContact.Name}>
+                                </tr> -->
+                            </template>
+                        <!-- </div> -->
+
+                    </template>
+                </tbody>
+            </table>
+        </div>   
+    </template>
+
+    <!-- modal start -->  
+    <template if:true={showPopUp} >
+
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- modal header start -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={hideModalBox}>
+                        <lightning-icon icon-name="utility:close"
+                        alternative-text="close"
+                        variant="inverse"
+                        size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                        Reject Reason 
+                    </h2>
+                </header>
+            
+                <!-- modal body start -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <p>
+                            <lightning-textarea name="rejectedReason" label="Reason" class="validate" 
+                                                                    minlength = '1' required
+                                                                    message-when-too-short="Please enter the Reason"
+                                                                    message-when-value-missing="Please enter the Reason"
+                                                                     onchange={handleRejectReason} placeholder="type here..."></lightning-textarea>
+                        </p>
+                </div>
+
+                <!-- modal footer start-->
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancel" name="Cancel" variant="neutral" onclick={hideModalBox} ></lightning-button>
+                    &nbsp;
+                    <lightning-button  label="Reject" name="Rejected" variant="destructive" onclick={handlePopUpRejectBtn} disabled={disablePopUpRejectBtn}></lightning-button>
+                </footer>
+            
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" variant="Brand"></lightning-spinner>
+    </template>
+
+    <template if:true={noPendingRecords}>
+        <div class="slds-align_absolute-center slds-box slds-theme_default">
+            <h2>
+             There is no Pending Records
+            </h2>
+            &nbsp;&nbsp;
+            <lightning-button
+                variant="brand"
+                label="back"
+                onclick={handleReload}
+            ></lightning-button>
+        </div>
+    </template>
+
+</template>

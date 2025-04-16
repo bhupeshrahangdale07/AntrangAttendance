@@ -1,0 +1,536 @@
+<apex:page standardController="Account" id="pg" standardStylesheets="false" extensions="SchoolReportController"
+            renderAs="{!IF(ISNULL($CurrentPage.parameters.render),'',$CurrentPage.parameters.render)}" readOnly="true">
+    <apex:form id="frm">
+        <head>
+            <style>
+                table {
+                    border-collapse: collapse;
+                }
+                
+                body {
+                    font-family: Helvetica;
+                }
+            </style>
+        </head>
+
+        <body style="border:1px solid black;padding:10px;">
+            <apex:pageMessages ></apex:pageMessages>
+            <apex:outputPanel layout="block" rendered="{!ISNULL($CurrentPage.parameters.render)}" style="margin:10px;">
+                <apex:slds />
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label" for="selectYear">Select Year</label>
+                    <div class="slds-form-element__control">
+                        <apex:selectList id="selectYear" styleClass="slds-select" value="{!selectedYear}" multiselect="false" size="1">
+                            <apex:selectoption itemvalue="All" itemlabel="All"></apex:selectoption>
+                            <apex:selectoption itemvalue="2019-2020" itemlabel="2019-2020"></apex:selectoption>
+                            <apex:selectoption itemvalue="2018-2019" itemlabel="2018-2019"></apex:selectoption>
+                            <apex:selectoption itemvalue="2017-2018" itemlabel="2017-2018"></apex:selectoption>
+                        </apex:selectList>
+                    </div>
+                </div>
+                <br/>
+                <apex:commandButton value="Generate Report" styleClass="slds-button slds-button_brand" reRender="pg,frm" action="{!CalculateReport}"  /> 
+            </apex:outputPanel>
+            <apex:outputPanel layout="block" rendered="{!$CurrentPage.parameters.render != null && $CurrentPage.parameters.render == 'pdf'}">
+                <img src="{!URLFOR($Resource.Antarang, 'antarang.png')}" width="50" height="50" align="right" />
+                <center>
+                    <h3>CAREER AWARE PROGAM SUMMARY</h3>
+                </Center>
+    
+                <table width="100%">
+                    <tr>
+                        <td width="40%">School Name:</td>
+                        <td width="60%">
+                            <apex:outputField value="{!Account.Name}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="40%">Medium language of Instruction:</td>
+                        <td width="60%">
+                            <apex:outputField value="{!Account.Medium_Language_of_Instruction__c}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="40%">Partner:</td>
+                        <td width="60%">
+                            <apex:outputField value="{!Account.Partner__c}" />
+                        </td>
+                    </tr>
+                </table>
+                <hr style="border:1px solid black;" />
+                <table width="100%">
+                    <tr>
+                        <th width="30%">Number of students facilitated</th>
+                        <th width="20%">In this school</th>
+                        <th width="25%">Total for this medium of instruction</th>
+                        <th width="25%">Total for partner </th>
+                    </tr>
+                    <tr>
+    
+                        <td align="center"><apex:image value="{!$Resource.TOTAL}" width="20" height="25"  /></td>
+                        <td>
+                            <apex:outputText value="{0, number, ###}">
+                                <apex:param value="{!TotalStudents}" />
+                            </apex:outputText>
+                        </td>
+                        <!--<td rowspan="2">
+                            <img src="https://chart.googleapis.com/chart?cht=p3&chd=t:{!Totalforthismediumofinstruction},{!TotalforpartnerState}&chs=300x100&chl=Medium({!Totalforthismediumofinstruction})|Partner({!TotalforpartnerState})"/>
+                        </td>-->
+                        <td>
+                            <apex:outputText value="{0, number, ###}">
+                                <apex:param value="{!Totalforthismediumofinstruction}" />
+                            </apex:outputText>
+                        </td>
+                        <td>
+                            <apex:outputText value="{0, number, ###}">
+                                <apex:param value="{!TotalforpartnerState}" />
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center"><apex:image value="{!$Resource.FEMALE}" width="20" height="25" /></td>
+                        <td>
+                            <apex:outputText value="{!Femalecount} " />%
+                        </td>
+                        <td>
+                            <apex:outputText value="{!Femalecountbymedium} " />%
+                            <apex:outputPanel rendered="{!Femalecountbymedium > Femalecount}" >
+                                &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!Femalecountbymedium < Femalecount}">
+                                &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!Femalecountbypartner} " />%
+                            <apex:outputPanel rendered="{!Femalecountbypartner > Femalecount}">
+                                &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!Femalecountbypartner < Femalecount}">
+                                &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                    <tr>
+    
+                        <td align="center"><apex:image value="{!$Resource.MALE}" width="20" height="25" /></td>
+                        <td>
+                            <apex:outputText value="{!Malecount} " />%
+                        </td>
+                        <td>
+                            <apex:outputText value="{!Malecountbymedium} " />%
+                            <apex:outputPanel rendered="{!Malecountbymedium > Malecount}">
+                                &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!Malecountbymedium < Malecount}">
+                                &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!Malecountbypartner} " />%
+                            <apex:outputPanel rendered="{!Malecountbypartner > Malecount}">
+                                &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!Malecountbypartner < Malecount}">
+                                &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+    
+                </table>
+                <hr style="border:1px solid black;" />
+                <Center>
+                    <b>These are the number of students that have been reached through Antarang Foundation's CareerAware program.</b>
+                    <!--'-->
+                </Center>
+                <hr style="border:1px solid black;" />
+                <table width="100%">
+                    <tr align="left">
+                        <th width="30%">% of sudents with self-awareness in career choice:</th>
+                        <th width="20%">In this school</th>
+                        <th width="25%">Total for this medium of instruction</th>
+                        <th width="25%">Total for partner </th>
+                    </tr>
+                    <tr>
+                        <td align="center"><apex:image value="{!$Resource.TOTAL}" width="20" height="25" /></td>
+                        <td>
+                            <apex:outputText value="{!countAware}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countAwareBymedium}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countAwarebyPartner}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center"><apex:image value="{!$Resource.FEMALE}" width="20" height="25" /></td>
+                        <td>
+                            <apex:outputText value="{!countFemaleAware}" /> %
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countAwareBymediumFemale}" /> %
+                            <apex:outputPanel rendered="{!countAwareBymediumFemale > countFemaleAware}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countAwareBymediumFemale < countFemaleAware}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countAwareByPartnerFemale}" /> %
+                            <apex:outputPanel rendered="{!countAwareByPartnerFemale > countFemaleAware}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countAwareByPartnerFemale < countFemaleAware}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center"><apex:image value="{!$Resource.MALE}" width="20" height="25" /></td>
+                        <td>
+                            <apex:outputText value="{!countMaleAware}" /> %
+    
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countAwareBymediumMale}" /> %
+                            <apex:outputPanel rendered="{!countAwareBymediumMale > countMaleAware}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countAwareBymediumMale < countMaleAware}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+    
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countAwareByPartnerMale}" /> %
+                            <apex:outputPanel rendered="{!countAwareByPartnerMale > countMaleAware}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countAwareByPartnerMale < countMaleAware}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                </table>
+                <hr style="border:1px solid black;" />
+                <Center>
+                    <b>This tells us the % of students who chose careers for themselves keeping in mind their interests and aptitudes.</b>
+                </Center>
+                <hr style="border:1px solid black;" />
+
+                <table width="100%">
+                    <tr>
+                        <th width="30%">% of students demonstrating career awareness:</th>
+                        <th width="20%">In this school</th>
+                        <th width="25%">Total for this medium of instruction</th>
+                        <th width="25%">Total for partner </th>
+                    </tr>
+                    <tr>
+                        <td align="center"><apex:image value="{!$Resource.TOTAL}" width="20" height="25" /></td>
+                        <td>
+                            <apex:outputText value="{!countCareerAware}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countCareerBymedium}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countCareerByPartner}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center"><apex:image value="{!$Resource.FEMALE}" width="20" height="25" /></td>
+                        <td>
+                            <apex:outputText value="{!countCareerFemale}" /> %
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countCareerBymediumFemale}" /> %
+                            <apex:outputPanel rendered="{!countCareerBymediumFemale >countCareerFemale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countCareerBymediumFemale < countCareerFemale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+    
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countCareerBypartnerFemale}" /> %
+                            <apex:outputPanel rendered="{!countCareerBypartnerFemale >countCareerFemale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countCareerBypartnerFemale < countCareerFemale}"> &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+    
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center"><apex:image value="{!$Resource.MALE}" width="20" height="25" /></td>
+                        <td>
+                            <apex:outputText value="{!countCareerMale}" /> %
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countCareerBymediumMale}" /> %
+                            <apex:outputPanel rendered="{!countCareerBymediumMale >countCareerMale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countCareerBymediumMale < countCareerMale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countCareerByPartnerMale}" /> %
+                            <apex:outputPanel rendered="{!countCareerByPartnerMale >countCareerMale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countCareerByPartnerMale < countCareerMale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                </table>
+
+                <hr style="border:1px solid black;" />
+                <Center>
+                    <b>Career exploration helps students understand the nuances of pursuing career across different sectors and thereby opens up a world of opportunities for them.</b>
+                </Center>
+
+                <hr style="border:1px solid black;" />
+                <div style="page-break-before: always;" />
+                <table width="100%">
+                   
+
+                    <tr>
+                        <th width="30%">% of students demonstrating clarity of career plan:</th>
+                        <th width="20%">In this school</th>
+                        <th width="25%">Total for this medium of instruction</th>
+                        <th width="25%">Total for partner </th>
+                    </tr>
+                    <tr>
+                        <td align="center"><apex:image value="{!$Resource.TOTAL}" width="20" height="25"/></td>
+                        <td>
+                            <apex:outputText value="{!countClarityReports}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countClarityBymedium}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countClarityByPartner}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center"><apex:image value="{!$Resource.FEMALE}" width="20" height="25"/></td>
+                        <td>
+                            <apex:outputText value="{!countClarityreportsFemale}" /> %
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countClarityBymediumFemale}" /> %
+                            <apex:outputPanel rendered="{!countClarityBymediumFemale >countClarityreportsFemale}" >
+                            &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countClarityBymediumFemale < countClarityreportsFemale}" >
+                            &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countClarityByPartnerFemale}" /> %
+                            <apex:outputPanel rendered="{!countClarityByPartnerFemale >countClarityreportsFemale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countClarityByPartnerFemale < countClarityreportsFemale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center"><apex:image value="{!$Resource.MALE}" width="20" height="25" /></td>
+                        <td>
+                            <apex:outputText value="{!countClarityReportsMale}" /> %
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countClarityBymediumMale}" /> %
+                            <apex:outputPanel rendered="{!countClarityBymediumMale >countClarityReportsMale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countClarityBymediumMale < countClarityReportsMale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countClarityByPartnerMale}" /> %
+                            <apex:outputPanel rendered="{!countClarityByPartnerMale >countClarityReportsMale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countClarityByPartnerMale < countClarityReportsMale}">
+                             &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                </table>
+
+                <hr style="border:1px solid black;" />
+                
+
+                <center>
+                    <b>This metric measures the students understanding of their educational next steps in light of their career choices</b>
+                </center>
+                <hr style="border:1px solid black;" />
+
+                <table width="100%">
+                    <tr>
+                        <th width="30%">Top 3 professions selected by students:</th>
+                        <th width="20%">In this school</th>
+                        <th width="25%"><apex:image value="{!$Resource.FEMALE}" width="20" height="25" /></th>
+                        <th width="25%"><apex:image value="{!$Resource.MALE}" width="20" height="25" /></th>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <apex:outputText value="{!Top1}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!Top1Girl}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!Top1Boy}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <apex:outputText value="{!Top2}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!Top2Girl}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!Top2Boy}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <apex:outputText value="{!Top3}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!Top3Girl}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!Top3Boy}" />
+                        </td>
+                    </tr>
+                </table>
+                <hr style="border:1px solid black;" />
+                <table width="100%">
+                    <tr>
+                        <th width="30%">Number of students counselled:</th>
+                        <th width="20%">In this school:</th>
+                        <th width="25%">Total for this medium of instruction</th>
+                        <th width="25%">Total for partner </th>
+                    </tr>
+                    <tr>
+                        <td align="center"><apex:image value="{!$Resource.TOTAL}" width="20" height="25" /></td>
+                        <td>
+                            <apex:outputText value="{!countCounselling}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countCounsellingBymedium}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countCounsellingByPartner}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center"><apex:image value="{!$Resource.FEMALE}" width="20" height="25" /></td>
+                        <td>
+                            <apex:outputText value="{!countCounsellingFemale}" /> %
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countCounsellingBymediumFemale}" /> %
+                            <apex:outputPanel rendered="{!countCounsellingBymediumFemale >countCounsellingFemale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countCounsellingBymediumFemale < countCounsellingFemale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countCounsellingByPartnerFemale}" /> %
+                            <apex:outputPanel rendered="{!countCounsellingByPartnerFemale >countCounsellingFemale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countCounsellingByPartnerFemale< countCounsellingFemale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center"><apex:image value="{!$Resource.MALE}" width="20" height="25" /></td>
+                        <td>
+                            <apex:outputText value="{!countCounsellingMale}" /> %
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countCounsellingBymediumMale}" /> %
+                            <apex:outputPanel rendered="{!countCounsellingBymediumMale >countCounsellingMale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countCounsellingBymediumMale < countCounsellingMale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!countCounsellingByPartnerMale}" /> %
+                            <apex:outputPanel rendered="{!countCounsellingByPartnerMale >countCounsellingMale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.GreenUpArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!countCounsellingByPartnerMale < countCounsellingMale}" >
+                             &nbsp;
+                                <apex:image value="{!$Resource.RedDownArrow}" width="10" height="15" />
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                </table>
+
+            </apex:outputPanel>
+        </body>
+    </apex:form>
+</apex:page>

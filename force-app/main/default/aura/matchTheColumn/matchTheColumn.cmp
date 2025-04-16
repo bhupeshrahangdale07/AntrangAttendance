@@ -1,0 +1,44 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    
+    <aura:attribute name="templistA" type="list" default="[{label1:'Sunder Pichai', label2:'Tech', selectopt : [{label:'--None--',disabled:false,selected:false},{label:'Bollywood',disabled:false,selected:false},{label:'Tech',disabled:false,selected:false},{label:'Cricket',disabled:false,selected:false}]},
+                                                          {label1:'Sachin Tendulkar',label2:'Cricket' , selectopt : [{label:'--None--',disabled:false,selected:false},{label:'Bollywood',disabled:false,selected:false},{label:'Tech',disabled:false,selected:false},{label:'Cricket',disabled:false,selected:false}]},
+                                                          {label1:'Pankaj Tripathi',label2:'Bollywood', selectopt : [{label:'--None--',disabled:false,selected:false},{label:'Bollywood',disabled:false,selected:false},{label:'Tech',disabled:false,selected:false},{label:'Cricket',disabled:false,selected:false}]}]"/>
+    
+    
+    <aura:attribute name="selectedValue" type="string"/>
+    
+    
+    
+    <lightning:card>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+            <tr class="slds-line-height_reset">
+                <th class="slds-text-title_caps" scope="col">
+                    <td>Value A</td>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <td>select </td>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <td>Value B</td>
+                </th>
+            </tr>
+            
+            <aura:iteration items="{!v.templistA}" var="item">
+                <tr class="slds-hint-parent">
+                    <td> <ui:outputText value="{!item.label1}"/></td>
+                    <td > 
+                        
+                        <lightning:select name="{!item.label2}" aura:id="{!item.label2}"  label="Select a choice:" value="{!v.selectedValue}" onchange="{! c.onChange }">
+                            <aura:iteration items="{!item.selectopt}" var="option">
+                                <option disabled="{!option.disabled}" selected="{!option.selected}" text="{!option.label}" value="{!option.label}"/>
+                            </aura:iteration>
+                        </lightning:select>
+                    </td>
+                    <td> <ui:outputText value="{!item.label2}"/></td>
+                </tr>
+            </aura:iteration>
+            
+        </table>
+    </lightning:card>
+</aura:component>

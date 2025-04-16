@@ -1,0 +1,641 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" 
+                access="global" 
+                controller="studentAttendanceController">
+    
+    <aura:attribute name="pagenumber" type="Integer" default="1" />
+    <aura:attribute name="totalStdInBatch" type="Integer" default="1" />    
+    <aura:attribute name="selectedSessionNumber" type="Integer" default="1" />
+    <aura:attribute name="pagenumberday" type="Integer" />
+    <aura:attribute name="studentPresented" type="Integer" default=""/>
+    <aura:attribute name="parentPresented" type="Integer" default=""/>
+    
+    <aura:attribute name="studentdata" type="List" />
+    <aura:attribute name="Allstudentdata" type="List" />
+    <aura:attribute name="studentMatrix" type="List" />
+    <aura:attribute name="studentMatrixForAllSession" type="List" />
+    <aura:attribute name="tempstudentMatrixForAllSession" type="List" />
+    <aura:attribute name="tempstudentMatrix" type="List" />
+    <aura:attribute name="tempstudentMatrix2" type="List" />
+    <aura:attribute name="sessWithPreSessSubmitedAtt" type="Map" />
+    <aura:attribute name="pendingsessions" type="List" />
+    
+    <aura:attribute name="singleSession" type="String" />
+    
+    <aura:attribute name="maxdate" type="String" />
+    <!--default="farheenshaikh@antarangfoundation.org"-->
+    <aura:attribute name="traineremail" type="String" />
+    
+    <aura:attribute name="AccountId" type="String" default=""/>
+    <aura:attribute name="ContactId" type="String" />
+    <aura:attribute name="BatchId" type="String" />
+    <aura:attribute name="FacilitatorId" type="String" />
+    
+    <aura:attribute name="StudentWhareClause" type="String" />
+    <aura:attribute name="selectedBatchId" type="String" />
+    <aura:attribute name="AccountBatches" type="List" />
+    
+    <aura:attribute type="boolean" default="false" name="issubmitdisabled" />
+    
+    <aura:attribute name="objpage2" type="Object" />
+    <aura:attribute name="objpage2UI" type="Object" />
+    
+    <aura:attribute name="objUI" type="Object" />
+    <aura:attribute name="wrpcon" type="Object" />
+    <aura:attribute name="sessionRecords" type="String[]" />
+    <aura:attribute name="allSessionRecords" type="String[]" />
+    <aura:attribute name="batchOptions" type="String[]" />
+    <aura:attribute name="gradeList" type="String[]" />
+    <aura:attribute name="studentattendance" type="String[]" />
+    <aura:attribute name="parentattendance" type="String[]" />
+    <aura:attribute name="logreasonpicklist" type="String[]" />
+    
+    <aura:attribute name="draftValues" type="Object" default="[]"/>
+    <aura:attribute name="selectedSession" type="String" />
+    <aura:attribute name="selectedLogReason" type="String" />
+    <aura:attribute name="selectedGrade" type="String" />
+    <aura:attribute name="isBatchSelected" type="Boolean" default="true"/>
+    <aura:attribute name="isBatchOption" type="Boolean" default="true"/>
+    <aura:attribute name="showAllSession" type="Boolean" default="false"/>
+    <aura:attribute name="batchSelected" type="Boolean" default="false"/>
+    <aura:attribute name="isAttendanceSubmited" type="Boolean" default="false"/>
+    <aura:attribute name="isPresentedValueExist" type="Boolean" default="false"/>
+    <aura:attribute name="showLogReason" type="Boolean" default="false"/>
+    <aura:attribute name="showPendingsessions" type="Boolean" default="false"/>
+    <aura:attribute name="isSessionTypeParent" type="Boolean" default="false"/>
+    
+    <aura:attribute name="errors" type="Object" default="[]"/>
+    <aura:attribute name="pageConstant" type="Object" />
+    
+    <aura:attribute name="Spinner" type="boolean" default="false" />
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}" />
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}" /> 
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+    <!--loading spinner start... style=Brand Medium (blue dots)-->
+    <aura:if isTrue="{!v.Spinner}">
+        <div aura:id="spinnerId" class="slds-spinner_container">
+            <div
+                 class="slds-spinner_brand slds-spinner slds-spinner_large slds-is-relative"
+                 role="alert"
+                 >
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+    <!-- Loading spinner end-->
+    
+    <div class="container">
+        <div class="slds-box slds-theme_default">
+            <div class="slds-form">
+                <div class="slds-form-element slds-form-element_stacked">
+                    <div class="slds-form-element__control clsbold">
+                        <aura:if isTrue="{!v.pagenumber > 1}">
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <aura:if isTrue="{!v.pagenumber > 1}">
+                            <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-3">
+                                </div>
+                                <div class="slds-col slds-size_1-of-3">
+                                <span><lightning:button
+                                                        class="signOut"
+                                                        variant="destructive"
+                                                        aura:id="btnsubmit"
+                                                        type="submit"
+                                                        label="Sign Out"
+                                                        onclick="{!c.signOut}"
+                                                        /></span>
+                            </div>
+                        </div>
+                        </aura:if>
+                                <div class="slds-form-element__control clsbold">
+                                    <c:AutoCompleteInput
+                                                         label="{!v.objUI.accountQName}"
+                                                         objectApiName="Account"
+                                                         idFieldApiName="Id"
+                                                         valueFieldApiName="Name"
+                                                         MatchingvalueFieldApiName="Name"
+                                                         extendedWhereClause="AND RecordType.Name = 'School' ORDER BY Name"
+                                                         StudentFeedbackSpecific="{!c.onwrpEventUpdate}"
+                                                         />
+                                </div>
+                            </div>
+                            
+                            <div class="slds-grid slds-wrap custom-container">
+                                <div class="slds-size_1-of-2 slds-max-small-size_1-of-1 slds-p-around_x-small">
+                                    <div class="slds-form-element slds-form-element_stacked">
+                                        <div class="slds-form-element__control clsbold">
+                                            <lightning:select
+                                                              aura:id="profitabilityDesignation"
+                                                              name="Grade"
+                                                              label="Grade"
+                                                              required="true"
+                                                              value="{!v.selectedGrade}"
+                                                              onchange="{!c.handleClassChange}"
+                                                              >
+                                                <aura:iteration items="{!v.gradeList}" var="ca">
+                                                    <option value="{!ca.value}"
+                                                            >{!ca.label}</option
+                                                        >
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-size_1-of-2 slds-max-small-size_1-of-1 slds-p-around_x-small">
+                                    <div class="slds-form-element slds-form-element_stacked">
+                                        <div class="slds-form-element__control clsbold">
+                                            <lightning:select
+                                                              aura:id="profitabilityDesignation"
+                                                              name="select"
+                                                              label="Batch"
+                                                              value="{!v.selectedBatchId}"
+                                                              onchange="{!c.handleBatchChange}"
+                                                              disabled="{!v.isBatchOption}"
+                                                              >
+                                                <aura:iteration items="{!v.batchOptions}" var="batch">
+                                                    <option value="{!batch.value}"
+                                                            >{!batch.label}</option
+                                                        >
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-size_1-of-2 slds-max-small-size_1-of-1 slds-p-around_x-small">
+                                    <div class="slds-form-element slds-form-element_stacked">
+                                        <div class="slds-form-element__control clsbold">
+                                            <lightning:select
+                                                              aura:id="profitabilityDesignation"
+                                                              name="select"
+                                                              label="Session"
+                                                              value="{!v.selectedSession}"
+                                                              onchange="{!c.handleSessionChange}"
+                                                              disabled="{!v.isBatchSelected}"
+                                                              >
+                                                <aura:iteration items="{!v.sessionRecords}" var="session">
+                                                    <option value="{!session.value}"
+                                                            >{!session.label}</option
+                                                        >
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <aura:if isTrue="{!v.batchSelected}">
+                                    <aura:if isTrue="{!v.isSessionTypeParent}">
+                                        <div class="slds-size_1-of-2 slds-max-small-size_1-of-1 slds-p-around_x-small">
+                                        </div>
+                                    	<div class="slds-size_1-of-2 slds-max-small-size_1-of-1 slds-p-around_x-small">
+                                        <div class="slds-form-element slds-form-element_stacked">
+                                            <div class="slds-form-element__control clsbold">
+                                                <aura:if isTrue="{!v.selectedSession}">
+                                                    <div class="slds-grid slds-gutters">
+                                                        <div class="slds-col slds-size_3-of-3">
+                                                            <lightning:input 
+                                                                             aura:id="totalParent"
+                                                                             type="number" 
+                                                                             name="Total Parent Present" 
+                                                                             label="Total Parent Present" 
+                                                                             disabled="{!v.isPresentedValueExist}"
+                                                                             value="{!v.parentPresented}"/>
+                                                        </div>
+                                                    </div>
+                                                </aura:if>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </aura:if>
+                                    <div class="slds-size_1-of-2 slds-max-small-size_1-of-1 slds-p-around_x-small">
+                                        <div class="slds-form-element slds-form-element_stacked">
+                                            <div class="slds-form-element__control clsbold">
+                                                <aura:if isTrue="{!v.selectedSession}">
+                                                    <div class="slds-grid slds-gutters">
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <lightning:input 
+                                                                             aura:id="totalStd"
+                                                                             type="number" 
+                                                                             name="Total Student Present" 
+                                                                             label="Total Student Present" 
+                                                                             disabled="{!v.isPresentedValueExist}"
+                                                                             value="{!v.studentPresented}"/>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-3 slds-p-top_large">
+                                                            <lightning:button
+                                                                              variant="brand"
+                                                                              aura:id="PresentStudentCount"
+                                                                              type="submit"
+                                                                              label="Submit"
+                                                                              disabled="{!v.isPresentedValueExist}"
+                                                                              onclick="{!c.SavePresentStudentCount}"
+                                                                              />
+                                                        </div>
+                                                    </div>
+                                                </aura:if>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </aura:if>
+                                <div class="slds-size_1-of-2 slds-max-small-size_1-of-1 slds-p-around_x-small">
+                                    <div class="slds-form-element slds-form-element_stacked">
+                                        <div class="slds-form-element__control clsbold">
+                                            <aura:if isTrue="{!v.batchSelected}">
+                                                <lightning:button
+                                                                  variant="brand"
+                                                                  aura:id="btnsubmit"
+                                                                  type="submit"
+                                                                  label="Show student wise attendance"
+                                                                  onclick="{!c.showallsession}"
+                                                                  />
+                                            </aura:if>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--    <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control clsbold">
+                                    <c:AutoCompleteInput
+                                                         label="{!v.objUI.contactQName}"
+                                                         objectApiName="Batch__C"
+                                                         idFieldApiName="Id"
+                                                         valueFieldApiName="Batch_Number__c"
+                                                         MatchingvalueFieldApiName="Batch_Number__c"
+                                                         extendedWhereClause="{!v.StudentWhareClause}"
+                                                         StudentFeedbackSpecific="{!c.onwrpEventUpdate}"
+                                                         sessionFormAttedence = "true"
+                                                         />
+                                </div>
+                            </div> -->
+                            
+                            <aura:if isTrue="{!v.isPresentedValueExist}">
+                                <aura:if isTrue="{!not(empty(v.studentMatrix))}">
+                                    <br/>
+                                    <div class="slds-grid slds-wrap custom-container">
+                                       <!-- <div class="slds-size_1-of-2 slds-max-small-size_1-of-1 slds-p-around_x-small">
+                                            <p><b>Note : If student/parent is present in session then only tick checkbox</b></p><br/>
+                                        </div> -->
+                                        <div class="slds-size_1-of-1 slds-max-small-size_1-of-1 slds-p-around_x-small slds-clearfix">
+                                            <div class="slds-float_right">
+                                                <lightning:button
+                                                                  variant="success"
+                                                                  aura:id="btnsubmit"
+                                                                  type="submit"
+                                                                  label="Submit Attendance"
+                                                                  disabled="{!v.isAttendanceSubmited}"
+                                                                  onclick="{!c.submitform}"
+                                                                  />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th style="text-align: center !important;font-size: 30px !important;" scope="col">
+                                                    <b><center>Student Attendance</center></b>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                    </table><br/>
+                                    <div class="slds-scrollable">
+                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                            <thead>
+                                                <tr class="slds-line-height_reset">
+                                                    <!-- <th scope="col">Grade</th> -->
+                                                    <th scope="col">Batch Code - Batch Name</th>
+                                                    <th scope="col">Student Name</th>
+                                                    <!--<aura:if isTrue="{!not(empty(v.sessionRecords))}">
+                                                        <aura:if isTrue="{!v.selectedSession == 'All'}">
+                                                            <aura:iteration items="{!v.sessionRecords}" var="sess">
+                                                                <aura:if isTrue="{!and(sess.label != 'All')}">
+                                                                    <th scope="col">{!sess.label}</th>
+                                                                </aura:if>
+                                                            </aura:iteration>
+                                                            <aura:set attribute="else">
+                                                                <th scope="col">{!v.singleSession}</th>
+                                                            </aura:set>
+                                                        </aura:if>
+                                                    </aura:if>-->
+                                                    <th>Student Attendance</th>
+                                                    <aura:if isTrue="{!v.isSessionTypeParent}">
+                                                        <th>Parent Attendance</th>
+                                                    </aura:if>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <aura:iteration items="{!v.studentMatrix}" var="std">
+                                                    <tr class="slds-hint-parent">
+                                                        <!-- <td>
+                                                        {!std.className}
+                                                    </td> -->
+                                                        <td>
+                                                            {!std.batchName}
+                                                        </td>
+                                                        <td>
+                                                            {!std.studentName}
+                                                        </td>
+                                                        <aura:if isTrue="{!not(empty(v.sessionRecords))}">
+                                                            <aura:iteration items="{!std.sessiondata}" var="sess">
+                                                                <td>
+                                                                    <!--<lightning:input type="checkbox" label="Required option" variant="label-hidden" name="{!sess.sessionId}" checked="{!sess.isChecked}" disabled="{!sess.isSessionTwoOrMoreDaysOld}"/>-->
+                                                                    <lightning:select
+                                                                                      name="{!sess.sessionId}"
+                                                                                      label=""
+                                                                                      variant="label-hidden"
+                                                                                      value="{!sess.stdAttendance}"
+                                                                                      disabled="{!or(sess.isSessionTwoOrMoreDaysOld, v.isAttendanceSubmited)}"
+                                                                                      >
+                                                                        <aura:iteration items="{!v.studentattendance}" var="fi">
+                                                                            <option value="{!fi.value}"
+                                                                                    >{!fi.label}</option
+                                                                                >
+                                                                        </aura:iteration>
+                                                                    </lightning:select>
+                                                                </td>
+                                                                <aura:if isTrue="{!v.isSessionTypeParent}">
+                                                                    <td>
+                                                                        <!--<lightning:input type="checkbox" label="Required option" variant="label-hidden" name="{!sess.sessionId}" checked="{!sess.isChecked}" disabled="{!sess.isSessionTwoOrMoreDaysOld}"/>-->
+                                                                        <lightning:select
+                                                                                          name="{!sess.sessionId}"
+                                                                                          label=""
+                                                                                          variant="label-hidden"
+                                                                                          value="{!sess.parentAttendance}"
+                                                                                          disabled="{!or(sess.isSessionTwoOrMoreDaysOld, v.isAttendanceSubmited)}"
+                                                                                          >
+                                                                            <aura:iteration items="{!v.parentattendance}" var="fi">
+                                                                                <option value="{!fi.value}"
+                                                                                        >{!fi.label}</option
+                                                                                    >
+                                                                            </aura:iteration>
+                                                                        </lightning:select>
+                                                                    </td>
+                                                                </aura:if>
+                                                            </aura:iteration>
+                                                        </aura:if>
+                                                    </tr>
+                                                </aura:iteration>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </aura:if>
+                            </aura:if>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.pagenumber == 1}">
+                            <!-- <div class="slds-p-vertical_x-small slds-text-heading_medium">
+            <b>Find Trainer</b>
+          </div> -->
+                            
+                            <div class="slds-form">
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control clsbold">
+                                        <lightning:input
+                                                         label="Your (Facilitator) Email"
+                                                         aura:id="datavalidate"
+                                                         type="email"
+                                                         name="email"
+                                                         value="{!v.traineremail}"
+                                                         placeholder="Enter email address"
+                                                         required="true"
+                                                         messageWhenValueMissing="Email is required!"
+                                                         />
+                                    </div>
+                                </div>
+                            </div>
+                        </aura:if>
+                    </div>
+                </div>
+                
+                <aura:if isTrue="{!and(v.pagenumber == 2)}">
+                    <div class="slds-align_absolute-center slds-m-bottom_medium">
+                        <b>{!v.pageConstant.submitlabel}</b>
+                    </div>
+                    <div class="slds-align_absolute-center">
+                        <aura:if isTrue="{!v.isPresentedValueExist}">
+                            <aura:if isTrue="{!not(empty(v.studentMatrix))}">
+                                <lightning:button
+                                                  variant="success"
+                                                  aura:id="btnsubmit"
+                                                  type="submit"
+                                                  label="Save"
+                                                  disabled="{!v.isAttendanceSubmited}"
+                                                  onclick="{!c.savedata}"
+                                                  />
+                            </aura:if>
+                        </aura:if>
+                    </div>
+                    <aura:set attribute="else">
+                        <div class="slds-align_absolute-center">
+                            <lightning:button
+                                              variant="brand"
+                                              aura:id="btnsubmit"
+                                              type="submit"
+                                              label="Login"
+                                              onclick="{!c.checkemail}"
+                                              />
+                        </div>
+                    </aura:set>
+                </aura:if>
+            </div>
+        </div>
+    </div>
+    
+    <div class="slds-m-around_xx-large">
+        <!--Use aura:if tag to display/hide popup based on isModalOpen value-->  
+        <aura:if isTrue="{!v.showAllSession}">
+            
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_large">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeAllSessionModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Students Attendance</h2>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-scrollable">
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <!-- <th scope="col">Grade</th> -->
+                                        <th scope="col">Batch Code - Batch Name</th>
+                                        <th scope="col">Student Name</th>
+                                        <aura:if isTrue="{!not(empty(v.allSessionRecords))}">
+                                            
+                                                <aura:iteration items="{!v.allSessionRecords}" var="sess">
+                                                    <aura:if isTrue="{!and(sess.label != 'None')}">
+                                                        <th scope="col" style="font-size: 0.8rem;">{!sess.label}</th>
+                                                    </aura:if>
+                                                </aura:iteration>
+                                                
+                                        </aura:if>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <aura:iteration items="{!v.studentMatrixForAllSession}" var="std">
+                                        <tr class="slds-hint-parent">
+                                            <!-- <td>
+                                                        {!std.className}
+                                                    </td> -->
+                                            <td>
+                                                {!std.batchName}
+                                            </td>
+                                            <td>
+                                                {!std.studentName}
+                                            </td>
+                                            <aura:if isTrue="{!not(empty(v.allSessionRecords))}">
+                                                <aura:iteration items="{!std.sessiondata}" var="sess">
+                                                    <td>
+                                                        <!--<lightning:input type="checkbox" label="Required option" 
+																variant="label-hidden" name="{!sess.sessionId}" 
+																checked="{!sess.isChecked}" disabled="true"/>-->
+                                                        <lightning:input type="text" value="{!sess.stdAttendance}"
+                                                                  style="font-size: 0.7rem;"      disabled="true"/> 
+                                                        
+                                                    </td>
+                                                </aura:iteration>
+                                            </aura:if>
+                                        </tr>
+                                    </aura:iteration>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeAllSessionModel }"/>
+                        <!--<lightning:button variant="brand"
+                                          label="Send"
+                                          title="Send"
+                                          onclick="{!c.sendemail}"/>-->
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+    </div>
+    
+    <div class="slds-m-around_xx-large">
+        <!--Use aura:if tag to display/hide popup based on isModalOpen value-->  
+        <aura:if isTrue="{!v.showLogReason}">
+            
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeLogReason }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Log Reason for difference in attendance</h2>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-form-element slds-form-element_stacked">
+                            <div class="slds-form-element__control clsbold">
+                                <lightning:select
+                                                  aura:id="logreason"
+                                                  name="Log Reason for difference in attendance"
+                                                  label="Log Reason for difference in attendance"
+                                                  variant="label-hidden"
+                                                  value="{!v.selectedLogReason}"
+                                                  >
+                                    <aura:iteration items="{!v.logreasonpicklist}" var="lr">
+                                        <option value="{!lr.value}"
+                                                >{!lr.label}</option
+                                            >
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeLogReason }"/>
+                        <lightning:button variant="brand"
+                                          label="Ok"
+                                          title="Ok"
+                                          onclick="{!c.saveLogReason}"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+    </div>
+    
+    <div class="slds-m-around_xx-large">
+        <!--Use aura:if tag to display/hide popup based on isModalOpen value-->  
+        <aura:if isTrue="{!v.showPendingsessions}">
+            
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_large">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closePendingSess }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Pending Session Attendance</h2>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-scrollable">
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout slds-table_striped">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th class="slds-cell-wrap" scope="col">Batch Number</th>
+                                        <th class="slds-cell-wrap" scope="col">Batch Name</th>
+                                        <th class="slds-cell-wrap" scope="col">Session Name</th>
+                                        <th class="slds-cell-wrap" scope="col">Scheduled Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <aura:iteration items="{!v.pendingsessions}" var="sess">
+                                        <tr class="slds-hint-parent">
+                                            <td class="slds-cell-wrap">
+                                                {!sess.Batch__r.Batch_Number__c}
+                                            </td>
+                                            <td class="slds-cell-wrap">
+                                                {!sess.Batch__r.Name}
+                                            </td>
+                                            <td class="slds-cell-wrap">
+                                                {!sess.Name}
+                                            </td>
+                                            <td class="slds-cell-wrap">
+                                                {!sess.SessionDate__c}
+                                            </td>
+                                        </tr>
+                                    </aura:iteration>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="brand"
+                                          label="Ok"
+                                          title="Ok"
+                                          onclick="{!c.closePendingSess}"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+    </div>
+    
+</aura:component>

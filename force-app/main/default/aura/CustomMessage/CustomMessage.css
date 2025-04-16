@@ -1,0 +1,9 @@
+.THIS svg.slds-icon[data-key=success] {
+    /*fill:#04844b;*/
+    fill:#fff;
+}
+
+.THIS svg.slds-icon[data-key=error] {
+    /*fill:#c23934;*/
+    fill:#fff;
+}

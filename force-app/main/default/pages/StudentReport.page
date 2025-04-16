@@ -1,0 +1,495 @@
+<apex:page standardController="Contact" extensions="StudentReportController" showHeader="false" sidebar="false" standardStylesheets="false" 
+        applyBodyTag="false" applyHtmlTag="false" contentType="application/vnd.msword#Student_{!Contact.Bar_Code__c}.doc"><!--contentType="application/vnd.msword#Student_{!Contact.Bar_Code__c}.doc"-->
+    <html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <style>
+            body {
+                    width:100%;
+                    font-family: Arial Unicode MS; 
+                    font-size: 10pt;
+                }
+                @page {
+                    size: A4;
+                    margin: 0;
+                }
+                .header {
+                    text-transform:uppercase;
+                    text-align: center;
+                    font-size:22pt;
+                    font-weight:bold;
+                }
+                .row {
+                    text-align: left;
+                }
+                .row lable {
+                    font-weight:bold;
+                }
+                .breakrow {
+                    margin-top:5pt;
+                    border-bottom: 1px solid black;
+                    width:100%;
+                    margin-bottom:10pt;
+                }
+                
+                .divtable {
+                    display: table;
+                    width:100%;
+                }
+                
+                .divtable .tablerow {
+                    display: table-row;
+                    width:100%;
+                }
+                
+                .divtable .tablerow .tablecell {
+                    display: table-cell;
+                    width:33.33%;
+                }
+                
+                .rowheader {
+                    font-size:15pt;
+                    font-weight:bold;
+                }
+                
+                .blacktd {
+                    background-color:black;
+                    color:white;
+                    padding:5px;
+                    width:50%;
+                }
+                table {table-layout:fixed;page-break-after:auto}
+                table td {
+                    word-wrap:break-word;
+                }
+        </style>
+    </head>
+    <body>
+        <div id="main">
+            <div class="header">
+                {!objContact.Name} 
+            </div>
+            <div class="row">
+                <lable>Age:</lable>
+                <span>{!objContact.Age__c}</span>
+            </div>
+            <div class="row">
+                <lable>Class:</lable>
+                <span>{!if(objContact.Batch_Code__c != null, objContact.Batch_Code__r.Grade__c, '')}</span>
+            </div>
+            <div class="row">
+                <lable>School:</lable>
+                <span>{!if(objContact.Batch_Code__c != null && objContact.Batch_Code__r.School_Name__c != null, objContact.Batch_Code__r.School_Name__r.Name, '')}</span>
+            </div>
+            <div class="row">
+                <lable>Batch Code:</lable>
+                <span>{!if(objContact.Batch_Code__c != null, objContact.Batch_Code__r.Batch_Number__c, '')}</span>
+            </div>
+            <div class="row">
+                <lable>Trainer Name:</lable>
+                <span>{!if(objContact.Batch_Code__c != null && objContact.Batch_Code__r.Trainer_Name__c != null, objContact.Batch_Code__r.Trainer_Name__r.Name, '')}</span>
+            </div>
+            <div class="row">
+                <lable>Aspiration:</lable>
+                <span>{!strAspiration}</span>
+            </div>
+            <div class="breakrow"/>
+            
+            <div id="firstpg">
+                <table width="100%" height="100%">
+                    <tr>
+                        <td width="33.33%" align="center">
+                            <span class="rowheader">I N T E R E S T S</span>
+                        </td>
+                        <td width="33.33%" rowspan="4" align="center" style="vertical-align:middle;">
+                            <div>
+                                <img src="{!URLFOR('/servlet/servlet.ImageServer', null,[id = strMiddleIconDocId, oid = strOrgId])}" width="130" height="130"/>
+                            </div>
+                        </td>
+                        <td width="33.33%" align="center">
+                            <span class="rowheader"><!--P E R S O N A L I T Y-->A P T I T U D E</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="33.33%" align="center">
+                            <table>
+                                <tr>
+                                    <!--<apex:repeat value="{!lstInterests}" var="interest">
+                                        <td>
+                                            <img src="{!URLFOR('/servlet/servlet.ImageServer', null,[id = interest.Document_Icon_Id__c, oid = strOrgId])}" width="70" height="70"/>
+                                        </td>
+                                    </apex:repeat>-->
+                                    <td>
+                                        <apex:image url="{!URLFOR('/servlet/servlet.ImageServer', null,[id = lstInterests[0].Document_Icon_Id__c, oid = strOrgId])}" rendered="{!lstInterests.size > 0}" width="70" height="70"/>
+                                    </td>
+                                    <td>
+                                        <apex:image url="{!URLFOR('/servlet/servlet.ImageServer', null,[id = lstInterests[1].Document_Icon_Id__c, oid = strOrgId])}" rendered="{!lstInterests.size > 1}" width="70" height="70"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <!-- {!objContact.Interest_1__c} -->
+                                        {!Interest_1_Label}
+                                    </td>
+                                    <td align="center">
+                                        <!-- {!objContact.Interest_2__c} -->
+                                        {!Interest_2_Label}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="33.33%" align="center">
+                            <table>
+                                <tr>                        
+                                    <td>
+                                        <apex:image url="{!URLFOR('/servlet/servlet.ImageServer', null,[id = lstAptitude[0].Document_Icon_Id__c, oid = strOrgId])}" rendered="{!lstAptitude.size > 0}" width="70" height="70"/>
+                                    </td>
+                                    <td>
+                                        <apex:image url="{!URLFOR('/servlet/servlet.ImageServer', null,[id = lstAptitude[1].Document_Icon_Id__c, oid = strOrgId])}" rendered="{!lstAptitude.size > 1}" width="70" height="70"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <!-- {!objContact.Aptitude_1__c} -->
+                                        {!Aptitude_1_Label}
+                                    </td>
+                                    <td align="center">
+                                        <!-- {!objContact.Aptitude_2__c} -->
+                                        {!Aptitude_2_Label}
+                                    </td>
+                                </tr>
+                                <!--<tr>
+                                    <td>
+                                        <apex:image url="{!URLFOR('/servlet/servlet.ImageServer', null,[id = lstPesonalityIcons[0], oid = strOrgId])}" rendered="{!lstPesonalityIcons.size > 0}" width="70" height="70"/>
+                                    </td>
+                                    <td>
+                                        <apex:image url="{!URLFOR('/servlet/servlet.ImageServer', null,[id = lstPesonalityIcons[1], oid = strOrgId])}" rendered="{!lstPesonalityIcons.size > 1}" width="70" height="70"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        {!objContact.Personality_1__c}
+                                    </td>
+                                    <td align="center">
+                                        {!objContact.Personality_2__c}
+                                    </td>
+                                </tr>-->
+                            </table>  
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="33.33%" align="center">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <apex:image url="{!URLFOR('/servlet/servlet.ImageServer', null,[id = lstInterests[2].Document_Icon_Id__c, oid = strOrgId])}" rendered="{!lstInterests.size > 2}" width="70" height="70"/>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <!-- {!objContact.Interest_3__c} -->
+                                        {!Interest_3_Label}
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="33.33%" align="center">
+                            <table>
+                                <tr>                        
+                                    <td>
+                                        <apex:image url="{!URLFOR('/servlet/servlet.ImageServer', null,[id = lstAptitude[2].Document_Icon_Id__c, oid = strOrgId])}" rendered="{!lstAptitude.size > 2}" width="70" height="70"/>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <!-- {!objContact.Aptitude_3__c} -->
+                                        {!Aptitude_3_Label}
+                                    </td>
+                                    <td align="center"></td>
+                                </tr>
+                            </table>  
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="33.33%" align="left" style="vertical-align:top;">
+                            <span style="text-align: left;">
+                                <ul>
+                                    <apex:repeat value="{!lstInterests}" var="interest">
+                                        <li>
+                                            {!if(objContact.Batch_Code__c != null && objContact.Batch_Code__r.Preferred_Language__c == null, interest.Particulars__c, 
+                                            if(objContact.Batch_Code__c != null && objContact.Batch_Code__r.Preferred_Language__c == 'Hindi',interest.Particulars_Hindi__c,
+                                            if(objContact.Batch_Code__c != null && objContact.Batch_Code__r.Preferred_Language__c == 'Marathi',interest.Particulars_Marathi__c,interest.Particulars__c)))}
+                                            <!--{!interest.Particulars__c}-->
+                                        </li>
+                                    </apex:repeat>
+                                </ul>
+                            </span>
+                        </td>
+                        <td width="33.33%" align="left" style="vertical-align:top;">
+                            <span style="text-align: left;">
+                                <ul>
+                                    <apex:repeat value="{!lstAptitude}" var="aptitude">
+                                        <li>
+                                            {!if(objContact.Batch_Code__c != null && objContact.Batch_Code__r.Preferred_Language__c == null, aptitude.Particulars__c, 
+                                            if(objContact.Batch_Code__c != null && objContact.Batch_Code__r.Preferred_Language__c == 'Hindi',aptitude.Particulars_Hindi__c,
+                                            if(objContact.Batch_Code__c != null && objContact.Batch_Code__r.Preferred_Language__c == 'Marathi',aptitude.Particulars_Marathi__c,aptitude.Particulars__c)))}
+                                        </li>
+                                    </apex:repeat>
+                                </ul>
+                            </span>
+                            <!--<table>
+                                <tr>
+                                    <td>
+                                        <apex:image url="{!URLFOR('/servlet/servlet.ImageServer', null,[id = lstPesonalityIcons[2], oid = strOrgId])}" rendered="{!lstPesonalityIcons.size > 2}" width="70" height="70"/>
+                                    </td>
+                                    <td>
+                                        <apex:image url="{!URLFOR('/servlet/servlet.ImageServer', null,[id = lstPesonalityIcons[3], oid = strOrgId])}" rendered="{!lstPesonalityIcons.size > 3}" width="70" height="70"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        {!objContact.Personality_3__c}
+                                    </td>
+                                    <td align="center">
+                                        {!objContact.Personality_4__c}
+                                    </td>
+                                </tr>
+                            </table> -->
+                        </td>
+                    </tr>
+                    <!--<tr>
+                        <td width="33.33%" align="center">
+                            <span class="rowheader">A P T I T U D E</span>
+                        </td>
+                        <td width="33.33%" align="center">
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="33.33%" align="center">
+                            <table>
+                                <tr>                        
+                                    <apex:repeat value="{!lstAptitude}" var="aptitude">
+                                    <td>
+                                        <apex:image url="{!URLFOR('/servlet/servlet.ImageServer', null,[id = aptitude.Document_Icon_Id__c, oid = strOrgId])}" width="70" height="70"/>
+                                    </td>
+                                    </apex:repeat>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        {!objContact.Aptitude_1__c}
+                                    </td>
+                                    <td align="center">
+                                        {!objContact.Aptitude_2__c}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="33.33%" style="vertical-align:top;">
+                            <span style="text-align: left;">
+                                <ul>
+                                    <li>
+                                        {!strPersonality}
+                                    </li>
+                                </ul>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="33.33%">
+                            <span style="text-align: left;">
+                                <ul>
+                                    <apex:repeat value="{!lstAptitude}" var="aptitude">
+                                        <li>
+                                            {!if(objContact.Batch_Code__c != null && objContact.Batch_Code__r.Preferred_Language__c == null, aptitude.Particulars__c, 
+                                            if(objContact.Batch_Code__c != null && objContact.Batch_Code__r.Preferred_Language__c == 'Hindi',aptitude.Particulars_Hindi__c,
+                                            if(objContact.Batch_Code__c != null && objContact.Batch_Code__r.Preferred_Language__c == 'Marathi',aptitude.Particulars_Marathi__c,aptitude.Particulars__c)))}
+                                        </li>
+                                    </apex:repeat>
+                                </ul>
+                            </span>
+                        </td>
+                        <td width="33.33%">
+                        </td>
+                    </tr>-->
+                    <tr>
+                        <td colspan="3">
+                            <table style="width:100%;font-size:11px;" cellspacing="2">
+                                <tr>
+                                    <td colspan="2" style="text-align:center;">
+                                        <span class="rowheader">R E A L I T I E S</span>
+                                    </td>
+                                </tr>
+                                <apex:repeat value="{!mapAllRealities}" var="realitykey">
+                                    <tr>
+                                        <apex:repeat value="{!mapAllRealities[realitykey]}" rendered="{!realitykey != null && mapAllRealities[realitykey] != null}" var="reality">
+                                            <td class="blacktd" valign="top" style="display:{!if(reality==null || reality=='','none','')}">
+                                                {!reality}
+                                            </td>
+                                        </apex:repeat>
+                                    </tr>
+                                </apex:repeat>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>  
+            <!-- page 2-->
+            <div id="secondpg" style="page-break-before: always;height:100%;">
+                <table width="100%" height="100%" style="border-collapse:collapse;">
+                    <tr width="100%" height="600px">
+                        <td width="20%" style="border-bottom: 1px solid black;border-right: 1px solid black;vertical-align:top;">
+                            <table cellspacing="12" style="border-collapse:collapse;">
+                                <!--<tr>
+                                    <td style="border-right: 1px solid black;border-bottom: 1px solid black;padding:20px">
+                                        Other People got the Same Result
+                                    </td>
+                                </tr>-->
+                                <tr>
+                                    <td style="border-bottom: 1px solid black;padding:5px;">
+                                        <div style="font-weight:bold;font-size:15pt;">Other related Profession(s)</div> <br/>
+                                        {!if(objContact.Profession_1_You_could_be_a__c != null, objContact.Profession_1_You_could_be_a__c, '')}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:5px">
+                                        <div style="font-weight:bold;font-size:15pt;">AVERAGE PAY</div> <br/>
+                                        {!if(objContact.Profession_1_Avg_Salary__c != null, objContact.Profession_1_Avg_Salary__c, '')}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="60%" height="100%" style="border-bottom: 1px solid black;border-right: 1px solid black;vertical-align:top;">
+                            <table cellspacing="12" width="100%" height="100%" style="border-collapse:collapse;display:table;">
+                                <tr>
+                                    <td colspan="1" width="200" valign="middle" align="right" style="border-bottom:1px solid black;">                                    
+                                            
+                                        <apex:image url="{!URLFOR('/servlet/servlet.ImageServer', null,[id = objContact.Profession_1__r.Document_Icon_Id__c, oid = strOrgId])}" alt="Not Found." 
+                                            width="70" height="70" rendered="{!objContact.Profession_1__c != null && objContact.Profession_1__r.Document_Icon_Id__c != null}"/>
+                                            
+                                       
+                                    </td> 
+                                    <td colspan="2" valign="middle" style="border-bottom:1px solid black;font-weight:bold;font-size:15pt;"> 
+                                        <div>{!objContact.Profession_1__r.Name}</div>
+                                        <div>Next Steps</div>
+                                    </td>
+                                </tr>
+                                <tr style="font-weight:bold;">
+                                    <td style="border-right: 1px solid black;padding:5px;font-weight:bold;font-size:15pt;">after 10th</td>
+                                    <td style="border-right: 1px solid black;padding:5px;font-weight:bold;font-size:15pt;">after 12th</td>
+                                    <td style="padding:5px;font-weight:bold;font-size:15pt;">Other Info</td>                                
+                                </tr>
+                                <tr valign="top">
+                                    <td width="33.33%" style="border-right: 1px solid black;padding:5px;height:100%">
+                                        <apex:outputField value="{!objContact.Profession_1_After_10th__c}"/>
+                                        <!--{!if(objContact.Profession_1_After_10th__c != null,objContact.Profession_1_After_10th__c, '')}-->
+                                    </td>
+                                    <td width="33.33%" style="border-right: 1px solid black;padding:5px;">
+                                        <apex:outputField value="{!objContact.Profession_1_After_12th__c}"/>
+                                        <!--{!if(objContact.Profession_1_After_12th__c != null,objContact.Profession_1_After_12th__c, '')}-->
+                                    </td>
+                                    <td width="33.33%" style="padding:5px;">
+                                        <apex:outputField value="{!objContact.Profession_1_Additional_Info__c}"/>
+                                        <!--{!if(objContact.Profession_1_Additional_Info__c != null,objContact.Profession_1_Additional_Info__c, '')}-->
+                                    </td>                                    
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="20%" style="vertical-align:top;text-align:center;">
+                            <table cellspacing="12" width="100%" height="100%" style="border-collapse:collapse;">
+                                <tr height="100%">
+                                    <td width="100%" style="padding:5px;">
+                                        <apex:outputPanel rendered="{!objContact.Profession_1_Fun_Fact__c != null}">
+                                            <div style="font-weight:bold;font-size:15pt;">FUN FACT</div><br/>
+                                            {!objContact.Profession_1_Fun_Fact__c}
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!objContact.Profession_1_Famous_Person__c != null}">
+                                            <div style="font-weight:bold;font-size:15pt;">FAMOUS PERSON</div><br/>
+                                            {!objContact.Profession_1_Famous_Person__c}
+                                        </apex:outputPanel>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr width="100%" height="600px">
+                        <td width="20%" style="border-bottom: 1px solid black;border-right: 1px solid black;vertical-align:top;">
+                            <table cellspacing="12" style="border-collapse:collapse;">
+                                <!--<tr>
+                                    <td style="border-right: 1px solid black;border-bottom: 1px solid black;padding:20px">
+                                        Other People got the Same Result
+                                    </td>
+                                </tr>-->
+                                <tr>
+                                    <td style="border-bottom: 1px solid black;padding:5px">
+                                        <div style="font-weight:bold;font-size:15pt;">Other related Profession(s)</div> <br/>
+                                        {!if(objContact.Profession_2_You_could_be_a__c != null, objContact.Profession_2_You_could_be_a__c, '')}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:5px;">
+                                        <div style="font-weight:bold;font-size:15pt;">AVERAGE PAY</div><br/>
+                                        {!if(objContact.Profession_2_Avg_Salary__c != null, objContact.Profession_2_Avg_Salary__c, '')}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="60%" height="100%" style="border-bottom: 1px solid black;border-right: 1px solid black;vertical-align:top;">
+                            <table cellspacing="12" width="100%" height="100%" style="border-collapse:collapse;display:table;">
+                                <tr>
+                                    <td colspan="1" width="200" valign="middle" align="right" style="border-bottom:1px solid black;">                                    
+                                        <apex:image url="{!URLFOR('/servlet/servlet.ImageServer', null,[id = objContact.Profession_2__r.Document_Icon_Id__c, oid = strOrgId])}" alt="Not Found." 
+                                            width="70" height="70" rendered="{!objContact.Profession_2__c != null && objContact.Profession_2__r.Document_Icon_Id__c != null}"/>
+                                    </td> 
+                                    <td colspan="2" valign="middle" style="border-bottom:1px solid black;font-weight:bold;font-size:15pt;"> 
+                                        <div>{!objContact.Profession_2__r.Name}</div>
+                                        <div>Next Steps</div>       
+                                    </td>                             
+                                </tr>
+                                <tr style="font-weight:bold;">
+                                    <td style="border-right: 1px solid black;padding:5px;font-weight:bold;font-size:15pt;">after 10th</td>
+                                    <td style="border-right: 1px solid black;padding:5px;font-weight:bold;font-size:15pt;">after 12th</td>
+                                    <td style="padding:5px;font-weight:bold;font-size:15pt;">Other Info</td>                                
+                                </tr>
+                                <tr valign="top">
+                                    <td width="33.33%" style="border-right: 1px solid black;padding:5px;height:100%">
+                                        <apex:outputField value="{!objContact.Profession_2_After_10th__c}"/>
+                                        <!--{!if(objContact.Profession_2_After_10th__c != null,objContact.Profession_2_After_10th__c, '')}-->
+                                    </td>
+                                    <td width="33.33%" style="border-right: 1px solid black;padding:5px;">
+                                        <apex:outputField value="{!objContact.Profession_2_After_12th__c}"/>
+                                        <!--{!if(objContact.Profession_2_After_12th__c != null,objContact.Profession_2_After_12th__c, '')}-->
+                                    </td>
+                                    <td width="33.33%" style="padding:5px;">
+                                        <apex:outputField value="{!objContact.Profession_2_Additional_Info__c}"/>
+                                        <!--{!if(objContact.Profession_2_Additional_Info__c != null,objContact.Profession_2_Additional_Info__c, '')}-->
+                                    </td>                               
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="20%" style="vertical-align:top;text-align:center;">
+                            <table cellspacing="12" width="100%" height="100%" style="border-collapse:collapse;">
+                                <tr height="100%">
+                                    <td width="100%" style="padding:5px;">
+                                        <apex:outputPanel rendered="{!objContact.Profession_2_Fun_Fact__c != null}">
+                                            <div style="font-weight:bold;font-size:15pt;">FUN FACT</div><br/>
+                                            {!objContact.Profession_2_Fun_Fact__c}
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!objContact.Profession_2_Famous_Person__c != null}">
+                                            <div style="font-weight:bold;font-size:15pt;">FAMOUS PERSON</div><br/>
+                                            {!objContact.Profession_2_Famous_Person__c}
+                                        </apex:outputPanel>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+    </html>
+</apex:page>

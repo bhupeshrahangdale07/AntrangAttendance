@@ -1,0 +1,173 @@
+<aura:component >
+    <!--declare aura attributes-->
+   <!-- <aura:attribute name="sessionDeliveryopt" type="string[]" default="[{'label': 'None', 'value': ''},
+                                                    {'label': 'Synchronous', 'value': 'Synchronous'},
+                                                    {'label': 'Asynchronous', 'value': 'Asynchronous' }]"/> 
+    <aura:attribute name="sessionTypeopt" type="string[]" default="[{label: 'None', value: ''},
+                                                {label: 'Student', value: 'Student'},
+                                                {label: 'Parent', value: 'Parent' },
+                                                {label: 'Counselling', value: 'Counselling' } ]" /> -->
+    <aura:attribute name="sessionModeopt" type="string[]" default="[{label: 'None', value: ''},
+                                                {label: 'Digital', value: 'Digital'},
+                                                {label: 'Physical', value: 'Physical' }]" />
+    
+    <aura:attribute name="showSaveCancelBtn" type="boolean"/>
+   <!-- <aura:attribute name="isValidAll" type="boolean"/> -->
+    <aura:attribute name="isValid" type="boolean" default="true"/>
+    
+    <aura:attribute name="showErrorClass" type="boolean" default="false"/>
+    <aura:attribute name="sNo" type="string" />
+    <aura:attribute name="singleRec" type="object" />
+    <aura:attribute name="nameEditMode" type="boolean" default="false" />
+    <aura:attribute name="ratingEditMode" type="boolean" default="false" />
+    <aura:attribute name="latestLink" type="string"/>
+    <aura:attribute name="currentdt" type="date"/>
+    <aura:attribute name="minDT" type="string"/>
+    
+    
+    
+   <!-- <aura:handler name="init" value="{!this}" action="{!c.doInit}"/> -->
+    
+    <aura:registerEvent name="sessionFormEvt" type="c:sessionFormEvt" />
+    
+    <aura:attribute name="sessioneditRec" type="object"/>
+    
+    
+    <!--{!v.sNo}-->
+    <!--Table Row Start-->  
+    <tr >
+      <!--  <td><div class="slds-truncate">{!v.sNo}</div></td> -->
+        
+        <td><lightning:input name="Name" 
+                             aura:id="sessionEdit"
+                             value="{!v.singleRec.name}"
+                             onchange="{!c.handleChange}"
+                             title = "{!v.singleRec.name}"
+                             disabled="true" 
+                             /></td>
+        
+      <!--   <td><lightning:input name="Code" 
+                             aura:id="sessionEdit"
+                             value="{!v.singleRec.code}"
+                             disabled="true"/></td> -->
+       <!-- <td><lightning:input name="Grade" 
+                             aura:id="sessionEdit"
+                             value="{!v.singleRec.grade}"
+                             disabled="true"/></td> -->
+        <td>
+            <lightning:input name="facilitator" 
+                             disabled="true"
+                             value="{!v.singleRec.facilitatorName}"
+                             title = "{!v.singleRec.facilitatorName}"
+                             />
+            <!--<span class="{! empty(v.singleRec.facilitatorId) ? '' : 'slds-hide' }">
+                
+            <c:AutoCompleteInput
+                                 inputValue = "{!v.singleRec.facilitatorName}"
+                                 selectedOption = "{!v.singleRec.facilitatorName}"
+                                 label=""
+                                 objectApiName="Contact"
+                                 idFieldApiName="Id"
+                                 valueFieldApiName="Name"
+                                 MatchingvalueFieldApiName="Name"
+                                 extendedWhereClause="{!v.singleRec.WhereClause}"
+                                 StudentFeedbackSpecific="{!c.onwrpEventUpdate}"
+                                 />
+            <div style="color: red;font-size: 0.7em;" aura:id="facilitator" class="{! and(empty(v.singleRec.facilitatorId), v.singleRec.sessionDate) ? '' : 'slds-hide' }">
+                Facilitator Name is mandatory when Session Date is added
+                </div>
+            </span>-->
+            <!--<p class="{! empty(v.singleRec.facilitatorId) ? 'slds-hide' : 'slds-show' }">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label" >Assigned Facilitator</label>
+                </div> -->
+                
+                <!--<lightning:buttonIcon 
+                                      class="slds-m-left_x-small"
+                                      size="xx-small"
+                                      iconName="utility:close"
+                                      onclick="{!c.handleClearFacilitator}"
+                                      alternativeText="Clear Facilitator" />
+            </p>-->
+        </td>
+        
+            
+        
+        <td><!--min = "{!v.minDT}"-->
+            <lightning:input type="date" name="SessionDate" 
+                             
+                             aura:id="SessionDate"
+                             value="{!v.singleRec.sessionDate}" 
+                             onblur="{!c.handleDateChange}"
+                             disabled="{!OR(v.singleRec.isAttendenceFound, v.singleRec.isNotLoggedInTrainerSession)}"
+                             
+                             />
+        </td>
+        <td>
+            <lightning:input type="time" name="startTime"
+                             aura:id="sessionEdit"
+                             value="{!v.singleRec.startTime}" 
+                             onchange="{!c.handleChange}"
+                             disabled="{!OR(v.singleRec.isAttendenceFound, v.singleRec.isNotLoggedInTrainerSession)}"/>
+            <div style="color: red;font-size: 0.7em; " aura:id="facilitator" class="{!and(empty(v.singleRec.startTime),v.singleRec.sessionDate != null) ? '' : 'slds-hide' }">
+                Time is mandatory when Session Date added
+            </div>
+        </td>
+        <!--<td>
+            <lightning:input type="time" name="endTime" 
+                             aura:id="sessionEdit"
+                             value="{!v.singleRec.endTime}"
+                             onchange="{!c.handleChange}"
+                             disabled="{!v.singleRec.isAttendenceFound}"/>
+        </td>-->
+        <td>
+            <lightning:select name="mode" 
+                              aura:id="sessionEdit"
+                              value="{!v.singleRec.mode}" 
+                              onblur="{!c.handleChange}"
+                              disabled="{!OR(v.singleRec.isAttendenceFound, v.singleRec.isNotLoggedInTrainerSession)}">
+            <aura:iteration items="{!v.sessionModeopt}" var="option">
+                <option text="{!option.label}" value="{!option.value}" />
+            </aura:iteration>
+            </lightning:select>
+            <div style="color: red; font-size: 0.7em;" aura:id="facilitator" class="{!and(empty(v.singleRec.mode),v.singleRec.sessionDate != null) ? '' : 'slds-hide' }">
+                Mode is mandatory when Session Date added
+            </div>
+        </td>
+        <td ><lightning:textarea name="SessionLink"
+                                aura:id="sessionEdit"
+                                value="{!v.singleRec.link}"
+                                onchange="{!c.handleChange}"
+                                disabled="{!or(v.singleRec.isAttendenceFound, v.singleRec.mode != 'Digital',v.singleRec.isNotLoggedInTrainerSession)}" />
+            <div style="color: red;font-size: 0.7em; " aura:id="facilitator" class="{! and(empty(v.singleRec.link), v.singleRec.mode == 'Digital') ? '' : 'slds-hide' }">
+                Session Link is mandatory when Session Mode is Digital
+            </div>
+        </td>
+      <!--  <td>
+            <lightning:select name="delivery" 
+                              aura:id="sessionEdit"
+                              value="{!v.singleRec.delivery}" 
+                              onchange="{!c.handleChange}"
+                              disabled="{!v.singleRec.isAttendenceFound}">
+            <aura:iteration items="{!v.sessionDeliveryopt}" var="option">
+                <option text="{!option.label}" value="{!option.value}" />
+            </aura:iteration>
+            </lightning:select>
+        </td>
+        <td>
+            <lightning:select name="Type"  
+                              aura:id="sessionEdit"
+                              value="{!v.singleRec.type}" 
+                              onchange="{!c.handleChange}"
+                             
+                              disabled="{!v.singleRec.isAttendenceFound}">
+            <aura:iteration items="{!v.sessionTypeopt}" var="option">
+                <option text="{!option.label}" value="{!option.value}" />
+            </aura:iteration>
+            </lightning:select>
+        </td> -->
+            
+       
+        
+    </tr>
+</aura:component>

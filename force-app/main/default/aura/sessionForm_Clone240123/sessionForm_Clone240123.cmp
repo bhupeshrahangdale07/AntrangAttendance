@@ -1,0 +1,372 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,lightning:isUrlAddressable,force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                controller="DataEntryLoginFormController">
+    <aura:attribute name="activeSections" type="List" default="[]" />
+    <aura:attribute name="MinDate" type="String"/>
+    <aura:attribute name="pagenumber" type="Integer" default="1" />
+    <aura:attribute name="pagenumberday" type="Integer" />
+    <aura:attribute name="traineremail" type="String" default="" />
+    <aura:attribute name="objUI" type="Object" />
+    <aura:attribute name="AccountId" type="String" />
+    <aura:attribute name="ContactId" type="String" />
+    <aura:attribute name="BatchId" type="String" />
+    <aura:attribute name="isBatchSelected" type="Boolean" default="true"/>
+    <aura:attribute name="StudentWhareClause" type="String" />
+    <aura:attribute name="selectedBatchId" type="String" /> 
+    <aura:attribute name="selectedBatchName" type="String" /> 
+    <aura:attribute name="AccountBatches" type="List" />
+    <aura:attribute type="boolean" default="false" name="issubmitdisabled" />
+    <aura:attribute name="pageConstant" type="Object" />
+    <aura:attribute name="showSaveCancelBtn" type="boolean" default="false" description="flag for rendered save and cancel buttons in aura:if "/>
+    <aura:attribute name="studentBatchWhereClause" type="String" />
+    <aura:attribute name="displayBatchStudents" type="Boolean" default="false"/>
+    <aura:attribute name="donotcallBatchOptionfn" type="Boolean" default="false"/>
+    <aura:attribute name="displayButtonList" type="Boolean" default="false"/>
+    <aura:attribute name="forGrade9n10" type="Boolean" default="true"/>
+    <!--<aura:attribute name="studentDetailsPage" type="Boolean" default="false"/>--> <!-- Piyush: 06/02/2023 -->
+    <aura:attribute name="studentContactId" type="String" />
+    <aura:attribute name="sessionfound" type="boolean" default="false" />
+    <aura:attribute name="Spinner" type="boolean" default="false" />
+    
+    <aura:attribute name="sessioneditRec" type="object"/>
+    <aura:attribute name="sessioneditRecTemp" type="object"/>
+    <aura:attribute name="sessionSelectRec" type="object"/>
+    <aura:attribute name="selectedSession" type="String" default="ALL"/>
+    <aura:attribute name="sessionRecords" type="object" description="store session records list"/> 
+    <aura:attribute name="latestLink" type="string"/>
+    <aura:attribute name="gradeList" type="String[]" />
+    <aura:attribute name="selectedGrade" type="String" />
+    <aura:attribute name="batchOptions" type="String[]" />
+    <aura:attribute name="isBatchOption" type="Boolean" default="true"/>
+    <aura:attribute name="selectedValueFromList" type="String" />
+    <aura:attribute name="cdm1Button" type="Boolean" default="false"/><!-- Piyush: 06/02/2023 -->
+    <aura:attribute name="careerSkillButton" type="Boolean" default="false"/><!-- Piyush: 06/02/2023 -->
+    <aura:attribute name="futurePlanningButton" type="Boolean" default="false"/><!-- Piyush: 06/02/2023 -->
+    <aura:attribute name="selfAwareNdFeedbackButton" type="Boolean" default="false"/><!-- Piyush: 06/02/2023 -->
+    <aura:attribute name="realitiesButton" type="Boolean" default="false"/><!-- Piyush: 06/02/2023 -->
+
+    <!-- <aura:attribute name="isValidAll" type="boolean" default="true"/> -->
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}" />
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}" /> 
+    <aura:handler name="sessionFormEvt" event="c:sessionFormEvt" action="{!c.disableFollowingRows}"/>
+    <lightning:navigation aura:id="navService"/> <!-- Piyush(31/01/23)-->
+    <aura:attribute name="pageReference" type="Object"/>
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <!--loading spinner start... style=Brand Medium (blue dots)-->
+    <aura:if isTrue="{!v.Spinner}">
+        <div aura:id="spinnerId" class="slds-spinner_container">
+            <div
+                 class="slds-spinner_brand slds-spinner slds-spinner_large slds-is-relative"
+                 role="alert"
+                 >
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+    <!-- Loading spinner end-->
+    
+    <div class="container">
+        <div class="slds-box slds-theme_default">
+            <div class="slds-form">
+                <div class="slds-form-element slds-form-element_stacked">
+                    <aura:if isTrue="{!v.pagenumber > 1}">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_2-of-3"></div>
+                            <!--<div class="slds-col slds-size_1-of-3">
+                                <span><lightning:button
+                                                        class="signOut"
+                                                        variant="destructive"
+                                                        aura:id="btnsubmit"
+                                                        type="submit"
+                                                        label="Sign Out"
+                                                        onclick="{!c.signOut}"
+                                                        /></span>
+                            </div> -->
+                        </div>
+                    </aura:if>
+                    <div class="slds-form-element__control slds-m-top_xx-large">
+                        <aura:if isTrue="{!v.pagenumber == 1}">
+                            <!--<div class="slds-p-vertical_x-small slds-text-heading_medium">
+                                    <b>Find Trainer</b>
+                            </div>-->
+                            <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+                                <b>Facilitator Login</b>
+                            </div>
+                            <div>
+                                <p class="slds-align_absolute-center">This form allows you to record all student forms that have been filled as a part of the program.</p>
+                                <p class="slds-align_absolute-center slds-m-bottom_small">This form is to be used only by Facilitators/ Teachers. Please DO NOT share this form with students.</p>
+                            </div>
+                            <div class="slds-form">
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control">
+                                        <!---->
+                                        <lightning:input label="Type your Antarang email address to login and enter student data"
+                                                         aura:id="datavalidate"
+                                                         type="email"
+                                                         name="email"
+                                                         value="{!v.traineremail}"
+                                                         placeholder="Enter email address"
+                                                         required="true"
+                                                         messageWhenValueMissing="Email is required!"
+                                                         />
+                                    </div>
+                                    <!--<div class="slds-form-element__control slds-m-bottom_large">
+                                        <lightning:input label="Select the language for the form"
+                                                         aura:id=""
+                                                         type="string"
+                                                         name="language"
+                                                         value=""
+                                                         placeholder="Select the language"
+                                                         
+                                                         messageWhenValueMissing="Default Language - English"
+                                                         />
+                                    </div>-->
+                                </div>
+                            </div>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.pagenumber > 1}">
+                            <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+                                <b>School and Form Selection</b>
+                            </div>
+                            <div>
+                                <p class="slds-align_absolute-center">Before you proceed, ensure you have the filled student copies in front of you to enter the data correctly.</p>
+                                <p class="slds-align_absolute-center slds-m-bottom_small">Do make sure you have read the Data Updation Manual for any queries.</p>
+                            </div>
+                            
+                            <div class="slds-form-element slds-form-element_stacked allPage">
+                                <div class="signOut">
+                                    <lightning:button class="signOutButton assessmentButton"
+                                                      variant="destructive"
+                                                      aura:id="btnsubmit"
+                                                      type="submit"
+                                                      label="Sign Out"
+                                                      onclick="{!c.signOut}"
+                                                      />
+                                    
+                                </div>
+                                <div class="slds-form-element__control slds-m-top_xx-large">
+                                    <c:AutoCompleteInput
+                                                         label="{!v.objUI.accountQName}"
+                                                         objectApiName="Account"
+                                                         idFieldApiName="Id"
+                                                         valueFieldApiName="Name"
+                                                         MatchingvalueFieldApiName="Name"
+                                                         extendedWhereClause="AND RecordType.Name = 'School' ORDER BY Name"
+                                                         StudentFeedbackSpecific="{!c.onwrpEventUpdate}"
+                                                         inputValue = "{!v.selectedValueFromList}"
+                                                         />
+                                </div>
+                            </div>
+                            
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control">
+                                    <lightning:select
+                                                      aura:id="Grade"
+                                                      name="Grade"
+                                                      label="Select the Grade/Class from the drop down below"
+                                                      required="true"
+                                                      value="{!v.selectedGrade}"
+                                                      onchange="{!c.handleGradeChange}"
+                                                      >
+                                        <aura:iteration items="{!v.gradeList}" var="ca">
+                                            <option value="{!ca.value}"
+                                                    >{!ca.label}</option
+                                                >
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </div>
+                            </div>
+                            
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control">
+                                    <lightning:select
+                                                      aura:id="profitabilityDesignation"
+                                                      name="select"
+                                                      label="Select the batch code for the student that you want to enter the data for"
+                                                      value="{!v.selectedBatchId}"
+                                                      onchange="{!c.handleBatchChange}"
+                                                      > <!--disabled="{!v.isBatchOption}"-->
+                                        <aura:iteration items="{!v.batchOptions}" var="batch">
+                                            <option value="{!batch.value}"
+                                                    >{!batch.label}</option
+                                                >
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </div>
+                            </div>
+                            
+                            <!--<div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control">
+                                    <c:AutoCompleteInput
+                                                         label="{!v.objUI.contactQName}"
+                                                         objectApiName="Batch__C"
+                                                         idFieldApiName="Id"
+                                                         valueFieldApiName="Batch_Number__c"
+                                                         MatchingvalueFieldApiName="Batch_Number__c "
+                                                         extendedWhereClause="{!v.StudentWhareClause}"
+                                                         StudentFeedbackSpecific="{!c.onwrpEventUpdate}"
+                                                         sessionFormAttedence = "true"
+                                                         />
+                                </div>
+                            </div>-->
+                            
+                            <!--<div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control">
+                                    <lightning:select
+                                                      aura:id="profitabilityDesignation"
+                                                      name="select"
+                                                      label="Session"
+                                                      disabled="{!v.isBatchSelected}"
+                                                      required="true"
+                                                      value="{!v.selectedSession}"
+                                                      onchange="{!c.handleSessionChange}"
+                                                      >
+                                        <aura:iteration items="{!v.sessionSelectRec}" var="session">
+                                            <option value="{!session.value}"
+                                                    >{!session.label}</option
+                                                >
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </div>
+                            </div>-->
+                        </aura:if>
+                    </div>
+                </div>
+                
+                <!--<aura:if isTrue="{!not(empty(v.sessionRecords))}"> Piyush(1/2/23)-->
+                <div class="slds-grid slds-gutters slds-wrap">
+                    <!--<div class="slds-col slds-size_3-of-3">
+                    // Added : 24/01/2022
+                        <lightning:button label="Add Student" name="Add Student" 
+                            class="slds-align_absolute-center slds-m-top_small assessmentButton"></lightning:button> 
+                    </div>
+                    <div class="slds-col slds-size_3-of-3">
+                    // Added : 24/01/2022
+                        <lightning:button label="Add Assement Data" name="Add Assement Data" onclick="{!c.addAssementBtnHandler}" 
+                            class="slds-align_absolute-center slds-m-top_small assessmentButton"></lightning:button>
+                    </div>-->
+                    
+                    <div class="slds-col slds-size_3-of-3">
+                        <!--<aura:if isTrue="{!v.displayBatchStudents}">-->
+                        <!--<div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control">
+                                    <div>
+                                        <p class="slds-align_absolute-left slds-m-top_small" title="">
+                                            Total Students: {!v.totalStudent} </p>
+                                        <p class="slds-align_absolute-left slds-m-top_small" title="No. of students for whom the assessment data is filled [can recognize from Submitted Page all Forms]">
+                                            Completed: </p>
+                                    </div>
+                                </div>
+                            </div>-->
+                        
+                        
+                        <!--<div class="slds-form-element slds-form-element_stacked"> 
+                                <div class="slds-form-element__control"> 
+                                    <c:AutoCompleteInput
+                                                        label="{!v.objUI.contactStudentQName}"
+                                                        objectApiName="Contact"
+                                                        idFieldApiName="Id"
+                                                        valueFieldApiName="Name"
+                                                        MatchingvalueFieldApiName="Name"
+                                                        extendedWhereClause= "{!v.studentBatchWhereClause}"
+                                                        StudentFeedbackSpecific="{!c.onwrpEventUpdate}"
+                                                        />
+                                </div> 
+                            </div>--> 
+                        <aura:if isTrue="{!v.displayButtonList}">
+                        
+                            <div class="slds-grid slds-gutters slds-wrap">
+                                <!--Add Buttons Here-->
+                                <div class="slds-col slds-size_3-of-3">
+                                    <lightning:button variant="brand" label="Student Details" 
+                                                      class="slds-align_absolute-center slds-m-top_small assessmentButton" onclick="{!c.studentDetailsHandler}"/>
+                                </div>
+                                <div class="slds-col slds-size_3-of-3">
+                                    <lightning:button variant="brand" label="Baseline Assessment" 
+                                                      class="slds-align_absolute-center slds-m-top_small assessmentButton" onclick="{!c.baselineAssessmentHandle}"/>
+                                </div>
+                                <aura:if isTrue="{!or(v.selectedGrade=='Grade 11',v.selectedGrade=='Grade 9')}">
+                                    <div class="slds-col slds-size_3-of-3">
+                                        <lightning:button variant="brand" label="Interest" 
+                                                          class="slds-align_absolute-center slds-m-top_small assessmentButton" onclick="{!c.interestHandler}"/>
+                                    </div>
+                                    <div class="slds-col slds-size_3-of-3">
+                                        <lightning:button variant="brand" label="Aptitude" 
+                                                          class="slds-align_absolute-center slds-m-top_small assessmentButton" onclick="{!c.aptitudeHandler}"/>
+                                    </div>
+                                    <div class="slds-col slds-size_3-of-3">
+                                        <lightning:button variant="brand" label="Reality" 
+                                                          class="slds-align_absolute-center slds-m-top_small assessmentButton" onclick="{!c.realityHandler}"/>
+                                    </div>
+                                </aura:if>
+                               
+                                <div class="slds-col slds-size_3-of-3">
+                                    <lightning:button variant="brand" label="Quiz 1" 
+                                                      class="slds-align_absolute-center slds-m-top_small assessmentButton" onclick="{!c.quiz1Handler}"/>
+                                </div>
+                                <div class="slds-col slds-size_3-of-3">
+                                    <lightning:button variant="brand" label="Mid Program Feedback" 
+                                                      class="slds-align_absolute-center slds-m-top_small assessmentButton" onclick="{!c.midProgramFeedbackHandler}"/>
+                                </div>
+ 								<aura:if isTrue="{!v.selectedGrade=='Grade 9'}">
+                                    <div class="slds-col slds-size_3-of-3">
+                                        <lightning:button variant="brand" label="Quiz 2" 
+                                                          class="slds-align_absolute-center slds-m-top_small assessmentButton" onclick="{!c.quiz2Handler}"/>
+                                </div>
+                                </aura:if>
+                                <div class="slds-col slds-size_3-of-3">
+                                    <lightning:button variant="brand" label="Endline Assessment" 
+                                                      class="slds-align_absolute-center slds-m-top_small assessmentButton" onclick="{!c.endlineAssessmentHandle}"/>
+                                </div>
+                            </div>
+                        </aura:if>       
+                        <!--</aura:if>-->
+                    </div>
+                </div>
+                <!--Till Here-->
+                <!-- </aura:if> -->
+                
+                <aura:if isTrue="{!v.studentDetailsPage}">
+                    
+                </aura:if>
+                
+                
+                <aura:if isTrue="{!and(v.pagenumber == 2)}">
+                    <!--   <div class="slds-align_absolute-center slds-m-bottom_medium">
+                        <b>{!v.pageConstant.submitlabel}</b>
+                    </div> -->
+                    <div class="slds-align_absolute-center">
+                        <!-- use aura:if for show/hide buttons --> 
+                        <aura:if isTrue="{!not(empty(v.sessionRecords))}">
+                            <!--button for save and cancel Record after Inline Edit-->
+                            <!-- <lightning:button label="Cancel" onclick="{!c.cancel}"/> -->
+                            <!--<lightning:button label="Save" onclick="{!c.Save}" variant="success"/>-->
+                            <!--<lightning:button
+                                             class="slds-align_absolute-center slds-m-top_small"
+                                              variant="success"
+                                              aura:id="btnsubmit"
+                                              type="submit"
+                                              label="Save"
+                                              onclick="{!c.Save}"
+                                              />--> <!-- Piyush--> 
+                        </aura:if> 
+                    </div>
+                    <aura:set attribute="else">
+                        <div class="slds-align_absolute-center">
+                            <lightning:button
+                                              variant="brand"
+                                              aura:id="btnsubmit"
+                                              type="submit"
+                                              label="Login"
+                                              onclick="{!c.checkemail}"
+                                              />
+                        </div>
+                    </aura:set>
+                </aura:if>
+            </div>
+        </div>
+    </div>
+</aura:component>

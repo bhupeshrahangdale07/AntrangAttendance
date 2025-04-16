@@ -1,0 +1,408 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" 
+                access="global" 
+                controller="sessionFormController">
+    
+    <aura:attribute name="activeSections" type="List" default="[]" />
+    <aura:attribute name="MinDate" type="String"/>
+    <aura:attribute name="pagenumber" type="Integer" default="1" />
+    <aura:attribute name="pagenumberday" type="Integer" />
+    <aura:attribute name="traineremail" type="String" default="" />
+    <aura:attribute name="objUI" type="Object" />
+    <aura:attribute name="AccountId" type="String" />
+    <aura:attribute name="ContactId" type="String" />
+    <aura:attribute name="BatchId" type="String" />
+    <aura:attribute name="isBatchSelected" type="Boolean" default="true"/>
+    <aura:attribute name="StudentWhareClause" type="String" />
+    <aura:attribute name="selectedBatchId" type="String" />
+    <aura:attribute name="AccountBatches" type="List" />
+    <aura:attribute type="boolean" default="false" name="issubmitdisabled" />
+    <aura:attribute name="pageConstant" type="Object" />
+    <aura:attribute name="showSaveCancelBtn" type="boolean" default="false" description="flag for rendered save and cancel buttons in aura:if "/>
+    
+    
+    <aura:attribute name="sessionfound" type="boolean" default="false" />
+    <aura:attribute name="Spinner" type="boolean" default="false" />
+    
+    <aura:attribute name="sessioneditRec" type="object"/>
+    <aura:attribute name="sessioneditRecTemp" type="object"/>
+    <aura:attribute name="sessionSelectRec" type="object"/>
+    <aura:attribute name="selectedSession" type="String" default="ALL"/>
+    <aura:attribute name="sessionRecords" type="object" description="store session records list"/> 
+    <aura:attribute name="latestLink" type="string"/>
+    <aura:attribute name="gradeList" type="String[]" />
+    <aura:attribute name="selectedGrade" type="String" />
+    <aura:attribute name="batchOptions" type="String[]" />
+    <aura:attribute name="isBatchOption" type="Boolean" default="true"/>
+    <!-- <aura:attribute name="isValidAll" type="boolean" default="true"/> -->
+    <!-- Added Now Attributes: 12-02-2023 -->
+    <aura:attribute name="isStudentOption" type="Boolean" default="true"/>
+
+    
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}" />
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}" /> 
+    
+    <aura:handler name="sessionFormEvt" event="c:sessionFormEvt" action="{!c.disableFollowingRows}"/>
+    
+    <!--loading spinner start... style=Brand Medium (blue dots)-->
+    <aura:if isTrue="{!v.Spinner}">
+        <div aura:id="spinnerId" class="slds-spinner_container">
+            <div
+                 class="slds-spinner_brand slds-spinner slds-spinner_large slds-is-relative"
+                 role="alert"
+                 >
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+    <!-- Loading spinner end-->
+    
+    
+    
+    <div class="container">
+        <div class="slds-box slds-theme_default">
+            <div class="slds-form">
+                <div class="slds-form-element slds-form-element_stacked">
+                    <aura:if isTrue="{!v.pagenumber > 1}">
+                            <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-3">
+                                </div>
+                                <div class="slds-col slds-size_1-of-3">
+                                <span><lightning:button
+                                                        class="signOut"
+                                                        variant="destructive"
+                                                        aura:id="btnsubmit"
+                                                        type="submit"
+                                                        label="Sign Out"
+                                                        onclick="{!c.signOut}"
+                                                        /></span>
+                            </div>
+                        </div>
+                        </aura:if>
+                    <div class="slds-form-element__control clsbold">
+                        
+                        <aura:if isTrue="{!v.pagenumber > 1}">
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control clsbold">
+                                    <c:AutoCompleteInput
+                                                         label="{!v.objUI.accountQName}"
+                                                         objectApiName="Account"
+                                                         idFieldApiName="Id"
+                                                         valueFieldApiName="Name"
+                                                         MatchingvalueFieldApiName="Name"
+                                                         extendedWhereClause="AND RecordType.Name = 'School' ORDER BY Name"
+                                                         StudentFeedbackSpecific="{!c.onwrpEventUpdate}"
+                                                         />
+                                </div>
+                            </div>
+                            
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control clsbold">
+                                    
+                                    <lightning:select
+                                                      aura:id="Grade"
+                                                      name="Grade"
+                                                      label="Grade"
+                                                      required="true"
+                                                      value="{!v.selectedGrade}"
+                                                      onchange="{!c.handleClassChange}"
+                                                      >
+                                        <aura:iteration items="{!v.gradeList}" var="ca">
+                                            <option value="{!ca.value}"
+                                                    >{!ca.label}</option
+                                                >
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </div>
+                            </div>
+                            
+                            <!--<div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control clsbold">
+                                    <c:AutoCompleteInput
+                                                         label="{!v.objUI.contactQName}"
+                                                         objectApiName="Batch__C"
+                                                         idFieldApiName="Id"
+                                                         valueFieldApiName="Batch_Number__c"
+                                                         MatchingvalueFieldApiName="Batch_Number__c "
+                                                         extendedWhereClause="{!v.StudentWhareClause}"
+                                                         StudentFeedbackSpecific="{!c.onwrpEventUpdate}"
+                                                         sessionFormAttedence = "true"
+                                                         />
+                                </div>
+                            </div>-->
+                            
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control clsbold">
+                                    <lightning:select
+                                                      aura:id="profitabilityDesignation"
+                                                      name="select"
+                                                      label="Batch"
+                                                      value="{!v.selectedBatchId}"
+                                                      onchange="{!c.handleBatchChange}"
+                                                      disabled="{!v.isBatchOption}"
+                                                      >
+                                        <aura:iteration items="{!v.batchOptions}" var="batch">
+                                            <option value="{!batch.value}"
+                                                    >{!batch.label}</option
+                                                >
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control clsbold">
+                                    <p> Total STudents: {}</p>
+                                    <p> Completed: {}</p>
+                            
+                                </div>
+                            </div>
+
+                            <!-- Added Now : 12-01-2023 -->
+                            <!-- <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control clsbold">
+                                    <c:AutoCompleteInput
+                                                         label="{!v.objUI.accountQName}"
+                                                         objectApiName="Account"
+                                                         idFieldApiName="Id"
+                                                         valueFieldApiName="Name"
+                                                         MatchingvalueFieldApiName="Name"
+                                                         extendedWhereClause="AND RecordType.Name = 'School' ORDER BY Name"
+                                                         StudentFeedbackSpecific="{!c.onwrpEventUpdate}"
+                                                         />
+                                </div>
+                            </div> -->
+                            <!-- till here ...  -->
+
+
+                          <!--  <div class="slds-form-element slds-form-element_stacked">
+                                <div class="slds-form-element__control clsbold">
+                                    <lightning:select
+                                                      aura:id="profitabilityDesignation"
+                                                      name="select"
+                                                      label="Session"
+                                                      disabled="{!v.isBatchSelected}"
+                                                      required="true"
+                                                      value="{!v.selectedSession}"
+                                                      onchange="{!c.handleSessionChange}"
+                                                      >
+                                        <aura:iteration items="{!v.sessionSelectRec}" var="session">
+                                            <option value="{!session.value}"
+                                                    >{!session.label}</option
+                                                >
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </div>
+                            </div> -->
+                            
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.pagenumber == 1}">
+                            <!-- <div class="slds-p-vertical_x-small slds-text-heading_medium">
+            <b>Find Trainer</b>
+          </div> -->
+                            
+                            <div class="slds-form">
+                                <div class="slds-form-element slds-form-element_stacked">
+                                    <div class="slds-form-element__control clsbold">
+                                        <lightning:input
+                                                         label="Your (Facilitator) Email"
+                                                         aura:id="datavalidate"
+                                                         type="email"
+                                                         name="email"
+                                                         value="{!v.traineremail}"
+                                                         placeholder="Enter email address"
+                                                         required="true"
+                                                         messageWhenValueMissing="Email is required!"
+                                                         />
+                                    </div>
+                                </div>
+                            </div>
+                        </aura:if>
+                    </div>
+                </div>
+                
+                
+               
+                <aura:if isTrue="{!not(empty(v.sessionRecords))}">
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_3-of-3">
+                        <span><lightning:accordion
+                                                   activeSectionName="{! v.activeSections }"
+                                                   allowMultipleSectionsOpen="true"  
+                                                   >
+                            <lightning:accordionSection name="Form Instructions" label="Form Instructions" class="accordionSection">
+                                <aura:set attribute="body">
+                                    <ul class="slds-list_dotted" >
+                                        <li>Session Date, Time, Mode is mandatory for scheduling a session</li>
+                                        <li>Session link is mandatory for Digital Session Mode</li>
+                                        <li>Session Date should be After the previous Session Date or Today's date</li>
+                                        <li>Session Date should be Before the following Session Date</li>
+                                        <li>Cannot schedule a Session if previous session is not schedule</li>
+                                        <li>If any session is assigned to another facilitator and is unschedule then following sessions cannot be schedule</li>
+                                        <li>If previous session is already scheduled and gives error "Value must be #TodayDate# or later" then reload the page</li>
+                                    </ul>
+                                </aura:set>
+                            </lightning:accordionSection>
+                        </lightning:accordion></span>
+                    </div>
+                    
+                </div>
+                </aura:if>
+                
+                
+                
+                <aura:if isTrue="{!v.sessionfound}">
+                    
+                    
+                    <!-- TO ADD OUR LWC COMPONENT HERE *** -->
+                    
+                    <div class="slds-m-around_large">
+                        
+                        <lightning:accordion
+                                                   activeSectionName="{! v.activeSections }"
+                                                   allowMultipleSectionsOpen="true"  
+                                                   >
+                        <lightning:accordionSection name="Parent Session" label="Parent Session" class="">
+                                <aura:set attribute="body">
+                                    
+                                    <!--Data Table--> 
+                        <div class="scrollmenu">
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                            <thead>					
+                                <tr>
+                                    <td style="text-align: center !important;font-size: 30px !important;"
+                                        colspan="8">
+                                        <b><center>Parent Session Scheduling</center></b></td>
+                                </tr>
+                                <tr class="slds-text-title--caps">
+                                    <!--  <th scope="col"><div class="slds-truncate" title="Id">S.No</div></th>  -->
+                                    <th scope="col" width="20%"><div class="slds-truncate" title="Name">Session Name</div></th>
+                                    <th scope="col" width="20%"><div class="slds-truncate" title="Name">Facilitator Name</div></th>
+                                  <!--  <th scope="col"><div class="slds-truncate" title="Code">Code</div></th> -->
+                                   <!-- <th scope="col"><div class="slds-truncate" title="Code">Grade</div></th>  -->                                   
+                                    
+                                    <th scope="col" width="15%"><div class="slds-truncate" title="Date">Date</div></th>
+                                    <th scope="col" width="10%"><div class="slds-truncate" title="Start Time">Start Time</div></th>
+                                    <!--<th scope="col"><div class="slds-truncate" title="End Time">End Time</div></th>-->
+                                    <th scope="col" width="10%"><div class="slds-truncate" title="Session Mode">Session Mode</div></th>
+                                    <th scope="col" width="25%"><div class="slds-truncate" title="Session Link">Session Link</div></th>
+                                  <!--  <th scope="col"><div class="slds-truncate" title="Delivery">Delivery</div></th>
+                                    <th scope="col"><div class="slds-truncate" title="Session Type">Type</div></th> -->
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <!--### display all records of Session attribute one by one by aura:iteration ###-->
+                                <aura:iteration items="{!v.sessioneditRec}" var="objSession" indexVar="sNo">
+                                    <!-- Child Lightning Component --> 
+                                    <aura:if isTrue="{!objSession.isParentSession}">
+                                        <c:SessionEdit 
+                                                       singleRec="{!objSession}"
+                                                       showSaveCancelBtn="{!v.showSaveCancelBtn}"
+                                                       latestLink="{!v.latestLink}"
+                                                       aura:id = "parentSessionEdit"
+                                                       sNo="{!sNo}"
+                                                       sessioneditRec = "{!v.sessioneditRec}"
+                                                       minDT = "{!v.MinDate}"/>
+                                    </aura:if>
+                                </aura:iteration>
+                            </tbody>
+                        </table>
+                        </div>
+                                    
+                                </aura:set>
+                            </lightning:accordionSection>
+                            <lightning:accordionSection name="Student Session" label="Student Session" class="">
+                                <aura:set attribute="body">
+                                    
+                                    <!--Data Table--> 
+                        <div class="scrollmenu">
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                            <thead>					
+                                <tr>
+                                    <td style="text-align: center !important;font-size: 30px !important;"
+                                        colspan="8">
+                                        <b><center>Student Session Scheduling</center></b></td>
+                                </tr>
+                                <tr class="slds-text-title--caps">
+                                    <!--  <th scope="col"><div class="slds-truncate" title="Id">S.No</div></th>  -->
+                                    <th scope="col" width="20%"><div class="slds-truncate" title="Name">Session Name</div></th>
+                                    <th scope="col" width="20%"><div class="slds-truncate" title="Name">Facilitator Name</div></th>
+                                  <!--  <th scope="col"><div class="slds-truncate" title="Code">Code</div></th> -->
+                                   <!-- <th scope="col"><div class="slds-truncate" title="Code">Grade</div></th>  -->                                   
+                                    
+                                    <th scope="col" width="15%"><div class="slds-truncate" title="Date">Date</div></th>
+                                    <th scope="col" width="10%"><div class="slds-truncate" title="Start Time">Start Time</div></th>
+                                    <!--<th scope="col"><div class="slds-truncate" title="End Time">End Time</div></th>-->
+                                    <th scope="col" width="10%"><div class="slds-truncate" title="Session Mode">Session Mode</div></th>
+                                    <th scope="col" width="25%"><div class="slds-truncate" title="Session Link">Session Link</div></th>
+                                  <!--  <th scope="col"><div class="slds-truncate" title="Delivery">Delivery</div></th>
+                                    <th scope="col"><div class="slds-truncate" title="Session Type">Type</div></th> -->
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <!--### display all records of Session attribute one by one by aura:iteration ###-->
+                                <aura:iteration items="{!v.sessioneditRec}" var="objSession" indexVar="sNo">
+                                    <!-- Child Lightning Component --> 
+                                    <aura:if isTrue="{!!objSession.isParentSession}">
+                                        <c:SessionEdit 
+                                                       singleRec="{!objSession}"
+                                                       showSaveCancelBtn="{!v.showSaveCancelBtn}"
+                                                       latestLink="{!v.latestLink}"
+                                                       aura:id = "sessionEdit"
+                                                       sNo="{!sNo}"
+                                                       sessioneditRec = "{!v.sessioneditRec}"
+                                                       minDT = "{!v.MinDate}"/>
+                                    </aura:if>
+                                </aura:iteration>
+                            </tbody>
+                        </table>
+                        </div>
+                                    
+                                </aura:set>
+                            </lightning:accordionSection>
+                    </lightning:accordion>
+                        
+                        
+                        
+                    </div>
+                    
+                </aura:if>
+                <aura:if isTrue="{!and(v.pagenumber == 2)}">
+                 <!--   <div class="slds-align_absolute-center slds-m-bottom_medium">
+                        <b>{!v.pageConstant.submitlabel}</b>
+                    </div> -->
+                    <div class="slds-align_absolute-center">
+                        <!-- use aura:if for show/hide buttons --> 
+                        <aura:if isTrue="{!not(empty(v.sessionRecords))}">
+                            <!--button for save and cancel Record after Inline Edit-->
+                                <!-- <lightning:button label="Cancel" onclick="{!c.cancel}"/> -->
+                                <!--<lightning:button label="Save" onclick="{!c.Save}" variant="success"/>-->
+                            <lightning:button
+                                              variant="success"
+                                              aura:id="btnsubmit"
+                                              type="submit"
+                                              label="Save"
+                                              onclick="{!c.Save}"
+                                              />
+                        </aura:if> 
+                    </div>
+                    <aura:set attribute="else">
+                        <div class="slds-align_absolute-center">
+                            <lightning:button
+                                              variant="brand"
+                                              aura:id="btnsubmit"
+                                              type="submit"
+                                              label="Login"
+                                              onclick="{!c.checkemail}"
+                                              />
+                        </div>
+                    </aura:set>
+                </aura:if>
+            </div>
+        </div>
+    </div>
+    
+</aura:component>

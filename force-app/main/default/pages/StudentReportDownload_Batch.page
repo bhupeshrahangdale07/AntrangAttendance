@@ -1,0 +1,84 @@
+<apex:page id="MainPage"
+           standardController="Batch__c"
+           showHeader="false" 
+           cache="true"
+           contentType="application/x-pdf#Batch_{!Batch__c.Batch_Number__c}.pdf">
+    <head>
+        <apex:includeScript value="{!$Resource.jquery}" />
+            <script>
+                $( window ).ready(function() {
+                    alert();
+                    navigateToRecordDetail();
+                });
+    
+                function navigateToRecordDetail() {
+                    var recordId = '{!Batch__c.Id}';
+                    window.parent.location = '/' + recordId;
+                }
+            </script>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <style>
+            body {
+                width:100%;
+                font-family: Arial Unicode MS; 
+                font-size: 10pt;
+            }
+            .header {
+                text-transform:uppercase;
+                text-align: center;
+                font-size:22pt;
+                font-weight:bold;
+            }
+            .row {
+                text-align: left;
+            }
+            .row lable {
+                font-weight:bold;
+            }
+            .breakrow {
+                margin-top:5pt;
+                border-bottom: 1px solid black;
+                width:100%;
+                margin-bottom:10pt;
+            }
+            
+            .divtable {
+                display: table;
+                width:100%;
+                border-collapse:collapse;
+            }
+            
+            .divtable .tablerow {
+                display: table-row;
+                width:100%;
+            }
+            
+            .divtable .tablerow .tablecell {
+                display: table-cell;
+                width:33.33%;
+            }
+            
+            .rowheader {
+                font-size:14pt;
+                font-weight:bold;
+            }
+            
+            .blacktd {
+                background-color:black;
+                color:white;
+                padding:3px;
+                width:50%;
+            }
+            table {
+                table-layout:fixed;
+            }
+            table td {
+                word-wrap:break-word;
+            }
+            @page {
+                margin:10;
+            }
+        </style>
+    </head>
+    <apex:include pageName="StudentReport_Batch"/>
+</apex:page>

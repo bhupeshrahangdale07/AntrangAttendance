@@ -1,0 +1,96 @@
+<template>
+    <lightning-card>
+        <div class="slds-p-around_medium lgc-bg">
+            <lightning-input label="Your (Facilitator) Email"
+                             type="email"
+                             placeholder="type here..."
+                             onchange={handleEmailChange}
+                             required></lightning-input>
+
+
+            <lightning-button variant="brand" 
+                              label="Login" 
+                              title="Login" 
+                              onclick={handleLoginClick} 
+                              class="slds-align_absolute-center slds-m-top_large"></lightning-button>
+
+        </div>
+
+        <div class="">
+            <lightning-button variant="brand" 
+                                    label="CDM1" 
+                                    title="CDM1" 
+                                    onclick={handleCDM1ButtonClick} 
+                                    class="slds-align_absolute-center slds-m-top_small"></lightning-button> 
+            
+            <lightning-button variant="brand" 
+                                    label="CDM2" 
+                                    title="CDM2" 
+                                    onclick={handleCDM2ButtonClick} 
+                                    class="slds-align_absolute-center slds-m-top_small"></lightning-button> 
+            
+            <lightning-button variant="brand" 
+                                    label="Career Planning" 
+                                    title="Career Planning" 
+                                    onclick={handleCareerPlanningButtonClick} 
+                                    class="slds-align_absolute-center slds-m-top_small"></lightning-button>                       
+            
+            <lightning-button variant="brand" 
+                                    label="Career Skill" 
+                                    title="Career Skill" 
+                                    onclick={handleCareerSkillButtonClick} 
+                                    class="slds-align_absolute-center slds-m-top_small"></lightning-button> 
+                                
+            
+            <lightning-button variant="brand" 
+                                    label="Future Planning" 
+                                    title="Future Planning" 
+                                    onclick={handleFuturePlanningButtonClick} 
+                                    class="slds-align_absolute-center slds-m-top_small"></lightning-button> 
+            
+            
+            <lightning-button variant="brand" 
+                            label="Self Awarness and FeedBack" 
+                            title="Self Awarness and FeedBack" 
+                            onclick={handleSelfAwarnessAndFeedBackButtonClick} 
+                            class="slds-align_absolute-center slds-m-top_small"></lightning-button> 
+    
+            
+            <lightning-button variant="brand" 
+                            label="Realities" 
+                            title="Realities" 
+                            onclick={handleRealitiesButtonClick} 
+                            class="slds-align_absolute-center slds-m-top_small"></lightning-button>
+        </div>
+    </lightning-card>
+</template>
+
+
+
+
+        <!--<div slot="footer">
+            <div class="slds-align_absolute-center">
+                <lightning-badge label="The"></lightning-badge>
+                <lightning-badge label="End"></lightning-badge>
+            </div>
+        </div>
+
+        <div>
+            <div class="slds-box">
+                <p class="slds-p-horizontal_small" align="center">Student Name: TestName,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Grade:TestGrade</p>
+            </div>
+
+            <div class="slds-box">
+                <span>{question01}</span>
+                <template for:each={q01Option01} for:item="obj">
+                    <div class="slds-grid slds-gutters" key={obj.optionName}>
+                        <div class="slds-m-left_x-small">
+                            <lightning-input type="checkbox" data-id={obj.optionName} onchange={handleQ01}></lightning-input>                        
+                        </div>
+                        <div class="slds-col">
+                            <span>{obj.optionValue}</span>
+                        </div>
+                    </div>  
+                </template>            
+            </div>
+        </div>-->

@@ -1,0 +1,58 @@
+<template>
+    <lightning-card>
+        <lightning-layout multiple-rows>
+            <lightning-layout-item size="12">
+                <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+                    <b>Baseline Assesment </b>
+                </div>
+                <div>
+                    <p class="slds-align_absolute-center slds-m-bottom_small">This is the Form students filled on session 1</p>
+                    <!-- <p class="slds-align_absolute-center slds-m-bottom_small">This form is to be used only by Facilitators/ Teachers. Please DO NOT share this form with students.</p> -->
+                </div>
+                <div class="slds-box">
+                    <ul class="slds-p-horizontal_small">
+                        <li><b>School Name:</b> {seletedSchoolName}</li>
+                        <li><b>Grade:</b> {selectedGrade}</li>
+                        <li><b>Batch Code:</b> {selectedBatchNumber}</li>
+                    </ul>
+    
+            </div>
+                <div class="slds-align_absolute-left slds-m-top_small">
+                    <p class="slds-align_absolute-left slds-m-left_medium slds-m-right_medium ">Total Students : {totalStudentsOfBatchCount}</p>
+                    <p class="slds-align_absolute-left slds-m-bottom_small slds-m-left_medium slds-m-right_medium">No of Assessments filled : {realityCount} </p>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12">
+                <lightning-button variant="brand" 
+                    label="Add Assessment Data"
+                    onclick={addAssementHandler} 
+                    class="slds-m-left_x-small slds-align_absolute-center slds-m-top_small">
+                </lightning-button>
+            </lightning-layout-item>
+            <lightning-layout-item size="12">
+                <lightning-button variant="brand" 
+                    label="Back"
+                    onclick={backBtnHandler} 
+                    class="slds-m-left_x-small slds-align_absolute-center slds-m-top_small slds-m-bottom_medium">
+                </lightning-button>
+            </lightning-layout-item>
+            <lightning-layout-item size="12">   
+                <div>
+                    <p class="slds-align_absolute-left slds-m-top_small slds-m-left_medium slds-m-right_medium">Below are the students whose Baseline Assessment Data is already filled</p>
+                    <template if:true={rowData}>
+                        <div style="margin: 15px;height:400px;">
+                            <lightning-datatable
+                            key-field="id"
+                            data={stuList}
+                            columns={columns}
+                            hide-checkbox-column>
+                        </lightning-datatable>
+                        </div>
+                    </template>
+                    
+                </div>
+            </lightning-layout-item>
+    </lightning-layout>
+        
+    </lightning-card>
+</template>

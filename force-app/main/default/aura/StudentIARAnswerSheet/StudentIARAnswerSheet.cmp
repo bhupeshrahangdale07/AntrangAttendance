@@ -1,0 +1,30 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" >
+	<aura:attribute name="StudentAnswers" type="object" />
+    <aura:attribute name="answerOptions" type="List" />
+    <aura:attribute name="answerValue" type="String" default="" />
+    <aura:attribute name="questionId" type="String" />
+    <aura:attribute name="fieldType" type="String" />
+    <aura:attribute name="multiAnswerValue" type="List"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <div class="questLeft">
+    	<dl>
+            <dd>
+                <aura:if isTrue="{!v.fieldType == 'RadioGroup'}">
+                    <lightning:radioGroup name="{!v.questionId}"     
+                                          class="custRadio"
+                                          options="{!v.answerOptions}"
+                                          value="{!v.answerValue}"
+                                          type="radio"/>
+                </aura:if>
+                <aura:if isTrue="{!v.fieldType == 'CheckboxGroup'}">
+                    <lightning:checkboxGroup name="{!v.questionId}"
+                                             options="{!v.answerOptions}"
+                                             value="{!v.multiAnswerValue}"
+                                             onchange="{!c.handleMultiAnswer}"/>                    
+                </aura:if>
+            </dd>
+        </dl>
+    </div>
+</aura:component>

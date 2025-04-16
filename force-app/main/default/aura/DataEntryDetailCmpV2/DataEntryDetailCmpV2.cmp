@@ -1,0 +1,229 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,lightning:isUrlAddressable,force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                controller="DataEntryLoginFormController">
+    			<aura:attribute name="flagEmail" type="boolean" default="" />
+    			<aura:attribute name="errorMessage" type="String" />
+                <aura:attribute name="studentBatchWhereClause" type="String" />
+                <aura:attribute name="traineremail" type="String" default="" />
+    			<aura:attribute name="formTyp" type="String" default="" />
+    			<aura:attribute name="formLng" type="String" default="" />
+    			<aura:attribute name="isEnglish" type="Boolean" default="" />
+                <aura:attribute name="objUI" type="Object" />
+                <aura:attribute name="AccountId" type="String" />
+    			<aura:attribute name="labelselectedBatch" type="String" />
+                <aura:attribute name="selectedBatchId" type="String" /> 
+    			<aura:attribute name="selectedBatchCode" type="String" />
+                <aura:attribute name="displayButtonList" type="Boolean" default="false"/>
+    			<!-- Updated by Piyush on 7/2/24 Start -->
+    			<aura:attribute name="studentDetailsButton" type="Boolean" default="false"/>
+                <aura:attribute name="baselineAssessmentButton" type="Boolean" default="false"/>
+                <aura:attribute name="interestButton" type="Boolean" default="false"/>
+    			<aura:attribute name="interestFormType" type="String"/>
+                <aura:attribute name="aptitudeButton" type="Boolean" default="false"/>
+    			<aura:attribute name="aptitudeFormType" type="String"/>
+    			<aura:attribute name="quiz1Button" type="Boolean" default="false"/>
+    			<aura:attribute name="midProgramFeedbackButton" type="Boolean" default="false"/>
+                <aura:attribute name="realityButton" type="Boolean" default="false"/>
+                <aura:attribute name="quiz2Button" type="Boolean" default="false"/>
+                <aura:attribute name="endlineAssessmentButton" type="Boolean" default="false"/>
+    			<!-- End -->
+                <aura:attribute name="gradeList" type="String[]" />
+    			<aura:attribute name="labelSelectedGrade" type="String" />
+                <aura:attribute name="selectedGrade" type="String" />
+                <aura:attribute name="batchOptions" type="String[]" />
+                <aura:attribute name="selectedValueFromList" type="String" />
+     			<aura:attribute name="placeHolder" type="String" />
+                <aura:attribute name="gradeSelect" type="string"/>
+                <lightning:navigation aura:id="navService"/>
+                <aura:attribute name="donotcallBatchOptionfn" type="Boolean" default="false"/>
+                <aura:attribute name="pageReference" type="Object"/>
+                <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    			<aura:attribute name="messageWhenValueMissing" type="String"/>
+    			<aura:attribute name="districtFields" type="Object" default="{}"/>
+
+                <!-- <aura:attribute name="Spinner" type="boolean" default="false" /> -->
+
+                <!-- <aura:if isTrue="{!v.Spinner}">
+                    <div aura:id="spinnerId" class="slds-spinner_container">
+                        <div
+                             class="slds-spinner_brand slds-spinner slds-spinner_large slds-is-relative"
+                             role="alert"
+                             >
+                            <span class="slds-assistive-text">Loading</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </aura:if> -->
+
+    <div class="container">
+        <div class="slds-box slds-theme_default">
+            <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+                <b>
+                    <aura:if isTrue="{!v.isEnglish}">
+                    	School and Form Selection
+                   		<aura:set attribute="else">
+                    		स्कूल और प्रपत्र चयन
+                        </aura:set>
+                    </aura:if>
+                </b>
+            </div>
+            <div>
+                <p class="slds-align_absolute-center">
+                    <aura:if isTrue="{!v.isEnglish}">
+                    	Before you proceed, ensure you have the filled student copies in front of you to enter the data correctly.
+                   		<aura:set attribute="else">
+                    		फॉर्म भरने के लिए कृपया अपने छात्रों के डेटा को अपने सामने रखें
+                        </aura:set>
+                    </aura:if>
+                </p>
+                <p class="slds-align_absolute-center slds-m-bottom_small">
+                    <aura:if isTrue="{!v.isEnglish}">
+                    	Do make sure you have read the Data Updation Manual for any queries.
+                   		<aura:set attribute="else">
+                    		कृपया किसी भी प्रश्न के लिए डेटा अपडेट मैनुअल पढ़ें।
+                        </aura:set>
+                    </aura:if>
+                </p>
+            </div>
+            <div class="slds-form-element slds-form-element_stacked allPage" onblur="{!v.testhandle}">
+                <div class="signOut">
+                    <lightning:button class="signOutButton assessmentButton"
+                                      variant="destructive"
+                                      aura:id="btnsubmit"
+                                      type="submit"
+                                      label="Sign Out"
+                                      onclick="{!c.signOut}"
+                                      />
+                    
+                </div>
+                <div class="slds-form-element__control slds-m-top_xx-large">
+                    <!--placeholderValue = "{!v.placeHolder}"-->
+                    <c:AutoCompleteInput
+                                         label="{!v.objUI.accountQName}"
+                                         objectApiName="Account"
+                                         idFieldApiName="Id"
+                                         valueFieldApiName="Name"
+                                         MatchingvalueFieldApiName="Name"
+                                         extendedWhereClause="AND RecordType.Name = 'School' ORDER BY Name"
+                                         StudentFeedbackSpecific="{!c.onwrpEventUpdate}"
+                                         inputValue = "{!v.selectedValueFromList}" 
+                                         placeholderValue = "{!v.placeHolder}"
+                                         />
+                    <aura:if isTrue="{!not(empty(v.errorMessage))}">
+                        <div class="slds-has-error"><div class="slds-form-element__help">{!v.errorMessage}</div></div>
+                    </aura:if>
+                    
+                </div>
+            </div>
+            <div class="slds-form-element slds-form-element_stacked">
+                <div class="slds-form-element__control">
+                    <lightning:select
+                                      aura:id="Grade"
+                                      name="Grade"
+                                      label="{!v.labelSelectedGrade}"
+                                      required="true"
+                                      value="{!v.selectedGrade}"
+                                      onchange="{!c.handleGradeChange}"
+                                      messageWhenValueMissing = "{!v.messageWhenValueMissing}"
+                                      >
+                        <aura:iteration items="{!v.gradeList}" var="ca">
+                            <!--<aura:if isTrue="{!and(ca.label != 'Grade 11', ca.label != 'Grade 12')}">-->
+                            	<option value="{!ca.value}" selected="{!ca.value == v.selectedGrade}">
+                                    {!ca.label}
+                                </option>
+                           <!-- </aura:if> -->
+                        </aura:iteration>
+                    </lightning:select>
+                </div>
+            </div>
+            <div class="slds-form-element slds-form-element_stacked">
+                <div class="slds-form-element__control">
+                    <lightning:select required="true"
+                                      aura:id="profitabilityDesignation"
+                                      name="select"
+                                      label="{!v.labelselectedBatch}"
+                                      value="{!v.selectedBatchId}"
+                                      onchange="{!c.handleBatchChange}"
+                                      messageWhenValueMissing = "{!v.messageWhenValueMissing}"
+                                      > <!--disabled="{!v.isBatchOption}"-->
+                        <aura:iteration items="{!v.batchOptions}" var="batch">
+                            <option value="{!batch.value}" selected="{!batch.value == v.selectedBatchId}"
+                                    >{!batch.label}</option
+                                >
+                        </aura:iteration>
+                    </lightning:select>
+                </div>
+            </div>
+            <aura:if isTrue="{!v.displayButtonList}">
+                <p class="slds-align_absolute-center slds-m-around_medium">Click on the handout/assessment you want to fill.</p>
+                <div class="slds-grid slds-gutters slds-wrap">
+                    <!--Add Buttons Here-->
+                    <aura:if isTrue = "{!v.studentDetailsButton}">
+                        <div class="slds-col slds-size_3-of-3">
+                            <lightning:button variant="brand" label="Student Details" 
+                                              class="slds-align_absolute-center slds-m-top_small assessmentButton" 
+                                              onclick="{!c.studentDetailsHandler}"/>
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue = "{!v.baselineAssessmentButton}">
+                        <div class="slds-col slds-size_3-of-3">
+                            <lightning:button variant="brand" label="Baseline Assessment" 
+                                              class="slds-align_absolute-center slds-m-top_small assessmentButton" 
+                                              onclick="{!c.baselineAssessmentHandle}"/>
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue = "{!v.interestButton}">
+                        <div class="slds-col slds-size_3-of-3">
+                            <lightning:button variant="brand" label="Interest" 
+                                              class="slds-align_absolute-center slds-m-top_small assessmentButton" 
+                                              onclick="{!c.interestHandler}"/>
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue = "{!v.aptitudeButton}">
+                        <div class="slds-col slds-size_3-of-3">
+                            <lightning:button variant="brand" label="Aptitude" 
+                                              class="slds-align_absolute-center slds-m-top_small assessmentButton" 
+                                              onclick="{!c.aptitudeHandler}"/>
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue = "{!v.quiz1Button}">
+                        <div class="slds-col slds-size_3-of-3" > 
+                            <lightning:button variant="brand" label="Quiz 1" 
+                                              class="slds-align_absolute-center slds-m-top_small assessmentButton" 
+                                              onclick="{!c.quiz1Handler}"/>
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue = "{!v.midProgramFeedbackButton}">
+                        <div class="slds-col slds-size_3-of-3">
+                            <lightning:button variant="brand" label="Mid Program Feedback" 
+                                              class="slds-align_absolute-center slds-m-top_small assessmentButton" 
+                                              onclick="{!c.midProgramFeedbackHandler}"/>
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue = "{!v.realityButton}">
+                        <div class="slds-col slds-size_3-of-3">
+                            <lightning:button variant="brand" label="Reality" 
+                                              class="slds-align_absolute-center slds-m-top_small assessmentButton" 
+                                              onclick="{!c.realityHandler}"/>
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue = "{!v.quiz2Button}">
+                        <div class="slds-col slds-size_3-of-3">
+                            <lightning:button variant="brand" label="Quiz 2" 
+                                              class="slds-align_absolute-center slds-m-top_small assessmentButton" 
+                                              onclick="{!c.quiz2Handler}"/>
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue = "{!v.endlineAssessmentButton}">
+                        <div class="slds-col slds-size_3-of-3">
+                            <lightning:button variant="brand" label="Endline Assessment" 
+                                              class="slds-align_absolute-center slds-m-top_small assessmentButton" 
+                                              onclick="{!c.endlineAssessmentHandle}"/>
+                        </div>
+                    </aura:if>
+                </div>
+            </aura:if>
+        </div>
+     </div>
+</aura:component>

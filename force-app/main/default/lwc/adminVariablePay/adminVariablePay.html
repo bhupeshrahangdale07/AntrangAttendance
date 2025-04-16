@@ -1,0 +1,327 @@
+<template>
+    <lightning-card>
+        <div slot="actions">
+            <lightning-button
+                            class="signOut"
+                            variant="destructive"
+                            aura:id="btnsubmit"
+                            type="submit"
+                            label="Sign Out"
+                            onclick={signOut}
+                            ></lightning-button> 
+        </div>
+        <template if:true={showSpinner}>
+                <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+                </lightning-spinner>
+           </template>
+        <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small"><b>Facilitator Variable Payout Proposal</b></div>
+<p class="slds-var-p-around_small slds-box ">
+    
+                <lightning-layout multiple-rows >
+
+                    <lightning-layout-item padding="around-small" size="12" medium-device-size="6" large-device-size="6">
+
+                        <lightning-input type="Date" max={maxDate} label="Consultancy Bill Date" onchange={handleDate} name="invoiceDate" required> </lightning-input>
+                       <!-- <lightning-input type="email" label="Facilitator email" onchange={handleEmailChange} placeholder="type here..."> </lightning-input>
+                        
+                        <lightning-input type="Text" label="Donor" onchange={handleDonor} placeholder="type here..."> </lightning-input>
+                        -->
+                        <c-customlookup icon-name="standard:contact"
+                            s-object-api-name="contact"
+                            label="Facilitator "
+                            onlookupupdate={handleFacilitator}
+                            whereclause="RecordType.DeveloperName = 'CA_Trainer'"
+                            placeholder="Search Facilitator here..."></c-customlookup>
+
+
+                        <c-customlookup icon-name="standard:account"
+                            s-object-api-name="account"
+                            label="Donor "
+                            onlookupupdate={handleDonor}
+                            whereclause="RecordType.DeveloperName = 'Donor_Account'"
+                            placeholder="Search Donor here..."></c-customlookup>
+
+                            <c-customlookup icon-name="standard:account"
+                            s-object-api-name="account"
+                            label="School "
+                            onlookupupdate={handleSchool}
+                            whereclause="RecordType.DeveloperName = 'School_Account'"
+                            placeholder="Search School here..."></c-customlookup>
+
+
+                    </lightning-layout-item>
+
+                    <lightning-layout-item padding="around-small" size="12" medium-device-size="6" large-device-size="6">
+                        
+                                
+
+                        <lightning-combobox
+                            name="Grade"
+                            label="Grade"
+                            placeholder="Select Grade"
+                            options={gradeOptions}
+                            onchange={handleGrade} ></lightning-combobox>
+
+                            <c-customlookup icon-name="standard:account"
+                                s-object-api-name="Batch__c"
+                                label="Batch"
+                                default-record-id = ''
+                                onlookupupdate={handleBatch}
+                                placeholder="Search Batch here..."></c-customlookup>
+
+                                <template if:true={facilitatorEmail}>
+                                    <br/>Facilitator Email : <b>{facilitatorEmail}</b>
+                                </template>
+
+                               
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" class="slds-var-p-top_xx-small slds-align_absolute-center">
+                        <lightning-button  variant="brand" type="submit" class="slds-p-left_small " label="Show Sessions" onclick={handleSubmit}></lightning-button>  
+                    </lightning-layout-item>
+                </lightning-layout>
+            </p>
+            
+            <template if:true={showTable}>
+        <article class="slds-card " style="padding:20px" if:false={isSessionDataExist}>
+             
+            <div class="slds-var-p-*_medium ">
+            <!-- <template if:false={showSpinner}> -->
+                <div class="slds-scrollable " style="height:25rem;width:100%">
+                    <table class="slds-table  slds-table_bordered slds-table_fixed-layout slds-table_col-bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset" >
+                                <th width="3%" class="slds-cell-wrap" scope="col">
+                                    <div class="slds-line-clamp slds-text-align_center" title="Name">
+                                        
+                                        <!-- <lightning-input type="Checkbox" onchange={onCheckAll}  title="Checkbox"  checked="true"></lightning-input>  -->
+                                    </div>
+                                </th>
+
+                                <th  class="slds-cell-wrap" scope="col">
+                                    <div class="slds-line-clamp" title="Batch Number">
+                                        Batch Number &nbsp; 
+                                    </div>
+                                </th>
+                                <th width="23%" class="slds-cell-wrap" scope="col">
+                                    <div class="slds-line-clamp" title="Batch Name">
+                                        Batch Name &nbsp;
+                                        
+                                    </div>
+                                </th>
+                                <th class="slds-cell-wrap" scope="col">
+                                    <div class="slds-line-clamp" title="Facilitator Name">
+                                        Facilitator Name &nbsp;
+                                        
+                                    </div>
+                                </th>
+
+                                <th class="slds-cell-wrap" scope="col">
+                                    <div class="slds-line-clamp" title="Session Name">
+                                        Session Name &nbsp;
+                                    </div>
+                                </th>
+                                <th class="slds-cell-wrap" scope="col">
+                                    <div class="slds-line-clamp" title="Session Date">
+                                        Session Date &nbsp;
+                                    </div>
+                                </th>
+                                <th  class="slds-cell-wrap" scope="col">
+                                    <div class="slds-line-clamp" title="Session Grade">
+                                        Session Grade &nbsp;
+                                    </div>
+                                </th>
+                                <th width="4%" class="slds-cell-wrap" scope="col">
+                                    <div class="slds-line-clamp" title="Present Count">
+                                       Present Count &nbsp;
+                                    </div>
+                                </th>
+                                <th  width="4%" class="slds-cell-wrap" scope="col">
+                                    <div class="slds-line-clamp" title="Attendance Count">
+                                        Attendance Count &nbsp;
+                                    </div>
+                                </th>
+                                <th width="5%"  class="slds-cell-wrap" scope="col">
+                                    <!-- <div class="slds-line-clamp" title="Total Students Present for the Session">
+                                        Total Students Present for the Session &nbsp;
+                                    </div> -->
+                                    <div class="slds-line-clamp" title="Number of Students Attending">
+                                       Number of Students Attending &nbsp;
+                                    </div>
+                                </th>
+
+                                <th width="5%"  class="slds-cell-wrap" scope="col">
+                                    <div class="slds-line-clamp" title="Calculated number of sessions (No of Units)">
+                                         Calculated number of sessions (No of Units) &nbsp;
+                                    </div>
+                                </th>
+                                <th width="4%"  class="slds-cell-wrap" scope="col">
+                                    <div class="slds-line-clamp" title="Rate ">
+                                       Rate &nbsp;
+                                    </div>
+                                </th>
+                                <th width="4%"  class="slds-cell-wrap" scope="col">
+                                    <div class="slds-line-clamp" title="Payment">
+                                       Payment &nbsp;
+                                    </div>
+                                </th>
+
+                                <!-- <th width="8%" class="slds-cell-wrap" scope="col">
+                                    <div class="slds-line-clamp" title="Payment Status">
+                                        Payment Status &nbsp; 
+                                    </div>
+                                </th> -->
+
+                                <th width="20%" class="slds-cell-wrap" scope="col">
+                                    <div class="slds-line-clamp" title="Deferred Reason">
+                                        Deferred Reason &nbsp;    
+                                    </div>
+                                </th>
+                                <th width="5%"  class="slds-cell-wrap" scope="col" if:false={hideStatus}>
+                                    <div class="slds-line-clamp" title="Status">
+                                       Status &nbsp;
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                       
+                        <template if:true={sessionData}> 
+                            
+                                <template for:each={sessionData} for:item="item" for:index=index>
+                                    <tr aria-selected="false" class="slds-hint-parent" key={item.SessionId}>
+                                        
+                                        <td class="slds-cell_action-mode slds-cell-wrap" data-label="Checkbox" scope="row" role="gridcell">
+                                            <div class="slds-line-clamp slds-text-align_center" >
+                                                <!--<lightning-input type="Checkbox" onchange={handleSelectedRowChange} data-id="Checkbox" name={index} title="Checkbox"  checked={item.Checkbox} disabled={item.DummySession}></lightning-input> -->
+                                                <lightning-input if:true={editMode} type="Checkbox" onchange={handleSelectedRowChange} data-id="Checkbox"  data-index={index} name={index} title="Checkbox"  checked={item.Checkbox} ></lightning-input>
+                                                <lightning-input  if:false={editMode} type="Checkbox" onchange={handleSelectedRowChange} data-id="Checkbox"  data-index={index} name={index} title="Checkbox"  checked={item.Checkbox} disabled></lightning-input>
+                                            </div>
+                                        </td>
+
+                                        <td class="slds-cell-wrap" data-label="BatchNumber" title={item.BatchNumber} scope="row" role="gridcell">
+                                            <div class="slds-line-clamp slds-text-align_center" >
+                                                {item.BatchNumber}
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell-wrap" data-label="BatchName" title={item.BatchName} scope="row">
+                                            <div class="slds-line-clamp" >
+                                                {item.BatchName}
+                                            </div> 
+                                        </td>
+                                        <td class="slds-cell-wrap" data-label="FacilitatorName" title={item.FacilitatorName} scope="row">
+                                            <div class="slds-line-clamp" >
+                                                {item.FacilitatorName}
+                                            </div> 
+                                        </td>
+
+                                        <td class="slds-cell-wrap" data-label="Name" title={item.Name} scope="row">
+                                            <div class="slds-line-clamp" >
+                                                {item.Name}
+                                            </div> 
+                                        </td>
+                                        <td class="slds-cell-wrap" data-label="SessionDate" title={item.SessionDate} scope="row">
+                                            <div class="slds-line-clamp" >
+                                                {item.SessionDate}
+                                            </div> 
+                                        </td>
+                                        <td class="slds-cell-wrap" data-label="SessionGrade" title={item.SessionGrade} scope="row">
+                                            <div class="slds-line-clamp" >
+                                                {item.SessionGrade}
+                                            </div> 
+                                        </td>
+                                        <td class="slds-cell-wrap" data-label="PresentCount" title={item.PresentCount} scope="row">
+                                            <div class="slds-line-clamp" >
+                                                {item.PresentCount}
+                                            </div> 
+                                        </td>
+                                        <td class="slds-cell-wrap" data-label="AttendanceCount" title={item.AttendanceCount} scope="row">
+                                            <div class="slds-line-clamp" >
+                                                {item.AttendanceCount}
+                                            </div> 
+                                        </td>
+                                        <td class="slds-cell-wrap" data-label="TotalStudentsPresent" title={item.TotalStudentsPresent} scope="row">
+                                            <div class="slds-line-clamp" >
+                                                {item.TotalStudentsPresent}
+                                            </div> 
+                                        </td>
+
+                                        <td class="slds-cell-wrap" data-label="NumberofSessionsNoofUnits" title={item.NumberofSessionsNoofUnits} scope="row">
+                                            <div class="slds-line-clamp" >
+                                                {item.NumberofSessionsNoofUnits}
+                                            </div> 
+                                        </td>
+                                        <td class="slds-cell-wrap" data-label="SessionAmount" title={item.SessionAmount} scope="row">
+                                            <div class="slds-line-clamp" >
+                                                {item.SessionAmount}
+                                            </div> 
+                                        </td>
+                                        <td class="slds-cell-wrap" data-label="TotalAmount" title={item.Rate} scope="row">
+                                            <div class="slds-line-clamp" >
+                                                {item.Rate}
+                                            </div> 
+                                        </td>
+
+                                        <!-- <td class="slds-cell-wrap" data-label="PaymentStatus" title={item.PaymentStatus} scope="row" >
+                                            <div class="slds-line-clamp" >
+                                                {item.PaymentStatus}
+                                            </div>
+                                        </td>  -->
+
+                                        <td class="slds-cell_action-mode slds-cell-wrap" data-label="DeferredReason" title={item.DeferredReason} scope="row">
+                                            
+                                                <div>
+                                                    <lightning-combobox
+                                                        data-id ={item.SessionId}
+                                                        data-index={index}
+                                                        label=""
+                                                        value={item.DeferredReason}
+                                                        options={DeferredReasonOptions}
+                                                        disabled={item.Checkbox}
+                                                        onchange={handleDeferredReason} ></lightning-combobox>
+                                                </div>
+                                         
+
+                                            
+
+                                                <template if:true={item.showError}>
+                                                    <div class="slds-form-element slds-has-error">
+                                                        <div class="slds-form-element__help" >{item.errorMessage}</div>
+                                                    </div>
+                                                </template>
+                                        </td> 
+                                         <td class="slds-cell-wrap" data-label="Status" title={item.Status} scope="row" if:false={hideStatus}>
+                                            <div class="slds-line-clamp" >
+                                                {item.Status}
+                                            </div> 
+                                        </td>                             
+                                    </tr>
+                                </template>
+                            </template> 
+                        </tbody>
+                    </table>
+                   
+                </div>
+                    <lightning-layout multiple-rows>
+                        
+                        <lightning-layout-item if:false={isSessionDataExist} size="12" class="slds-m-top_large slds-align_absolute-center ">
+                            <lightning-button  variant="brand" type="submit" class="slds-p-left_small " label="Save" onclick={handleSaveSessionChanges} if:true={getSaveBtn} ></lightning-button>  
+                            <lightning-button  variant="brand" type="submit" class="slds-p-left_small " label="Save &amp; Submit" onclick={handleSubmitSessionChanges} if:true={getSaveBtn}></lightning-button>  
+                        </lightning-layout-item>
+                        
+                    </lightning-layout>
+
+                
+            <!-- </template> -->
+            <!-- <template if:true={showSpinner}>
+                <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+                </lightning-spinner>
+           </template> -->
+                
+            </div>
+        </article>
+    </template>
+    <!-- <template if:true={isSessionDataExist}>
+                <p>No Data Found</p>
+                </template> -->
+</lightning-card>
+</template>

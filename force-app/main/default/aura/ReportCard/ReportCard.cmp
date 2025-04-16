@@ -1,0 +1,139 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" >
+    
+    <div class="main slds-grid slds-wrap" align="center">
+        <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-12">
+            <div class="numberCircle" >1</div>
+            
+            <div class="divrs" style="background : #d9ead3;">Self Awareness</div>
+            
+            <div class="rcorners1" style="background: #ffe599;">
+                <b>Understanding of yourself: </b><br/>
+                Things which you are interested in and good at doing Things that may prevent you from taking up a career of your choice
+            </div>
+        </div>
+        
+        <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-12">
+            <div class="numberCircle">2</div>
+            
+            <div class="divrs" style="background : #ffd966;">Career Awareness</div>
+            
+            <div class="rcorners1" style="background : #93c47d;">
+                <b>Understanding of Careers:  </b><br/>
+                Type of jobs available in the industry Type of work that you may have to do if you take up a career Qualifications required. 
+                
+            </div>
+            
+        </div>
+        <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-12">
+            
+            <div class="numberCircle" >3</div>
+            
+            <div class="divrs" style="background : #93c47d;">Parent Support</div>
+            
+            <div class="rcorners1" style="background : #f1c232;">
+                <b>Parent support/permission: </b><br/>
+                It refers to your ability to gain parents' support to move ahead with your career and educational choices.
+                
+            </div>
+            
+        </div>
+        <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-12">
+            
+            <div class="numberCircle">4</div>
+            
+            <div class="divrs" style="background : #bf9000">Career Planning</div>
+            
+            <div class="rcorners1" style="background : #b6d7a8;">
+                <b>Making the right career plan:   </b><br/>
+                Choosing a career that matches your interests, strengths, and realities Choosing the right educational path which matches your career choice.
+                
+                
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="slds-grid slds-grid_vertical">
+        <div class="contentDiv slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-4">
+                <span>
+                    <img class="image" src="/sfsites/c/resource/AssessmentReportcard/images/selfAwareness.png" />
+                </span>
+            </div>
+            
+            <div class="slds-col slds-size_3-of-4" >
+                <span class="slds-text-heading_medium span">
+                    Self Awareness<br/>
+                </span>
+                <ul class="slds-list_dotted">
+                    <li class="li" >Learning about the things that interest you and are <b>good at doing.</b></li>
+                    <li class="li">Understanding ourselves and realities to choose that matches with our <b>interests, strengths, and current realities.</b></li>
+                    <li class="li"><b>Antarang’s Career Yatra program, aptitude tests, career guidance experts &amp; counselors</b> will help you learn about yourself.</li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+        
+        <div class="contentDiv slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-4" >
+                <span><img class="image" src="/sfsites/c/resource/AssessmentReportcard/images/careerAwareness.png" /></span>
+            </div>
+            
+            <div class="slds-col slds-size_3-of-4" >
+                <span class="slds-text-heading_medium span" >
+                    Career Awareness<br/>
+                </span>
+                <ul class="slds-list_dotted">
+                    <li class="li">Awareness of various <b>career options</b> will help you pick a career that matches with your strength and interests.</li>
+                    <li class="li"><b>Type of jobs, qualifications required, roles &amp; responsibilities</b> about sectors will aid to your career decision-making.</li>
+                    <li class="li">Attend the Career guidance program held in your school to build career knowledge.</li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="contentDiv slds-grid slds-gutters" >
+            <div  class="slds-col slds-size_1-of-4" >
+                <span><img class="image" src="/sfsites/c/resource/AssessmentReportcard/images/ParentSupport.png" /></span>
+            </div>
+            
+            <div class="slds-col slds-size_3-of-4" >
+                <span class="slds-text-heading_medium span">
+                    Parent Support<br/>
+                </span>
+                <ul class="slds-list_dotted">
+                    <li class="li"> <b>Parent permission and support</b>Parent permission and support are essential to move towards the education and career of your choice.</li>
+                    <li class="li">Gain your parents' support by <b>discussing</b> with them all your <b>career and education-related decisions</b> and by having them <b>attend career-related programs and meetings</b> held in your school.</li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+        <div class="contentDiv slds-grid slds-gutters" >
+            <div class="slds-col slds-size_1-of-4" >
+                <span><img class="image" src="/sfsites/c/resource/AssessmentReportcard/images/CareerPlanning.png" /></span>
+            </div>
+            
+            <div  class="slds-col slds-size_3-of-4" >
+                <span class="slds-text-heading_medium span" >
+                    Career Planning<br/>
+                </span>
+                <ul class="slds-list_dotted">
+                    <li class="li">Choosing a career that <b>matches your interest, strength, and realities</b></li>
+                    <li class="li">Choosing the right <b>educational path</b> that matches your career choices</li>
+                    <li class="li">Career planning provides you clarity and helps you in having <b>well-defined next steps</b> towards the career of your choice.</li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="slds-col contentDiv" >
+            <b> You will be now going through the Career Yatra program organized in your school with the help of the Antarang Foundation. <br/>
+                
+                Please attend the program as it will help you to work on improving your career scores and make the right career and educational decisions for yourself!
+            </b>
+            
+        </div>
+        
+    </div>
+    
+</aura:component>

@@ -1,0 +1,28 @@
+<template>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered"
+        aria-label="Example default base table of Opportunities">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <template for:each={tableColoums} for:item="coloumName">
+                    <th class="" scope="col" key={coloumName}>
+                        <div class="slds-truncate" title={coloumName}>{coloumName}</div>
+                    </th>
+                </template>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={tableDataList} for:item="rowData">
+                <tr class="slds-hint-parent" key={rowData}>
+                    <th data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="Cloudhub">
+                            <a href="#" tabindex="-1">Cloudhub</a>
+                        </div>
+                    </th>
+                    <td data-label="Account Name">
+                        <div class="slds-truncate" title="Cloudhub">Cloudhub</div>
+                    </td>
+                </tr>
+        </template>
+        </tbody>
+    </table>
+</template>

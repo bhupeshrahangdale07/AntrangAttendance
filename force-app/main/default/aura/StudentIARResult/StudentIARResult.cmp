@@ -1,0 +1,308 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global"
+                controller="StudentIARFormCtrl">
+    
+    <aura:attribute name="contactId" type="String" />
+    <aura:attribute name="reqpage" type="String" />
+    <aura:attribute name="language" type="String" />
+    <aura:attribute name="result" type="object" />
+    <aura:attribute name="mapAllRealities" type="List" />
+    <aura:attribute name="matchingCareers" type="object" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="show" type="Boolean" default="false" />
+    <aura:if isTrue="{!v.show}">
+        <div class="slds-align_absolute-center">
+            <lightning:spinner aura:id="spinner" variant="brand" size="large"/>
+        </div>
+    </aura:if>
+    
+    <section id="container">
+        <div class="container">
+            
+            <aura:if isTrue="{!or(v.reqpage == 'I', v.reqpage == 'A')}">
+                <aura:if isTrue="{!v.reqpage == 'I'}">
+                    <aura:if isTrue="{!v.language == 'eng'}">
+                        <h2>Your top 3 interest codes are</h2>
+                    </aura:if>
+                    <aura:if isTrue="{!v.language == 'hin'}">
+                        <h2>आपके शीर्ष 3 रुचि कोड हैं</h2>
+                    </aura:if>
+                    <aura:if isTrue="{!v.language == 'mar'}">
+                        <h2>तुमचे टॉप 3 इंटरेस्ट कोड आहेत</h2>
+                    </aura:if>
+                    <aura:if isTrue="{!v.language == 'Urdu'}">
+                        <h2>آپ کے ٹاپ 3 دلچسپی کوڈ ہیں۔</h2>
+                    </aura:if>
+                </aura:if>
+                
+                <aura:if isTrue="{!v.reqpage == 'A'}">
+                    <aura:if isTrue="{!v.language == 'eng'}">
+                        <h2>Your top 3 aptitude codes are</h2>
+                    </aura:if>
+                    <aura:if isTrue="{!v.language == 'hin'}">
+                        <h2>आपके शीर्ष 3 योग्यता कोड हैं</h2>
+                    </aura:if>
+                    <aura:if isTrue="{!v.language == 'mar'}">
+                        <h2>तुमचे टॉप 3 क्षमता कोड आहेत</h2>
+                    </aura:if>
+                    <aura:if isTrue="{!v.language == 'Urdu'}">
+                        <h2>آپ کے ٹاپ 3 اپٹیٹیڈ کوڈز ہیں۔</h2>
+                    </aura:if>
+                </aura:if>
+                
+                <table class="tableWidth">
+                    <aura:if isTrue="{!v.reqpage == 'I'}">
+                        <tr>
+                            <aura:if isTrue="{!v.language == 'eng'}">
+                                <th style="text-size:50px;">Interest</th>
+                                <th>Score</th>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'hin'}">
+                                <th style="text-size:50px;">रुचि</th>
+                                <th>स्कोर</th>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'mar'}">
+                                <th style="text-size:50px;">आवड</th>
+                                <th>स्कोअर</th>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'Urdu'}">
+                                <th style="text-size:50px;">دلچسپیاں</th>
+                                <th>اسکور</th>
+                            </aura:if>
+                            
+                        </tr>
+                    </aura:if>
+                    <aura:if isTrue="{!v.reqpage == 'A'}">
+                        <tr>
+                            <aura:if isTrue="{!v.language == 'eng'}">
+                                <th style="text-size:50px;">Aptitude</th>
+                                <th>Score</th>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'hin'}">
+                                <th style="text-size:50px;">योग्यता</th>
+                                <th>स्कोर</th>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'mar'}">
+                                <th style="text-size:50px;">क्षमता</th>
+                                <th>स्कोअर</th>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'Urdu'}">
+                                <th style="text-size:50px;">اہلیت</th>
+                                <th>اسکور</th>
+                            </aura:if>
+                            
+                        </tr>
+                    </aura:if>
+                    <aura:iteration items="{!v.result}" var="r">
+                        <tr>
+                            <td><aura:unescapedHtml value="{!r.label}"></aura:unescapedHtml></td>
+                            <td><aura:unescapedHtml value="{!r.value}"></aura:unescapedHtml></td>
+                        </tr>
+                    </aura:iteration>
+                </table>
+            </aura:if>
+            <aura:if isTrue="{!v.reqpage == 'R'}">
+                
+                <aura:if isTrue="{!v.language == 'eng'}">
+                    <h2>Your Reality<br/>Based on the answers given by you, below is your reality.</h2>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'hin'}">
+                    <h2>आपकी वास्तविकता<br/>आपके द्वारा दिए गए उत्तरों के आधार पर नीचे आपकी वास्तविकता दी गयी है</h2>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'mar'}">
+                    <h2>तुमची वास्तविकता<br/>तुम्ही दिलेल्या उत्तरांच्या आधारे, तुमची वास्तविकता खाली दिली गेली आहे</h2>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'Urdu'}">
+                    <h2>آپ کی حقیقت<br/>آپ کے دیے گئے جوابات کی بنیاد پر، ذیل میں آپ کی حقیقت ہے</h2>
+                </aura:if>
+                
+                <table style="width:100%;" cellspacing="2">
+                    
+                    <aura:iteration items="{!v.mapAllRealities}" var="realitykey" indexVar="key">
+                        <tr>
+                            <aura:iteration items="{!realitykey.value}" var="mapValue">
+                                <td class="blacktd" valign="top">
+                                <p>{!mapValue}</p>
+                                </td>
+                            </aura:iteration>
+                        </tr>
+                    </aura:iteration>
+                </table>
+                <br/>
+                
+                <aura:if isTrue="{!v.language == 'eng'}">
+                    <p><b>Note: You can start taking steps today to change your reality if it does not match your career aspiration.</b></p>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'hin'}">
+                    <p><b>नोट: यदि आपकी वास्तविकता आपके करियर की आकांक्षा से मेल नहीं खाती है, आप इसे बदलने के लिए आज से कदम उठाना शुरू कर सकते हैं।</b></p>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'mar'}">
+                    <p><b>नोट: जर तुमचे वास्तविकता तुमच्या करिअरच्या आकांक्षाशी जुळत नसेल तर तुम्ही तुमचे हे बदलण्यासाठी पावले उचलण्यास सुरुवात करू शकता</b></p>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'Urdu'}">
+                    <p><b>نوٹ: آپ اپنی حقیقت کو تبدیل  کرنے کے لیے آج سے ہی اقدامات کرنا شروع کر سکتے ہیں اگر یہ آپ کے کیریئر کی خواہش کے مطابق نہ ہو</b></p>
+                </aura:if>
+                
+            </aura:if>
+            <br/><br/>
+            
+            <aura:if isTrue="{!or(v.reqpage == 'I', v.reqpage == 'A')}">
+                <aura:if isTrue="{!v.language == 'eng'}">
+                    <h2>Few careers that you may like are</h2>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'hin'}">
+                    <h2>कुछ करियर जो आपको पसंद आ सकते हैं वे हैं</h2>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'mar'}">
+                    <h2>तुम्हाला आवडतील असे काही करिअर आहेत</h2>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'Urdu'}">
+                    <h2>کچھ کیریئر جو آپ کو پسند ہو سکتے ہیں۔</h2>
+                </aura:if>
+            </aura:if>
+            <aura:if isTrue="{!v.reqpage == 'R'}">
+                <aura:if isTrue="{!v.language == 'eng'}">
+                    <h2>Few careers that match your current reality are</h2>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'hin'}">
+                    <h2>आपकी वर्तमान वास्तविकता से मेल खाने वाले कुछ करियर हैं :-</h2>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'mar'}">
+                    <h2>तुमच्या वर्तमान वास्तवाशी जुळणारे काही करिअर आहेत :-</h2>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'Urdu'}">
+                    <h2>کچھ کیریئر جو آپ کے موجودہ صورتِ حال سے مماثل ہیں</h2>
+                </aura:if>
+            </aura:if>
+            
+            
+            <aura:if isTrue="{!not(empty(v.matchingCareers))}">
+                <table style="width:50%;">
+                    <tr>
+                        <aura:if isTrue="{!v.language == 'eng'}">
+                            <th><b>Matching Careers</b></th>
+                        </aura:if>
+                        <aura:if isTrue="{!v.language == 'hin'}">
+                            <th><b>मैचिंग करियर</b></th>
+                        </aura:if>
+                        <aura:if isTrue="{!v.language == 'mar'}">
+                            <th><b>जुळणारे करिअर</b></th>
+                        </aura:if>
+                        <aura:if isTrue="{!v.language == 'Urdu'}">
+                            <h2>ملتے ہوئے کیریئر</h2>
+                        </aura:if>
+                    </tr>
+                    <aura:iteration items="{!v.matchingCareers}" var="c">
+                        <tr>
+                            <aura:if isTrue="{!v.language == 'eng'}">
+                                <td>{!c.Label_for_the_Assessment_form__c}</td>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'hin'}">
+                                <td>{!c.Hindi_Label_for_the_Assessment_form__c}</td>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'mar'}">
+                                <td>{!c.Marathi_Label_for_the_Assessment_form__c}</td>
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'Urdu'}">
+                                <td>{!c.Urdu_Label_for_the_Assessment_form__c}</td>
+                            </aura:if>
+                        </tr>
+                    </aura:iteration>
+                </table>
+                <aura:set attribute="else">
+                    <aura:if isTrue="{!v.language == 'eng'}">
+                        Matching careers not found.
+                    </aura:if>
+                    <aura:if isTrue="{!v.language == 'hin'}">
+                        मैचिंग करियर नहीं मिला।
+                    </aura:if>
+                    <aura:if isTrue="{!v.language == 'mar'}">
+                        जुळणारे करिअर सापडले नाहीत.
+                    </aura:if>
+                    <aura:if isTrue="{!v.language == 'Urdu'}">
+                        مماثل کیریئر نہیں ملے۔
+                    </aura:if>
+                </aura:set>
+            </aura:if>
+            
+            
+            
+            <p class="mobNone">&nbsp;</p>
+            
+            <aura:if isTrue="{!v.language == 'eng'}">
+                <h2>Additional resources for you</h2>
+            </aura:if>
+            <aura:if isTrue="{!v.language == 'hin'}">
+                <h2>आपके लिए अतिरिक्त संसाधन</h2>
+            </aura:if>
+            <aura:if isTrue="{!v.language == 'mar'}">
+                <h2>आपल्यासाठी अतिरिक्त संसाधने</h2>
+            </aura:if>
+            <aura:if isTrue="{!v.language == 'Urdu'}">
+                <h2>آپ کے لیے اضافی وسائل۔</h2>
+            </aura:if>
+            
+            <ul class="linkList">
+                <aura:if isTrue="{!v.reqpage == 'I'}">
+                    <li>
+                        <span style="text-align: center;">
+                            <aura:if isTrue="{!v.language == 'eng'}">
+                                To know more about careers related to your interest, click on CareerAware Bot&nbsp;
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'hin'}">
+                                अपनी रुचि से संबंधित करियर के बारे में अधिक जानने के लिए, करियर अवेयर बॉट पर क्लिक करें
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'mar'}">
+                                आपल्या आवडीशी संबंधित करिअरबद्दल अधिक जाणून घेण्यासाठी, कॅरिअरवेअर बॉटवर क्लिक करा:
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'Urdu'}">
+                                اپنی دلچسپی سے متعلق کیریئر کے بارے میں مزید جاننے کے لیے ، کیریئر ویئر بوٹ پر کلک کریں۔
+                            </aura:if>
+                            <img src="{!$Resource.Whatsapp_icon}" onclick="{!c.redirecttowhatsapp}" style="width:40px;height:40px;"/>
+                        </span>
+                    </li>
+                </aura:if>
+                <aura:if isTrue="{!v.reqpage == 'A'}">
+                    <li>
+                        <span style="text-align: center;">
+                            <aura:if isTrue="{!v.language == 'eng'}">
+                                To know more about careers related to your aptitude, click on CareerAware Bot&nbsp;
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'hin'}">
+                                अपनी योग्यता से संबंधित करियर के बारे में अधिक जानने के लिए, करियर अवेयर बॉट पर क्लिक करें
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'mar'}">
+                                आपल्या योग्यतेशी संबंधित करिअरबद्दल अधिक जाणून घेण्यासाठी, कॅरिअरवेअर बॉटवर क्लिक करा
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'Urdu'}">
+                                اپنی اہلیت سے متعلق کیریئر کے بارے میں مزید جاننے کے لیے ، کیریئر ویئر بوٹ پر کلک کریں۔
+                            </aura:if>
+                            <img src="{!$Resource.Whatsapp_icon}" onclick="{!c.redirecttowhatsapp}" style="width:40px;height:40px;"/>
+                        </span>
+                    </li>
+                </aura:if>
+                <aura:if isTrue="{!v.reqpage == 'R'}">
+                    <li>
+                        <span style="text-align: center;">
+                            <aura:if isTrue="{!v.language == 'eng'}">
+                                To know more about careers related to your reality, click on CareerAware Bot&nbsp;
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'hin'}">
+                                अपनी वास्तविकता से जुड़े करियर के बारे में अधिक जानने के लिए, करियर अवेयर बॉट पर क्लिक करें
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'mar'}">
+                                आपल्या वास्तवाशी संबंधित करिअरबद्दल अधिक जाणून घेण्यासाठी, कॅरिअरवेअर बॉटवर क्लिक करा
+                            </aura:if>
+                            <aura:if isTrue="{!v.language == 'Urdu'}">
+                                اپنی حقیقت سے متعلق کیریئر کے بارے میں مزید جاننے کے لیے ، کیریئر ویئر بوٹ پر کلک کریں۔
+                            </aura:if>
+                            <img src="{!$Resource.Whatsapp_icon}" onclick="{!c.redirecttowhatsapp}" style="width:40px;height:40px;"/>
+                        </span>
+                    </li>
+                </aura:if>
+            </ul>
+            
+        </div>
+    </section>
+</aura:component>

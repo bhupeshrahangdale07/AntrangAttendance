@@ -1,0 +1,9 @@
+<aura:event type="APPLICATION" description="Event template" >
+    <aura:attribute name="sObject" type="String"/>
+    <aura:attribute name="CityId" type="String"/>
+    <aura:attribute name="AccountId" type="String"/>
+    <aura:attribute name="ContactId" type="String"/>
+    <aura:attribute name="ContactName" type="String"/>
+    <aura:attribute name="BatchId" type="String"/>
+    <aura:attribute name="PageNumber" type="String"/>
+</aura:event>

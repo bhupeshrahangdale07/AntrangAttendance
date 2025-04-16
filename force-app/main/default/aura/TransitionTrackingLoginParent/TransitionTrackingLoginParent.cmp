@@ -1,0 +1,124 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes" access="global" 
+                controller="StudentAssessmentFormCtrl">
+    
+    <aura:attribute name="cityId" type="String" />
+    <aura:attribute name="AccountId" type="String" />
+    <aura:attribute name="ContactId" type="String" />
+    <aura:attribute name="SchoolWhareClause" type="String"/>
+    <aura:attribute name="StudentWhareClause" type="String" />
+    <aura:attribute name="AccountBatches" type="List" />
+    <aura:attribute name="isMatchIdentity" type="Boolean" default="true" />
+    <aura:attribute name="isShowPersonalDetail" type="Boolean" default="false" />
+    <aura:attribute name="Student" type="Object" />
+    <aura:attribute name="SelectedMedium" type="string" />
+    <aura:attribute name="SelectedLanguage" type="string" default="English"/>
+    <aura:attribute name="startknowingbtn" type="string" default="Start Knowing Yourself"/>
+    <aura:attribute name="studentinfoheader" type="string" default="Student Information"/>
+    
+    <aura:attribute name="studentname" type="string" default="Student Full Name"/>
+    <aura:attribute name="contactnumber" type="string" default="Contact Number"/>
+    <aura:attribute name="whatsappnumber" type="string" default="WhatsApp Number"/>
+    <aura:attribute name="birthdate" type="string" default="Date of Birth"/>
+    <aura:attribute name="School" type="string" default="School"/>
+    <aura:attribute name="State" type="string" default="State"/>
+    <aura:attribute name="City" type="string" default="City"/>
+    <aura:attribute name="Gender" type="string" default="Gender"/>
+    <aura:attribute name="fathereducation" type="string" default="Father's Education"/>
+    <aura:attribute name="mothereducation" type="string" default="Mother's Education"/>
+    <aura:attribute name="familyincome" type="string" default="Average Monthly Family Income"/>
+    <aura:attribute name="Category" type="string" default="Category"/>    
+    <aura:attribute name="chooseone" type="string" default="choose one"/>
+    <aura:attribute name="genderoptions" type="List"/>
+    <aura:attribute name="educationOptions" type="List"/>
+    <aura:attribute name="monthlyIncomeoptions" type="List"/>
+    <aura:attribute name="casteOptions" type="List"/>
+    <aura:attribute name="whatsppvalidationmsg" type="String" />
+    <aura:attribute name="contactupdatesuccessmsg" type="String" />
+    <aura:attribute name="contactupdateerrormsg" type="String" />
+    <aura:attribute name="successtext" type="String" default="Success!"/>
+    <aura:attribute name="errortext" type="String" default="Error!"/>
+
+    
+    <aura:attribute name="show" type="Boolean" default="false" />
+    <aura:handler name="change" value="{!v.show}" action="{!c.spinnerDisplayHandler}"/>
+    <div class="slds-align_absolute-center">
+        <lightning:spinner aura:id="spinner" variant="brand" size="large" class="slds-hide"/>
+    </div>
+    
+    <!-- container Start Here -->
+    <section id="container">
+        <div class="container">
+            <div class="authentic">
+                <div class="authLeft">
+                    <h2>{!v.studentinfoheader}</h2>
+                    <form>
+                        <aura:if isTrue="{!v.isMatchIdentity}">
+                            <label>
+                                <c:TransitionTrackingLoginChild  searchPlaceHolder="City"                                                   
+                                                     objectApiName="District_Master__c"
+                                                     idFieldApiName="Id"
+                                                     valueFieldApiName="Name"
+                                                     MatchingvalueFieldApiName="Name"
+                                                     StudentFeedbackSpecific="{!c.onwrpEventUpdate}"
+                                                     divBackground=""
+                                                     maxRecords="100"/>
+                            </label>
+                            <label>
+                                <c:TransitionTrackingLoginChild searchPlaceHolder="School"                                                   
+                                                     objectApiName="Account"
+                                                     idFieldApiName="Id"
+                                                     valueFieldApiName="Name"
+                                                     MatchingvalueFieldApiName="Name"
+                                                     extendedWhereClause="{!v.SchoolWhareClause}"
+                                                     StudentFeedbackSpecific="{!c.onwrpEventUpdate}"
+                                                     defaultWhereclause = " AND RecordType.Name = 'School'"
+                                                     divBackground=""
+                                                     maxRecords="100"/>
+                            </label>
+                            <label>
+                                <c:TransitionTrackingLoginChild searchPlaceHolder="Student Name"                                                   
+                                                     objectApiName="Contact"
+                                                     idFieldApiName="Id"
+                                                     valueFieldApiName="Name"
+                                                     MatchingvalueFieldApiName="Name"
+                                                     extendedWhereClause="{!v.StudentWhareClause}"
+                                                     StudentFeedbackSpecific="{!c.onwrpEventUpdate}" 
+                                                     defaultWhereclause = " AND RecordType.DeveloperName = 'CA_Student'"
+                                                     divBackground=""
+						      						 maxRecords="100"/>
+                            </label>
+                            
+                            <!-- 3. Third Change here to remove the choose one language component -->
+                            <label>                                
+                                <lightning:select variant="label-hidden"
+                                                  class="cls-label-hide" 
+                                                  
+                                                  name="language"
+                                                  label="language"
+                                                  value="{!v.SelectedLanguage}">
+                                    <option value="">choose one language...</option>
+                                    <option value="English">English</option>  
+                                    <!-- <option value="Hindi">Hindi</option>    
+                                    <option value="Marathi">Marathi</option>
+                                    <option value="Urdu">Urdu</option> -->
+                                </lightning:select>
+                            </label>
+
+                            <label>
+                                <lightning:button class="btn"
+                                                  label="LOGIN"
+                                                  title="Login"
+                                                  onclick="{!c.handleLogin}" />
+                            </label>
+                        </aura:if>
+                                                                        
+                    </form>
+                </div>
+                <div class="authRgt">
+                    <img src="/sfsites/c/resource/StudentExam/images/vector.png"/>
+                </div>
+            </div>
+        </div> 
+    </section>
+    
+</aura:component>

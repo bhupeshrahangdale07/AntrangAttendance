@@ -1,0 +1,136 @@
+{
+  "kind": "bigquery#queryResponse",
+  "schema": {
+    "fields": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "name",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "uuid",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "inserted_at",
+        "type": "DATETIME",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "updated_at",
+        "type": "DATETIME",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "results",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "flow_version",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "contact_phone",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "contact_name",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "flow_context_id",
+        "type": "INTEGER",
+        "mode": "NULLABLE"
+      }
+    ]
+  },
+  "jobReference": {
+    "projectId": "whats-next-v1",
+    "jobId": "job_xfs8KOxG3CiuEu-oS0xMq6G1tLXD",
+    "location": "US"
+  },
+  "totalRows": "2",
+  "rows": [
+    {
+      "f": [
+        {
+          "v": "204121"
+        },
+        {
+          "v": "1.4 Finance"
+        },
+        {
+          "v": "3a915f97-13da-4ff9-8fa8-edfb4c7979ac"
+        },
+        {
+          "v": "2021-07-02T18:33:44.537763"
+        },
+        {
+          "v": "2021-07-02T18:33:53.942503"
+        },
+        {
+          "v": "{\"Result 2\":{\"category\":\"Responsibilities\",\"input\":\"1\",\"intent\":null},\"financecareer\":{\"category\":\"Banking\",\"input\":\"1\",\"intent\":null},\"parent\":{\"Career Industry\":{\"category\":\"Finance\",\"input\":\"4\",\"intent\":null}}}"
+        },
+        {
+          "v": "21"
+        },
+        {
+          "v": "919930803695"
+        },
+        {
+          "v": "💖💖"
+        },
+        {
+          "v": "307260"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "204119"
+        },
+        {
+          "v": "1.0 Career Information "
+        },
+        {
+          "v": "d58eac7d-ed71-402f-8481-ecaec1c49642"
+        },
+        {
+          "v": "2021-07-02T18:33:27.920404"
+        },
+        {
+          "v": "2021-07-02T18:33:27.920404"
+        },
+        {
+          "v": "{\"Career Industry\":{\"category\":\"Finance\",\"input\":\"4\",\"intent\":null},\"parent\":{\"Result 14\":{\"category\":\"1\",\"input\":\"1\",\"intent\":null},\"Result 15\":{\"category\":\"2\",\"input\":\"2\",\"intent\":null},\"Result 16\":{\"category\":\"1\",\"input\":\"1\",\"intent\":null},\"Result 2\":{\"category\":\"1\",\"input\":\"1\",\"intent\":null},\"Result 3\":{\"category\":\"2\",\"input\":\"2\",\"intent\":null},\"Result 4\":{\"category\":\"1\",\"input\":\"1\",\"intent\":null},\"Result 6\":{\"category\":\"1\",\"input\":\"1\",\"intent\":null},\"Result 7\":{\"category\":\"3\",\"input\":\"3\",\"intent\":null},\"Result 8\":{\"category\":\"1\",\"input\":\"1\",\"intent\":null}}}"
+        },
+        {
+          "v": "61"
+        },
+        {
+          "v": "919930803695"
+        },
+        {
+          "v": "💖💖"
+        },
+        {
+          "v": "307256"
+        }
+      ]
+    }
+  ],
+  "totalBytesProcessed": "10612528",
+  "jobComplete": true,
+  "cacheHit": false
+}

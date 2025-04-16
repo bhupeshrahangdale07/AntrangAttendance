@@ -1,0 +1,98 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global"
+                controller="StudentIARFormCtrl">
+    
+    <aura:attribute name="contactId" type="String" />
+    <aura:attribute name="language" type="String" />
+    <aura:attribute name="reqpage" type="String" />
+    <aura:attribute name="whatsupnumber" type="String" />
+    <aura:attribute name="isStdSubmittedExam" type="Boolean" default="false"/>
+    <aura:attribute name="isModalOpen" type="Boolean" default="false"/>
+    <aura:attribute name="currPage" type="String" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <section id="container">
+        <div class="container">
+            <aura:if isTrue="{!v.reqpage == 'interest'}">
+                <aura:if isTrue="{!v.language == 'hin'}">
+                    <p class="welcomeTxt">करियर चुनते समय पहला कदम होता है खुद को जानना। हमारी रुचि हमें बताती है कि हमें क्या पसंद है और हमें क्या करने में आनंद आता है। यह विडीओ देखें रुचियों के बारे में अधिक जानने के लिए और अपनी रुचि जानने से आपको करियर चुनने में कैसे मदद मिल सकती है। वीडियो देखने के बाद अपनी रुचि जानने के लिए नीचे दिए गए स्टार्ट टेस्ट पर क्लिक करें।</p>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'eng'}">
+                    <p class="welcomeTxt">When choosing a career, the first step is to know yourself. Interest tells us what we like and enjoy doing. Watch the video to know more about interests and how knowing your interest can help you choose a career. After watching the video, click on Start test below to know your interest.</p>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'mar'}">
+                    <p class="welcomeTxt">करियर निवडताना सर्वात पहिली पायरी म्हणजे स्वतःला जाणून घेणे आवड आपल्याला सांगते की आपल्याला काय करायला आवडतं व कोणत्या गोष्टी करून आपल्याला आनंद मिळतो.आवडी बद्दल अधिक माहिती मिळवण्यासाठी हा व्हिडिओ पहा आणि आपली आवड आपल्याला करिअर निवडताना कशा प्रकारे मदत करु शकते हे जाणून घ्या.व्हिडिओ पाहून झाल्यानंतर, स्टार्ट बटन वर क्लिक करा व आपल्या आवडी बद्दल जाणून घ्या.</p>
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'Urdu'}">
+                    <p class="welcomeTxt">کسی کیریئر کو چُنتے وقت ، پہلا قدم اپنے آپ کو جاننا ہے۔ دلچسپی ہمیں بتاتی ہے کہ ہم کیا پسند کرتے ہیں اور کیا کرنے میں ہمیں مزہ آتا ہے۔ دلچسپیوں کے بارے میں مزید جاننے کے لیے ویڈیو دیکھیں اور اپنی دلچسپی کا جاننا سے آپ کو کیریئر چننے میں مدد دے گا۔ ویڈیو دیکھنے کے بعد ، اپنی دلچسپی جاننے کے لیے نیچے اسٹارٹ ٹیسٹ پر کلک کریں۔</p>
+                </aura:if>
+            </aura:if>
+            
+            <aura:if isTrue="{!v.reqpage == 'aptitude'}">
+                <aura:if isTrue="{!v.language == 'eng'}">
+                	When choosing a career, the first step is to know yourself. Aptitude tells us what we are good at. Watch the video to know more about aptitude and how knowing your aptitude can help you choose a career. After watching the video, click on Start test below to know your aptitude
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'hin'}">
+                	करियर चुनते समय, पहला कदम खुद को जानना है। योग्यता हमें बताती है कि हम किसमें अच्छे हैं। योग्यता के बारे में अधिक जानने के लिए वीडियो देखें और अपनी योग्यता जानने से आपको करियर चुनने में कैसे मदद मिल सकती है। वीडियो देखने के बाद अपनी योग्यता जानने के लिए नीचे दिए गए स्टार्ट टेस्ट पर क्लिक करें
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'mar'}">
+                    करिअर निवडताना पहिली पायरी म्हणजे स्वतःला ओळखणे. योग्यता आपल्याला सांगते की आपण कशात चांगले आहोत. अँटिट्यूड/योग्यते बद्दल व त्याची करिअर निवड करण्यात कशी मदत होते हे जाणून घेण्यासाठी व्हिडिओ पहा. व्हिडिओ पाहिल्यानंतर, तुमची योग्यता जाणून घेण्यासाठी खालील स्टार्ट टेस्ट वर क्लिक करा.
+                </aura:if>
+                <aura:if isTrue="{!v.language == 'Urdu'}">
+                	کیریئر کا انتخاب کرتے وقت ، پہلا قدم اپنے آپ کو جاننا ہے۔ اہلیت ہمیں بتاتی ہے کہ ہم کس چیز میں اچھے ہیں۔ اہلیت کے بارے میں مزید جاننے کے لیے ویڈیو دیکھیں اور آپ کی اہلیت کو جاننے سے آپ کیریئر کا انتخاب کیسے کرسکتے ہیں۔ ویڈیو دیکھنے کے بعد ، اپنی مہارت جاننے کے لیے نیچے اسٹارٹ ٹیسٹ پر کلک کریں۔
+                </aura:if>
+            </aura:if>
+            
+            <div class="videoThumb">
+                <aura:if isTrue="{!v.reqpage == 'interest'}">
+                    <iframe src="https://www.youtube.com/embed/NUINJL9WqGQ?rel=0" title="YouTube video player" rel="0" frameborder="0" autoplay="0" allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                </aura:if>
+                <aura:if isTrue="{!v.reqpage == 'aptitude'}">
+                    <iframe src="https://www.youtube.com/embed/GyulEkfoG28?rel=0" title="YouTube video player" rel="0" frameborder="0" autoplay="0" allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                </aura:if>
+                <aura:if isTrue="{!v.reqpage == 'reality'}">
+                    <iframe src="https://www.youtube.com/embed/euh9ZMa-lYU?rel=0" title="YouTube video player" rel="0" frameborder="0" autoplay="0" allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                </aura:if>
+            </div>
+            
+            <div class="text-center">
+                <lightning:button class="btn startTest" 
+                                  variant="brand"
+                                  label="Start Test"
+                                  title="Start Test"
+                                  onclick="{!c.startTest}" />
+                <!--<a href="test01.html" class="btn startTest">Start Test</a>-->
+            </div>
+        </div>
+        
+        <aura:if isTrue="{!v.isModalOpen}">
+            
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Verify Whatsapp Number</h2>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning:input aura:id="whatsapp" type="tel" label="Whatsapp Number" name="phone3" required="true" value="{!v.whatsupnumber}"/>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <!--<lightning:button variant="neutral"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeModel }"/>-->
+                        <lightning:button variant="brand"
+                                          label="OK"
+                                          title="OK"
+                                          onclick="{!c.submitDetails}"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+        
+    </section>
+</aura:component>

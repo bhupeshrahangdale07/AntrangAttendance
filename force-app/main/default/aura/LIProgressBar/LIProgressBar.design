@@ -1,0 +1,3 @@
+<design:component label="ProgressBar">
+	<design:attribute name="allowTimer" label="allowTimer" />
+</design:component>

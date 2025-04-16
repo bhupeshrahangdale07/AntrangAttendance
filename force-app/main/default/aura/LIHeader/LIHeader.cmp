@@ -1,0 +1,35 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="allowTimer" type="boolean" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="isInterestPage" type="boolean" access="global" default="false"/>
+    <aura:attribute name="isAptitudePage" type="boolean" access="global" default="false"/>
+    <aura:attribute name="isRealityPage" type="boolean" access="global" default="false"/>
+    <aura:attribute name="isInterestHomePage" type="boolean" access="global"/>
+    
+    <header id="header">
+        <div class="container">
+            <div class="headerInn">
+                <a href="#" class="logo"><img src="/sfsites/c/resource/StudentExam/images/logo.png"/></a>
+                <aura:if isTrue="{!v.isInterestPage}">
+                    <span class="clscenter"><b>Interest Test (What do you like doing?)</b></span>
+                </aura:if>
+                <aura:if isTrue="{!v.isInterestHomePage}">
+                    <span class="clscenter"><b>Know your Interest here</b></span>   
+                </aura:if>
+                <aura:if isTrue="{!v.isRealityPage}">
+                	<span class="clscenter"><b>Reality</b></span>   
+                </aura:if>
+                <aura:if isTrue="{!v.isAptitudePage}">
+                	<span class="clscenter"><b>Aptitude</b></span>   
+                </aura:if>
+            
+            <aura:if isTrue="{!v.allowTimer}">
+                <div>
+                    <c:ExamTimer pageNumber="{!v.startPage}" pageType="Aptitude" aura:id="examTimerChildCmp"/>
+                </div>
+            </aura:if>
+            </div>
+        </div>
+    </header>
+</aura:component>

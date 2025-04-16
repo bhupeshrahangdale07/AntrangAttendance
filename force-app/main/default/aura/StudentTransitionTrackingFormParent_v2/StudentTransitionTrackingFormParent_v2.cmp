@@ -1,0 +1,265 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes" access="global" 
+                controller="StudentTransitionTracking_v2">
+    <aura:attribute name="StudentQuestions" type="object" />
+    <aura:attribute name="contactId" type="String" />
+    <aura:attribute name="language" type="String" default="English"/>
+    <aura:attribute name="questions" type="List"/>
+    <aura:attribute name="startPage" type="Integer" default="1"/>
+    <aura:attribute name="endPage" type="Integer"/>
+    <aura:attribute name="totalPages" type="Integer"/>
+    <aura:attribute name="isShowQuestionPage" type="Boolean" default="false"/>
+    <aura:attribute name="isShowResult" type="Boolean" default="false"/>
+    <aura:attribute name="CareerNextStpeOptions" type="List" />
+    <aura:attribute name="AssessmentMark" type="object" />
+    <aura:attribute name="SelfAwarenessHeader" type="String" default="Student Demographics"/>
+    <aura:attribute name="CareerAwarenessHeader" type="String" default="Education and Next Steps"/>
+    <aura:attribute name="ParentSupportHeader" type="String" default="Work Status"/>
+    <aura:attribute name="CareerPlanningHeader" type="String" default=""/>
+    <aura:attribute name="questionrequiredmsg" type="String" default="All Questions are required."/>
+    <aura:attribute name="othertextrequiredmsg" type="String" default="Please specify other values!"/>
+    <aura:attribute name="errortext" type="String" default="Error!"/>
+    <aura:attribute name="savenextbtn" type="String" default="Next"/>
+    <aura:attribute name="previousbtn" type="String" default="Previous"/>
+    <aura:attribute name="submitbtn" type="String" default="Submit"/>
+    <aura:attribute name="careerheader" type="String" default="Career"/>
+    <aura:attribute name="qualificationheader" type="String" default="Qualification"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:registerEvent name="progressbarEvent" type="c:LIProgressBarEvent" />
+    
+    <aura:attribute name="show" type="Boolean" default="false" />
+    <aura:handler name="change" value="{!v.show}" action="{!c.spinnerDisplayHandler}"/>	
+    <div class="slds-align_absolute-center">
+        <lightning:spinner aura:id="spinner" variant="brand" size="large" class="slds-hide"/>
+    </div>    
+    
+    <aura:method name="questionmethod" action="{!c.handlequestiondata}" access="public">
+        <aura:attribute name="questionid" type="String" />
+        <aura:attribute name="basequestionid" type="String" />
+        <aura:attribute name="answerLabel" type="String" />
+        <aura:attribute name="fieldType" type="String" />
+    </aura:method>
+    
+    <aura:method name="nextStepQmethod" action="{!c.handlenextStepQuestion}" access="public">
+        <aura:attribute name="selectedcareer" type="String" />
+        <aura:attribute name="questionid" type="String" />
+    </aura:method>
+
+    <!-- POP-UP EVENT  -->
+    <aura:attribute name="displayModal" type="Boolean" default="true" />
+    <aura:attribute name="popUpModalMessage" type="String" default="Form changes will be saved on Submit. Do you want to proceed ?"/>
+    <aura:attribute name="popUpModalType" type="String" default="AfterLogin" />
+
+    <aura:attribute name="popUpYesBtnLabel" type="String" default="Yes" />
+    <aura:attribute name="popUpNoBtnLabel" type="String" default="No" />
+    <aura:attribute name="popUpFinalPageMessage" type="String" default="Thank you for filling this form!"/>
+    <aura:handler name="popUpEvent" event="c:transitionTrackingPopUpEvent" 
+        action="{!c.handlePopUp}"/>
+    
+
+    
+    <aura:html tag="style"> 
+        .comm-page-custom-assessmentform:before{
+            background: url(/sfsites/c/resource/StudentExam/images/career-planning.png) center bottom no-repeat;
+            background-size: contain;
+            width: 100%;
+            height: 100%;
+            content: '';
+            position: fixed;
+            left: 0;
+            top: 0;
+            opacity: 0.1;
+        }
+        
+        @media only screen and (max-width: 767px){
+            .comm-page-custom-assessmentform:before{
+            	background-size: cover;
+            }
+        }
+        
+        @media only screen and (max-width: 1023px){
+            .comm-page-custom-assessmentform:before{
+            	background-size: cover;
+            }
+        }
+    </aura:html>
+
+    <aura:if isTrue="{!v.displayModal}">
+        <c:TransitionLoginPopUp_v2
+            popUpMessage="{!v.popUpModalMessage}"    
+            popUpType="{!v.popUpModalType}"
+            popUpLanguage="{!v.language}"
+            popUpYesLabel="{!v.popUpYesBtnLabel}"
+            popUpNoLabel="{!v.popUpNoBtnLabel}"
+            popUpFinalMessage="{!v.popUpFinalPageMessage}"
+        ></c:TransitionLoginPopUp_v2>
+    <aura:set attribute="else">
+        <aura:if isTrue="{!v.isShowQuestionPage}">
+            <aura:if isTrue="{!v.contactId}">
+                <div class="container">
+                    <c:LIProgressBar/>
+                    
+                    <h2>
+                        <aura:if isTrue="{!v.startPage == 1}">
+                            {!v.SelfAwarenessHeader}
+                        </aura:if>
+                        <aura:if isTrue="{!v.startPage == 2}">
+                            {!v.CareerAwarenessHeader}
+                        </aura:if>
+                        <aura:if isTrue="{!v.startPage == 3}">
+                            {!v.ParentSupportHeader}
+                        </aura:if>
+                        <aura:if isTrue="{!v.startPage == 4}">
+                            {!v.CareerPlanningHeader}
+                        </aura:if>
+                    </h2>
+                    <ul class="questList">
+                            <aura:iteration items="{!v.questions}" var="question" indexVar="index">
+                                <aura:if isTrue="{!question.fieldType == 'MatchColumn'}">
+                                    <aura:if isTrue="{!question.displayNumber == 'A'}">
+                                        <li class="slds-grid slds-wrap">
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <b>{!v.careerheader}</b>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <b>{!v.qualificationheader}</b>
+                                            </div>
+                                        </li>
+                                    </aura:if>
+                                </aura:if>
+                            
+                                <aura:if isTrue="{!question.fieldType != 'MatchColumn'}">
+                                    <aura:if isTrue="{!question.isdependentquestion}">                                        
+                                        <aura:if isTrue="{!question.isdependentquestionshow}">
+                                            <li>
+                                                <div class="questTitle"> {!question.displayNumber})
+                                                    <aura:unescapedHtml value="{!question.questionLabel}" />
+                                                </div>
+                                                <aura:if isTrue="{!question.fieldType != 'Label'}">
+                                                    <div>
+                                                        <c:StudentTransitionTrackingFormChild_v2 
+															StudentAnswers="{!question.lstWrpStudentAnswer}"
+                                                             aura:id="cleartTest"                                       
+                                                            questionId="{!question.questionId}" 
+                                                            fieldType="{!question.fieldType}"
+                                                            answerValue="{!question.answerId}" 
+                                                            otherAnswerValue="{!question.otherAnswerDescription}"
+                                                            isshowcareeranswers="{!question.isCareerOption}"
+                                                            isshownextsteps="{!question.isCareerNextStep}"
+                                                            CareerNextStpes="{!v.CareerNextStpeOptions}"
+                                                            CareerAspirations="{!question.mapCareerAspiration}"
+                                                            maxAllowAnswer="{!question.maxAllowAnswer}" 
+                                                            isshowtextarea="{!question.isshowtextarea}"
+                                                            language="{!v.language}" 
+                                                            parent="{!this}"
+                                                            
+                                                            userEnteredAnswervalue="{!question.otherAnswer}"/>
+                                                    </div>                            
+                                                </aura:if>
+                                            </li>
+                                        </aura:if>
+
+                                        
+                                        <aura:set attribute="else">
+                                            <li>
+                                                <div class="questTitle">{!question.displayNumber})
+                                                    <aura:unescapedHtml value="{!question.questionLabel}" />
+                                                </div>
+                                                <aura:if isTrue="{!question.fieldType != 'Label'}">
+                                                    <div>
+                                                        <!-- CUSTOM CODE : If The Field Type is not 'Label'-->
+                                                        <c:StudentTransitionTrackingFormChild_v2 StudentAnswers="{!question.lstWrpStudentAnswer}"
+                                                            questionId="{!question.questionId}" 
+                                                            fieldType="{!question.fieldType}"
+                                                            answerValue="{!question.answerId}" 
+                                                            otherAnswerValue="{!question.otherAnswerDescription}"
+                                                            isshowcareeranswers="{!question.isCareerOption}"
+                                                            questionlabel="{!question.questionLabel}" 
+                                                            isshownextsteps="{!question.isCareerNextStep}"
+                                                            CareerAspirations="{!question.mapCareerAspiration}"
+                                                            CareerNextStpes="{!v.CareerNextStpeOptions}"
+                                                            maxAllowAnswer="{!question.maxAllowAnswer}"
+                                                            isshowtextarea="{!question.isshowtextarea}" 
+                                                            language="{!v.language}"
+                                                            parent="{!this}"
+                                                            
+                                                            contactFieldApiValue="{!question.contactFieldAnswer}"
+                                                            isReadOnly="{!question.isReadOnly}"
+                                                            userEnteredAnswervalue="{!question.otherAnswer}"
+                                                            maximumValueToBeEnter="{!question.maximumValueToEnter}"
+                                                            validationPattern ="{!question.validationRegex}"
+                                                            questionObject="{!question}"
+
+                                                            />
+                                                    </div>
+
+                                                    <!-- CUSTOM CODE : If The Field Type is 'Label'-->
+                                                    <aura:set attribute="else">
+                                                        <c:StudentTransitionTrackingFormChild_v2 StudentAnswers="{!question.lstWrpStudentAnswer}"
+                                                            questionId="{!question.questionId}"
+                                                            fieldType="{!question.fieldType}"
+                                                            answerValue="{!question.answerId}"
+                                                            otherAnswerValue="{!question.otherAnswerDescription}"
+                                                            isshowcareeranswers="{!question.isCareerOption}"
+                                                            isshownextsteps="{!question.isCareerNextStep}"
+                                                            CareerNextStpes="{!v.CareerNextStpeOptions}"
+                                                            CareerAspirations="{!question.mapCareerAspiration}"
+                                                            maxAllowAnswer="{!question.maxAllowAnswer}"
+                                                            isshowtextarea="{!question.isshowtextarea}"
+                                                            language="{!v.language}"
+                                                            parent="{!this}"
+
+                                                            contactFieldApiValue ="{!question.contactFieldAnswer}"
+                                                            isReadOnly="{!question.isReadOnly}"
+                                                            maximumValueToBeEnter="{!question.maximumValueToEnter}"
+                                                            validationPattern ="{!question.validationRegex}"
+                                                            questionObject="{!question}"/>
+
+                                                        </aura:set>                                            
+                                                </aura:if>                    
+                                            </li>
+                                        </aura:set>
+                                    </aura:if>
+                                </aura:if>
+                            
+                            </aura:iteration>
+                    </ul>
+                    
+                    <div class="slds-align_absolute-center btndiv">
+                        <aura:if isTrue="{!v.totalPages > 0}">
+                            <lightning:button label="{!v.previousbtn}"
+                                            onclick="{!c.handlePrevious}"
+                                            class="{! v.startPage == 1 ? 'prvsbtn' : 'slds-m-left_x-small btn'}"
+                                            iconName='utility:back'>
+                            </lightning:button>
+                            <aura:if isTrue="{!v.endPage >= v.totalPages}">
+                                <lightning:button label="{!v.submitbtn}"
+                                                class="btn"
+                                                onclick="{!c.handleSubmit}">
+                                </lightning:button>
+                                <aura:set attribute="else">
+                                    <lightning:button label="{!v.savenextbtn}" 
+                                                    onclick="{!c.handleNext}"
+                                                    class="slds-m-left_x-small btn"
+                                                    iconName='utility:forward' 
+                                                    iconPosition='right'
+                                                    disabled="{!v.endPage >= v.totalPages}">
+                                    </lightning:button>
+                                </aura:set>
+                            </aura:if>
+                        </aura:if>
+                    </div>
+                </div>
+            </aura:if>
+            <aura:set attribute="else">
+                <aura:if isTrue="{!!v.contactId}">
+                    <div class="slds-align_absolute-center" style="padding: 110px 0px 110px 0px;font-size: x-large;">
+                        <b>You can not access this page without Authentication. Please connect with your teacher if you have any questions.</b>
+                    </div>
+                </aura:if>
+            </aura:set>
+        </aura:if>
+
+    </aura:set>
+</aura:if> 
+</aura:component>

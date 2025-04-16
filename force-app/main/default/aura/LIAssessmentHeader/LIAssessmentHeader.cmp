@@ -1,0 +1,9 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+    <header id="header">
+        <div class="container">
+            <div class="headerInn">
+                <a href="#" class="logo"><img src="/sfsites/c/resource/StudentExam/images/logo.png"/></a>
+            </div>
+        </div>
+    </header>
+</aura:component>

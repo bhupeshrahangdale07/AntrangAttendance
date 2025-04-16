@@ -1,0 +1,9 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" >
+    <div class="slds-p-top_xx-large">
+        <footer id="footer">
+            <div class="container">
+                © 2021 Antarang, All Rights Reserved.
+            </div>
+        </footer>
+    </div>
+</aura:component>

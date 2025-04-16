@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION">
+	<aura:attribute name="CurrentNumber" type="Integer"/>
+    <aura:attribute name="TotalSize" type="Integer"/>
+</aura:event>

@@ -1,0 +1,211 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" >
+	<aura:attribute name="StudentAnswers" type="object" />
+    <aura:attribute name="answerOptions" type="List" />
+    <aura:attribute name="answerValue" type="String"/>
+    <aura:attribute name="questionId" type="String" />
+    <aura:attribute name="questionlabel" type="String" />
+    <aura:attribute name="fieldType" type="String" />
+    <aura:attribute name="multiAnswerValue" type="List"/>
+	<aura:attribute name="isshowtextarea" type="Boolean"/>
+    <aura:attribute name="otherAnswerValue" type="String" />
+    <aura:attribute name="isshowcareeranswers" type="Boolean"/>
+    <aura:attribute name="CareerNextStpes" type="list" />
+    <aura:attribute name="CareerAspirations" type="map" />
+    <aura:attribute name="CareerAspirationOptions" type="List" />
+	<aura:attribute name="isshownextsteps" type="Boolean" />
+    <aura:attribute name="maxAllowAnswer" type="Integer" />
+    <aura:attribute name="language" type="String" />
+    <aura:attribute name="chooseone" type="String" default="choose one"/>
+    <aura:attribute name="typehereplh" type="String" default="Type your answer here"/>
+    <aura:attribute name="maxallowanswermsg1" type="String" default="Please select only "/>
+    <aura:attribute name="maxallowanswermsg2" type="String" default=" answers."/>
+    <aura:attribute name="errortext" type="String" default="Error!"/>
+    <aura:attribute name="otherstext" type="String" default="Others"/>
+    <aura:attribute name="idonotknowtext" type="String" default="I do not know/Not sure"/>
+    
+    <!-- my defined Attibute : for getting Contact Field Values -->
+    <aura:attribute name="contactApiFieldValue" type="String" />  
+    <aura:attribute name="pulledFromContact" type="Boolean" access="global" />
+    <aura:attribute name="contactApiFieldApiName" type="String" access="global" />
+    <aura:attribute name="FathersOccupation" type="list" />
+    <aura:attribute name="isShowFatherOccupation" type="Boolean" default="false" />
+
+    <!-- Register my custom event: to pass the student changed data to parent -->
+    <aura:registerEvent name="studentDetailsPassToParent" type="c:studentDetailsPass_MangeshEvt"/>
+
+
+
+    <aura:attribute name="parent" type="Aura.Component"/>
+        
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <div>
+    	<dl>
+            <dd>
+                <aura:if isTrue="{!v.fieldType == 'RadioGroup'}">
+                    <lightning:radioGroup name="{!v.questionId}"                                      
+                                          options="{!v.answerOptions}"
+                                          value="{!v.answerValue}"
+                                          type="radio" class="clsdatatest"
+                                          onchange="{!c.fnparentdependentquestion}" />
+                    <aura:if isTrue="{!v.isshowtextarea}">
+                        <lightning:textarea name="others" 
+                                            label="Other Specify"
+                                            variant="label-hidden"
+                                            value="{!v.otherAnswerValue}"
+                                            class="clstxtarea"
+                                            placeholder="{!v.typehereplh}"/>
+                    </aura:if>
+                </aura:if>
+                <aura:if isTrue="{!v.fieldType == 'CheckboxGroup'}">
+                    <lightning:checkboxGroup aura:id="multicheckbox"
+                                             name="{!v.questionId}" 
+                                             label="Checkbox Group"
+                                             options="{!v.answerOptions}"
+                                             value="{!v.multiAnswerValue}"
+                                             variant="label-hidden"
+                                             onchange="{!c.handleMultiAnswer}"/>
+                    <aura:if isTrue="{!v.isshowtextarea}">
+                        <lightning:textarea name="others" 
+                                            label="Other Specify"
+                                            variant="label-hidden"
+                                            value="{!v.otherAnswerValue}"
+                                            class="clstxtarea"
+                                            placeholder="{!v.typehereplh}"/>
+                    </aura:if>
+                </aura:if>
+                <aura:if isTrue="{!v.fieldType == 'Picklist'}">
+
+                    <aura:if isTrue="{!and(v.isshownextsteps,v.isshowcareeranswers)}">
+                        <lightning:select name="careernextsteps" 
+                                          label="Career Aspiration Next steps"
+                                          value="{!v.answerValue}" 
+                                          variant="label-hidden"
+                                          class="pklStyle cls-label-hide"
+                                          onchange="{!c.showNextStepOtherTextbox}">
+                            <option value="">{!v.chooseone}...</option>
+                            <option value="I do not know/Not sure">{!v.idonotknowtext}</option>
+                            <aura:iteration items="{!v.CareerNextStpes}" var="option">
+                                <option text="{!option}"  value="{!option}"/>
+                            </aura:iteration>
+                            <option value="Others">{!v.otherstext}</option>
+                        </lightning:select>
+                        <!-- <aura:set attribute="else">
+                            <lightning:select name="careeraspiration" 
+                                              label="Career Aspiration"
+                                              value="{!v.answerValue}" 
+                                              variant="label-hidden"
+                                              class="pklStyle cls-label-hide"
+                                              onchange="{!c.handleCareerNextSteps}">
+                                <option value="">{!v.chooseone}...</option>
+                                <option value="I do not know/Not sure">{!v.idonotknowtext}</option>
+                                <aura:iteration items="{!v.CareerAspirationOptions}" var="aspiration">
+                                    <option text="{!aspiration.value}"  value="{!aspiration.key}"/>
+                                </aura:iteration>
+                                <option value="Other">{!v.otherstext}</option>
+                            </lightning:select>
+                        </aura:set> -->
+                    </aura:if>
+
+                <!-- My Code  -->
+                    <!-- <aura:if isTrue="{!And(v.FathersOccupation,v.isShowFatherOccupation)}">
+                        <lightning:select name="careeraspiration" 
+                                              label="Picklist Fields"
+                                              variant="label-hidden"
+                                              value="{!v.contactApiFieldValue}"
+                                              class="pklStyle cls-label-hide"
+                                              onchange="{!c.studentDetailCapture}">
+                                <aura:iteration items="{!v.FathersOccupation}" var="answer">
+                                    <option text="{!answer}"  value="{!answer}"/>
+                                </aura:iteration>
+                            </lightning:select>
+                    </aura:if> -->
+
+                    <aura:if isTrue="{!v.pulledFromContact}">
+                        <!-- If of picklist -->
+                        <lightning:select name="careeraspiration" 
+                                              label="Picklist Fields"
+                                              value="{!v.contactApiFieldValue}" 
+                                              variant="label-hidden"
+                                              class="pklStyle cls-label-hide"
+                                              onchange="{!c.studentDetailCapture}">
+                                <aura:iteration items="{!v.answerOptions}" var="answer">
+                                    <option text="{!answer.value}"  value="{!answer.value}"/>
+                                </aura:iteration>
+                            </lightning:select>
+
+                        <aura:set attribute="else">
+                            <!-- Else of Picklist -->
+                            <lightning:select name="careeraspiration" 
+                                              label="Picklist Fields"
+                                              value="{!v.answerValue}" 
+                                              variant="label-hidden"
+                                              class="pklStyle cls-label-hide"
+                                              onchange="{!c.studentDetailCapture}">
+                                <aura:iteration items="{!v.answerOptions}" var="answer">
+                                    <option text="{!answer.value}"  value="{!answer.value}"/>
+                                </aura:iteration>
+                            </lightning:select>
+                        </aura:set>
+
+                    </aura:if>
+
+                <!-- till here -->
+                    <aura:if isTrue="{!v.isshowtextarea}">
+                        <br/>
+                        <lightning:textarea name="others" 
+                                            label="Other Specify"
+                                            variant="label-hidden"
+                                            value="{!v.otherAnswerValue}"
+                                            class="clstxtarea"
+                                            placeholder="{!v.typehereplh}"/>
+                    </aura:if>
+                </aura:if>
+
+
+   <!-- tommorow 3: here we will check if fild type label,picklist then we will create a light:select n all -->
+
+                <aura:if isTrue="{!v.fieldType == 'MatchColumn'}">
+                    <lightning:select name="Qualification" 
+                                      label="Qualification"
+                                      value="{!v.answerValue}" 
+                                      variant="label-hidden" class="cls-label-hide"
+                                      onchange="{!c.fnparentdependentquestion}">
+                        <option value="">{!v.chooseone}...</option>
+                        <aura:iteration items="{!v.StudentAnswers}" var="option">
+                            <aura:if isTrue="{!option.isdisabled}">
+                                <option text="{!option.answerValue}"  value="{!option.answerId}" disabled="true" />
+                                <aura:set attribute="else">
+                                    <option text="{!option.answerValue}"  value="{!option.answerId}"/>
+                                </aura:set>
+                            </aura:if>
+                            
+                        </aura:iteration>
+                    </lightning:select>
+                </aura:if>
+
+
+
+
+                <!-- My code for here. -->
+
+                <aura:if isTrue="{!v.fieldType == 'Label'}">
+                    <lightning:input name="{!v.questionId}"                                      
+                                          value="{!v.contactApiFieldValue}"
+                                          type="text" class="clsdatatest"
+                                          onchange="{!c.studentDetailCapture}" />
+                    <aura:if isTrue="{!v.isshowtextarea}">
+                        <lightning:textarea name="others" 
+                                            label="Other Specify"
+                                            variant="label-hidden"
+                                            value="{!v.otherAnswerValue}"
+                                            class="clstxtarea"
+                                            placeholder="{!v.typehereplh}"/>
+                    </aura:if>
+                </aura:if>
+
+                <!-- till here  -->
+
+            </dd>
+        </dl>
+    </div>
+</aura:component>

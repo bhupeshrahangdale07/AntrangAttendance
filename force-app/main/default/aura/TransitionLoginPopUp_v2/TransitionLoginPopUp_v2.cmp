@@ -1,0 +1,41 @@
+<aura:component implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+    <aura:attribute name="displayModal" type="Boolean" default="true" access="public" />
+    <aura:attribute name="showFinalPage" type="Boolean" default="false" access="public" />
+
+    <aura:registerEvent name="popUpEvent" type="c:transitionTrackingPopUpEvent"/>
+
+    <aura:attribute name="popUpMessage" type="String" access="public"/>
+    <aura:attribute name="popUpType" type="String" access="public"/>
+
+    <aura:attribute name="popUpLanguage" type="String" access="public"/>
+
+    <aura:attribute name="popUpYesLabel" type="String" access="public" />
+    <aura:attribute name="popUpNoLabel" type="String" access="public" />
+    <aura:attribute name="popUpFinalMessage" type="String" access="public" />
+
+    <!-- CUSTOMCODE : FOR SHOWING POP Up Modal -->
+<aura:if isTrue="{!v.displayModal}">
+    <div>
+        <section role="dialog" tabindex="-1" aria-label="Meaningful description of the modal content"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">    
+                <div class="slds-modal__content slds-p-around_medium alignLeft" id="modal-content-id-1">
+                    <p>{!v.popUpMessage}</p>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button label="{!v.popUpYesLabel}" variant="brand" class="slds-m-top--medium" onclick="{!c.yesBtn}" />
+                    <lightning:button label="{!v.popUpNoLabel}" variant="brand" class="slds-m-top--medium" onclick="{!c.noBtn}" />
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+</aura:if>
+
+<!-- CUSTOMCODE : FOR SHOWING THANK YOU PAGE -->
+<aura:if isTrue="{!v.showFinalPage}">
+    <div class="slds-align_absolute-center" style="padding: 110px 0px 110px 0px;font-size: x-large;">
+        <b>{!v.popUpFinalMessage}</b>
+    </div>
+</aura:if>
+</aura:component>

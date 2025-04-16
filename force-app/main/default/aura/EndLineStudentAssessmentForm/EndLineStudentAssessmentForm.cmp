@@ -1,0 +1,232 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" 
+                controller="EndLineStudentAssessmentFormCtrl">
+    <aura:attribute name="StudentQuestions" type="object" />
+    <aura:attribute name="contactId" type="String" />
+    <aura:attribute name="language" type="String" />
+    <aura:attribute name="questions" type="List" />
+    <aura:attribute name="startPage" type="Integer" default="1"/>
+    <aura:attribute name="endPage" type="Integer"/>
+    <aura:attribute name="totalPages" type="Integer"/>
+    <aura:attribute name="isShowQuestionPage" type="Boolean" default="false"/>
+    <aura:attribute name="isShowResult" type="Boolean" default="false"/>
+    <aura:attribute name="CareerNextStpeOptions" type="List" />
+    <aura:attribute name="AssessmentMark" type="object" />
+    <aura:attribute name="endLineAssessmentMark" type="object" />
+    <aura:attribute name="baseLineAssessmentMark" type="object" />
+    <aura:attribute name="SelfAwarenessHeader" type="String" default="Self Awareness"/>
+    <aura:attribute name="CareerAwarenessHeader" type="String" default="Career Awareness"/>
+    <aura:attribute name="ParentSupportHeader" type="String" default="Parent Support"/>
+    <aura:attribute name="CareerPlanningHeader" type="String" default="Career Planning"/>
+    <aura:attribute name="questionrequiredmsg" type="String" default="All Questions are required."/>
+    <aura:attribute name="othertextrequiredmsg" type="String" default="Please specify other values!"/>
+    <aura:attribute name="errortext" type="String" default="Error!"/>
+    <aura:attribute name="savenextbtn" type="String" default="Save &amp; Next"/>
+    <aura:attribute name="previousbtn" type="String" default="Previous"/>
+    <aura:attribute name="submitbtn" type="String" default="Submit"/>
+    <aura:attribute name="careerheader" type="String" default="Career"/>
+    <aura:attribute name="qualificationheader" type="String" default="Qualification"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:registerEvent name="progressbarEvent" type="c:LIProgressBarEvent" />
+    
+    <aura:attribute name="show" type="Boolean" default="false" />
+    <aura:handler name="change" value="{!v.show}" action="{!c.spinnerDisplayHandler}"/>	
+    <div class="slds-align_absolute-center">
+        <lightning:spinner aura:id="spinner" variant="brand" size="large" class="slds-hide"/>
+    </div>    
+    
+    <aura:method name="questionmethod" action="{!c.handlequestiondata}" access="public">
+        <aura:attribute name="questionid" type="String" />
+        <aura:attribute name="basequestionid" type="String" />
+        <aura:attribute name="answerLabel" type="String" />
+        <aura:attribute name="fieldType" type="String" />
+    </aura:method>
+    
+    <aura:method name="nextStepQmethod" action="{!c.handlenextStepQuestion}" access="public">
+        <aura:attribute name="selectedcareer" type="String" />
+    </aura:method>
+    
+    <aura:html tag="style"> 
+        .comm-page-custom-assessmentform:before{
+            background: url(/sfsites/c/resource/StudentExam/images/career-planning.png) center bottom no-repeat;
+            background-size: contain;
+            width: 100%;
+            height: 100%;
+            content: '';
+            position: fixed;
+            left: 0;
+            top: 0;
+            opacity: 0.1;
+        }
+        
+        @media only screen and (max-width: 767px){
+            .comm-page-custom-assessmentform:before{
+            	background-size: cover;
+            }
+        }
+        
+        @media only screen and (max-width: 1023px){
+            .comm-page-custom-assessmentform:before{
+            	background-size: cover;
+            }
+        }
+    </aura:html>
+    
+    <aura:if isTrue="{!v.isShowQuestionPage}">
+        <aura:if isTrue="{!v.contactId}">
+            <div class="container">
+                <c:LIProgressBar/>
+                
+                <h2>
+                    <aura:if isTrue="{!v.startPage == 1}">
+                        {!v.SelfAwarenessHeader}
+                    </aura:if>
+                    <aura:if isTrue="{!v.startPage == 2}">
+                        {!v.CareerAwarenessHeader}
+                    </aura:if>
+                    <aura:if isTrue="{!v.startPage == 3}">
+                        {!v.ParentSupportHeader}
+                    </aura:if>
+                    <aura:if isTrue="{!v.startPage == 4}">
+                        {!v.CareerPlanningHeader}
+                    </aura:if>
+                </h2>
+                <ul class="questList">
+                    <aura:iteration items="{!v.questions}" var="question" indexVar="index">
+                        <aura:if isTrue="{!question.fieldType == 'MatchColumn'}">
+                            <aura:if isTrue="{!question.displayNumber == 'A'}">
+                                <li class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <b>{!v.careerheader}</b>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <b>{!v.qualificationheader}</b>
+                                    </div>
+                                </li>
+                            </aura:if>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!question.fieldType != 'MatchColumn'}">
+                            <aura:if isTrue="{!question.isdependentquestion}">
+                                <aura:if isTrue="{!question.isdependentquestionshow}">
+                                    <li>
+                                        <div class="questTitle"> {!question.displayNumber}) <aura:unescapedHtml value="{!question.questionLabel}"/></div>
+                                        <aura:if isTrue="{!question.fieldType != 'Label'}">
+                                            <div>
+                                                <c:EndLineStudentAssessmentAnswers StudentAnswers="{!question.lstWrpStudentAnswer}"
+                                                                            questionId="{!question.questionId}"
+                                                                            fieldType="{!question.fieldType}"
+                                                                            answerValue="{!question.answerId}"
+                                                                            otherAnswerValue="{!question.otherAnswerDescription}"
+                                                                            isshowcareeranswers="{!question.isCareerOption}"
+                                                                            isshownextsteps="{!question.isCareerNextStep}"
+                                                                            CareerNextStpes="{!v.CareerNextStpeOptions}"
+                                                                            CareerAspirations="{!question.mapCareerAspiration}"
+                                                                            maxAllowAnswer="{!question.maxAllowAnswer}"
+                                                                            isshowtextarea="{!question.isshowtextarea}"
+                                                                            language="{!v.language}"/>
+                                            </div>
+                                        </aura:if>
+                                    </li>
+                                </aura:if>
+                                
+                                <aura:set attribute="else">
+                                    <li>
+                                        <div class="questTitle">{!question.displayNumber}) <aura:unescapedHtml value="{!question.questionLabel}"/></div>
+                                        <aura:if isTrue="{!question.fieldType != 'Label'}">
+                                            <div>
+                                                <c:EndLineStudentAssessmentAnswers StudentAnswers="{!question.lstWrpStudentAnswer}"
+                                                                            questionId="{!question.questionId}"
+                                                                            fieldType="{!question.fieldType}"
+                                                                            answerValue="{!question.answerId}"
+                                                                            otherAnswerValue="{!question.otherAnswerDescription}"
+                                                                            isshowcareeranswers="{!question.isCareerOption}"
+                                                                            questionlabel="{!question.questionLabel}"
+                                                                            isshownextsteps="{!question.isCareerNextStep}"
+                                                                            CareerAspirations="{!question.mapCareerAspiration}"
+                                                                            CareerNextStpes="{!v.CareerNextStpeOptions}"
+                                                                            maxAllowAnswer="{!question.maxAllowAnswer}"
+                                                                            isshowtextarea="{!question.isshowtextarea}"
+                                                                            language="{!v.language}"
+                                                                            parent="{!this}" />
+                                            </div>
+                                        </aura:if>
+                                    </li>
+                                </aura:set>
+                            </aura:if>                                
+                        </aura:if>
+                        <aura:if isTrue="{!question.fieldType == 'MatchColumn'}">
+                            <li class="slds-grid slds-wrap">
+                                <div class="slds-col slds-size_1-of-2" >
+                                    {!question.displayNumber}) <aura:unescapedHtml value="{!question.questionLabel}"/>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2" >
+                                    <c:EndLineStudentAssessmentAnswers StudentAnswers="{!question.lstWrpStudentAnswer}"
+                                                                questionId="{!question.questionId}"
+                                                                fieldType="{!question.fieldType}"
+                                                                answerValue="{!question.answerId}"
+                                                                language="{!v.language}"
+                                                                parent="{!this}"/>
+                                </div>
+                                <aura:if isTrue="{!question.displayNumber == 'G'}">
+                                    <div class="slds-m-bottom_small">&nbsp;</div>
+                                </aura:if>
+                            </li>
+                        </aura:if>                        
+                    </aura:iteration>
+                </ul>
+                
+                <div class="slds-align_absolute-center btndiv">
+                    <aura:if isTrue="{!v.totalPages > 0}">
+                        <lightning:button label="{!v.previousbtn}"
+                                          onclick="{!c.handlePrevious}"
+                                          class="{! v.startPage == 1 ? 'prvsbtn' : 'slds-m-left_x-small btn'}"
+                                          iconName='utility:back'>
+                        </lightning:button>
+                        <aura:if isTrue="{!v.endPage >= v.totalPages}">
+                            <lightning:button label="{!v.submitbtn}"
+                                              class="btn"
+                                              onclick="{!c.handleSubmit}">
+                            </lightning:button>
+                            <aura:set attribute="else">
+                                <lightning:button label="{!v.savenextbtn}" 
+                                                  onclick="{!c.handleNext}"
+                                                  class="slds-m-left_x-small btn"
+                                                  iconName='utility:forward' 
+                                                  iconPosition='right'
+                                                  disabled="{!v.endPage >= v.totalPages}">
+                                </lightning:button>
+                            </aura:set>
+                        </aura:if>
+                    </aura:if>
+                </div>
+            </div>
+        </aura:if>
+        <aura:set attribute="else">
+            <aura:if isTrue="{!!v.contactId}">
+                <div class="slds-align_absolute-center" style="padding: 110px 0px 110px 0px;font-size: x-large;">
+                    <b>You can not access this page without Authentication. Please connect with your teacher if you have any questions.</b>
+                </div>
+            </aura:if>
+        </aura:set>
+    </aura:if>
+
+    <aura:if isTrue="{!v.isShowResult}">
+        <aura:if isTrue="{!v.language == 'mar'}">
+            <c:EndLineAssessmentReportCardForMarathi baseLineAssessmentMark="{!v.baseLineAssessmentMark}"
+                                                     endLineAssessmentMark="{!v.endLineAssessmentMark}"/>
+        </aura:if>
+        <aura:if isTrue="{!v.language == 'urd'}">
+            <c:EndLineAssessmentReportCardForUrdu baseLineAssessmentMark="{!v.baseLineAssessmentMark}" 
+                                                  endLineAssessmentMark="{!v.endLineAssessmentMark}"/>
+        </aura:if>
+        <aura:if isTrue="{!v.language == 'hin'}">
+            <c:EndLineAssessmentReportCardForHindi baseLineAssessmentMark="{!v.baseLineAssessmentMark}" 
+                                                   endLineAssessmentMark="{!v.endLineAssessmentMark}"/>
+        </aura:if>
+        <aura:if isTrue="{!or(v.language == 'eng',v.language == '')}">
+            <c:EndLineAssessmentReportCardForEnglish baseLineAssessmentMark="{!v.baseLineAssessmentMark}"
+                                                     endLineAssessmentMark="{!v.endLineAssessmentMark}"/>
+        </aura:if>
+    </aura:if>
+</aura:component>

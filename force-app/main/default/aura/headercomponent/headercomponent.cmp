@@ -1,0 +1,59 @@
+<aura:component
+  implements="forceCommunity:availableForAllPageTypes"
+  access="global"
+>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no"
+  />
+
+  <header class="slds-box slds-theme_default">
+    <div> <!-- src="{!$Resource.antarangLogo}" // Piyush-->
+      <img
+      src="{!$Resource.Antarang_logo_Asset_1}"
+        alt="antarang logo"
+        class="imghw slds-align_absolute-center"
+      />
+
+      <!--<div class="slds-align_absolute-center">
+        <b class="slds-text-heading_medium">CareerAware</b>
+      </div> // Piyush-->
+    </div>
+  </header>
+
+  <!-- <div class="left-align">
+     
+      <lightning:layout
+        class="slds-page-header slds-page-header__object-home bkwhite"
+        multipleRows="true"
+      >
+        <lightning:layoutItem
+          padding="horizontal-small"
+          class="left-align"
+          size="4"
+        >
+          <img
+            src="{!$Resource.antarangLogo}"
+            alt="antarang logo"
+            class="imghw"
+          />
+        </lightning:layoutItem>
+        <lightning:layoutItem
+          padding="horizontal-small"
+          class="left-align"
+          size="8"
+        >
+          <b class="slds-text-heading_medium">CareerAware</b>
+        </lightning:layoutItem>
+      </lightning:layout>
+
+      
+    </div> -->
+  <!-- <hr /> -->
+  <!-- <div class="slds-align_absolute-center slds-text-heading_medium">
+      <b>Student Form</b>
+    </div>
+
+    <hr /> -->
+</aura:component>

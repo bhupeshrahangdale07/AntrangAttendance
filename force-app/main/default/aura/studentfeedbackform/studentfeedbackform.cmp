@@ -1,0 +1,769 @@
+<aura:component
+  controller="StudentFeedbackCtrl"
+  implements="forceCommunity:availableForAllPageTypes"
+  access="global"
+>
+  <!--Page Attribute-->
+
+  <aura:attribute name="pagenumber" type="Integer" default="1" />
+  <aura:attribute name="pagenumberday" type="Integer" />
+
+  <aura:attribute name="studentdata" type="List" />
+
+  <aura:attribute name="maxdate" type="String" />
+
+  <aura:attribute name="AccountId" type="String" />
+  <aura:attribute name="ContactId" type="String" />
+  <aura:attribute name="StudentWhareClause" type="String" />
+  <aura:attribute name="selectedBatchId" type="String" />
+  <aura:attribute name="AccountBatches" type="List" />
+
+  <aura:attribute type="boolean" default="false" name="issubmitdisabled" />
+
+  <aura:attribute name="objpage2" type="Object" />
+  <aura:attribute name="objpage2tableUI" type="Object" />
+  <aura:attribute name="objpage2UI" type="Object" />
+
+  <aura:attribute name="objUI" type="Object" />
+  <aura:attribute name="wrpcon" type="Object" />
+
+  <aura:attribute name="pageConstant" type="Object" />
+
+  <aura:attribute name="Spinner" type="boolean" default="false" />
+  <aura:handler event="aura:waiting" action="{!c.showSpinner}" />
+  <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}" />
+
+  <aura:attribute
+    name="Days"
+    type="List"
+    default="[
+  {'label': 'Choose one...', 'value': ''},
+  {'label': 'Form 1 - My Interests, My Aptitudes and Realities', 'value': 1},
+  {'label': 'Form 2 - Career Plan', 'value': 2}
+  ]"
+  />
+
+  <!--End Page Attribute-->
+
+  <!--Page Init Method-->
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+  <!--End Page Init Method-->
+
+  <!--loading spinner start... style=Brand Medium (blue dots)-->
+  <aura:if isTrue="{!v.Spinner}">
+    <div aura:id="spinnerId" class="slds-spinner_container">
+      <div
+        class="slds-spinner_brand slds-spinner slds-spinner_large slds-is-relative"
+        role="alert"
+      >
+        <span class="slds-assistive-text">Loading</span>
+        <div class="slds-spinner__dot-a"></div>
+        <div class="slds-spinner__dot-b"></div>
+      </div>
+    </div>
+  </aura:if>
+  <!-- Loading spinner end-->
+    
+ <!--   <div>
+    <iframe width="800" height="500" src="https://www.youtube.com/embed/7foV2XPaHvM"></iframe>
+    </div> -->
+
+  <div class="container">
+    <div class="slds-box slds-theme_default">
+      <div class="slds-form">
+        <div class="slds-form-element slds-form-element_stacked">
+          <div class="slds-form-element__control clsbold">
+            <c:AutoCompleteInput
+              label="{!v.objUI.accountQName}"
+              objectApiName="Account"
+              idFieldApiName="Id"
+              valueFieldApiName="Name"
+              MatchingvalueFieldApiName="Name"
+              extendedWhereClause="AND RecordType.Name = 'School' ORDER BY Name"
+              StudentFeedbackSpecific="{!c.onwrpEventUpdate}"
+            />
+          </div>
+        </div>
+
+        <div class="slds-form-element slds-form-element_stacked">
+          <div class="slds-form-element__control clsbold">
+            <c:AutoCompleteInput
+              label="{!v.objUI.contactQName}"
+              objectApiName="Contact"
+              idFieldApiName="Id"
+              valueFieldApiName="Name"
+              MatchingvalueFieldApiName="FirstName, MiddleName, LastName"
+              extendedWhereClause="{!v.StudentWhareClause}"
+              StudentFeedbackSpecific="{!c.onwrpEventUpdate}"
+            />
+          </div>
+        </div>
+
+        <aura:if isTrue="{!v.pagenumber > 1}">
+          <div class="slds-form-element slds-form-element_stacked">
+            <div class="slds-form-element__control clsbold">
+              <lightning:select
+                name="select Batch Number"
+                label="{!v.objUI.batchQName}"
+                value="{!v.selectedBatchId}"
+                aura:id="datavalidate"
+                onchange="{!c.checkIsbatchinfuture}"
+                required="true"
+              >
+                <option value="">-- Choose one --</option>
+                <aura:iteration items="{!v.AccountBatches}" var="option">
+                  <option
+                    text="{!option.Batch_Number__c}"
+                    value="{!option.Id}"
+                  />
+                </aura:iteration>
+              </lightning:select>
+            </div>
+          </div>
+
+          <aura:if
+            isTrue="{!and(not(empty(v.selectedBatchId)), v.issubmitdisabled == false)}"
+          >
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control clsbold">
+                <lightning:select
+                  name="Days"
+                  label="{!v.objUI.formQName}"
+                  value="{!v.pagenumberday}"
+                  onchange="{!c.pagenumber}"
+                  required="true"
+                  aura:id="datavalidate"
+                >
+                  <aura:iteration items="{!v.Days}" var="option">
+                    <option text="{!option.label}" value="{!option.value}" />
+                  </aura:iteration>
+                </lightning:select>
+              </div>
+            </div>
+          </aura:if>
+        </aura:if>
+
+        <aura:if isTrue="{!v.pagenumber == 1}">
+          <div class="slds-p-vertical_x-small slds-text-heading_medium">
+            <b>{!v.objUI.titleQName}</b>
+          </div>
+
+          <div class="slds-form">
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control clsbold">
+                <lightning:input
+                  label="{!v.objUI.birthdateQName}"
+                  aura:id="datavalidate"
+                  type="date"
+                  name="dob"
+                  value="{!v.wrpcon.dob}"
+                  placeholder="{!v.objUI.birthdateQName}"
+                  required="true"
+                  max="{!v.maxdate}"
+                  messageWhenRangeOverflow="Please click the calendar and choose your correct birthday"
+                />
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:checkboxGroup
+                  name="whyttapyc"
+                  aura:id="datavalidate"
+                  label="{! v.objUI.whohaveyoutalkedQName }"
+                  options="{! v.objUI.whohaveyoutalkeddata }"
+                  value="{! v.wrpcon.whohaveyoutalked }"
+                  variant="label-stacked"
+                  required="true"
+                />
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control clsbold">
+                <lightning:select
+                  name="fathereducation"
+                  label="{!v.objUI.fathereducationQName}"
+                  aura:id="datavalidate"
+                  value="{!v.wrpcon.fathereduction}"
+                  required="true"
+                >
+                  <aura:iteration
+                    items="{!v.objUI.fathereducationdata}"
+                    var="option"
+                  >
+                    <option text="{!option.label}" value="{!option.value}" />
+                  </aura:iteration>
+                </lightning:select>
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control clsbold">
+                <lightning:select
+                  name="mothereducation"
+                  label="{!v.objUI.mothereducationQName}"
+                  aura:id="datavalidate"
+                  value="{!v.wrpcon.mothereducation}"
+                  required="true"
+                >
+                  <aura:iteration
+                    items="{!v.objUI.mothereducationdata}"
+                    var="option"
+                  >
+                    <option text="{!option.label}" value="{!option.value}" />
+                  </aura:iteration>
+                </lightning:select>
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control clsbold">
+                <lightning:select
+                  name="CurrentAspiration"
+                  label="{!v.objUI.CurrentAspirationQName}"
+                  aura:id="datavalidate"
+                  value="{!v.wrpcon.CurrentAspiration}"
+                  required="true"
+                >
+                  <aura:iteration
+                    items="{!v.objUI.CurrentAspirationndata}"
+                    var="option"
+                  >
+                    <option text="{!option.label}" value="{!option.value}" />
+                  </aura:iteration>
+                </lightning:select>
+              </div>
+            </div>
+          </div>
+        </aura:if>
+
+        <aura:if isTrue="{!and(v.pagenumber == 2, v.pagenumberday == 1 )}">
+          <div class="slds-p-vertical_x-small slds-text-heading_medium">
+            <b>
+              <aura:unescapedHtml value="{!v.pageConstant.page2start1}" />
+            </b>
+          </div>
+
+          <div class="slds-p-vertical_x-small">&nbsp;</div>
+          <div class="slds-p-vertical_x-small slds-text-heading_medium">
+            <b>{!v.objUI.titleQName}</b>
+          </div>
+
+          <div class="slds-form">
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="interest1"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Interest1QName}"
+                  options="{!v.objUI.Interest1ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Interest1}"
+                  required="true"
+                />
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="interest2"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Interest2QName}"
+                  options="{!v.objUI.Interest2ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Interest2}"
+                  required="true"
+                />
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="interest3"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Interest3QName}"
+                  options="{!v.objUI.Interest3ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Interest3}"
+                  required="true"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="slds-p-vertical_x-small slds-text-heading_medium">
+            <b>{!v.objUI.titleQName1}</b>
+          </div>
+
+          <div class="slds-form">
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="Aptitude1"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Aptitude1QName}"
+                  options="{!v.objUI.Aptitude1ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Aptitude1}"
+                  required="true"
+                />
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="Aptitude2"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Aptitude2QName}"
+                  options="{!v.objUI.Aptitude2ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Aptitude2}"
+                  required="true"
+                />
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="Aptitude3"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Aptitude3QName}"
+                  options="{!v.objUI.Aptitude3ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Aptitude3}"
+                  required="true"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="slds-p-vertical_x-small slds-text-heading_medium">
+            <b>{!v.objUI.title2QName}</b>
+          </div>
+
+          <div class="slds-form">
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="Reality1"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Reality1Self1QName}"
+                  options="{!v.objUI.Reality1Self1ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Reality1}"
+                  required="true"
+                />
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="Reality2"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Reality2Self2QName}"
+                  options="{!v.objUI.Reality2Self2ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Reality2}"
+                  required="true"
+                />
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="Reality3"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Reality3Self3QName}"
+                  options="{!v.objUI.Reality3Self3ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Reality3}"
+                  required="true"
+                />
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="Reality4"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Reality4Self4QName}"
+                  options="{!v.objUI.Reality4Self4ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Reality4}"
+                  required="true"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="slds-p-vertical_x-small slds-text-heading_medium">
+            <b>{!v.objUI.title3QName}</b>
+          </div>
+
+          <div class="slds-form">
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="Reality5"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Reality5Family1QName}"
+                  options="{!v.objUI.Reality5Family1ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Reality5}"
+                  required="true"
+                />
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="Reality6"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Reality6Family2QName}"
+                  options="{!v.objUI.Reality6Family2ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Reality6}"
+                  required="true"
+                />
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="Reality7"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Reality7Family3QName}"
+                  options="{!v.objUI.Reality7Family3ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Reality7}"
+                  required="true"
+                />
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="Reality8"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Reality8Family4QName}"
+                  options="{!v.objUI.Reality8Family4ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Reality8}"
+                  required="true"
+                />
+              </div>
+            </div>
+          </div>
+        </aura:if>
+
+        <aura:if isTrue="{!and(v.pagenumber == 2, v.pagenumberday == 2 )}">
+          <div class="slds-m-vertical_small slds-box">
+            <div class="slds-grid slds-wrap">
+              <div
+                class="slds-col slds-size_1-of-1 slds-text-heading_medium slds-m-bottom_x-small"
+              >
+                <span><b>{!v.objpage2tableUI.aboutu}</b></span>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-12">
+                <span><b>{!v.objpage2tableUI.yourinterestcode}</b></span>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-12">
+                <span>{!v.objpage2tableUI.interest1}</span>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-12">
+                <span>{!v.objpage2tableUI.interest2}</span>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-12">
+                <span>{!v.objpage2tableUI.interest3}</span>
+              </div>
+
+              <div class="slds-col slds-size_1-of-1">
+                <span>&nbsp;</span>
+              </div>
+
+              <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-12">
+                <span><b>{!v.objpage2tableUI.youraptitudecode}</b></span>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-12">
+                <span>{!v.objpage2tableUI.aptitude1}</span>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-12">
+                <span>{!v.objpage2tableUI.aptitude2}</span>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-12">
+                <span>{!v.objpage2tableUI.aptitude3}</span>
+              </div>
+
+              <div class="slds-col slds-size_1-of-1">
+                <span>&nbsp;</span>
+              </div>
+
+              <div class="slds-col slds-size_1-of-1 slds-m-vertical_xx-small">
+                <span><b>{!v.objpage2tableUI.yourrealities}</b></span>
+              </div>
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  ><b>{!v.objpage2UI.Reality1Self1QName}</b></span
+                >
+              </div>
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  >{!v.objpage2tableUI.reality1}</span
+                >
+              </div>
+
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  ><b>{!v.objpage2UI.Reality2Self2QName}</b></span
+                >
+              </div>
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  >{!v.objpage2tableUI.reality2}</span
+                >
+              </div>
+
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  ><b>{!v.objpage2UI.Reality3Self3QName}</b></span
+                >
+              </div>
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  >{!v.objpage2tableUI.reality3}</span
+                >
+              </div>
+
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  ><b>{!v.objpage2UI.Reality4Self4QName}</b></span
+                >
+              </div>
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  >{!v.objpage2tableUI.reality4}</span
+                >
+              </div>
+
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  ><b>{!v.objpage2UI.Reality5Family1QName}</b></span
+                >
+              </div>
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  >{!v.objpage2tableUI.realityfamily1}</span
+                >
+              </div>
+
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  ><b>{!v.objpage2UI.Reality6Family2QName}</b></span
+                >
+              </div>
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  >{!v.objpage2tableUI.realityfamily2}</span
+                >
+              </div>
+
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  ><b>{!v.objpage2UI.Reality7Family3QName}</b></span
+                >
+              </div>
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  >{!v.objpage2tableUI.realityfamily3}</span
+                >
+              </div>
+
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  ><b>{!v.objpage2UI.Reality8Family4QName}</b></span
+                >
+              </div>
+              <div class="slds-col slds-size_1-of-1">
+                <span class="slds-m-vertical_xx-small"
+                  >{!v.objpage2tableUI.realityfamily4}</span
+                >
+              </div>
+
+              <div class="slds-col slds-size_1-of-1">
+                <span>&nbsp;</span>
+              </div>
+
+              <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-12">
+                <span><b>{!v.objpage2tableUI.careers}</b></span>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-large-size_9-of-12">
+                <span>{!v.objpage2tableUI.careersvalue}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="slds-p-vertical_x-small slds-text-heading_medium">
+            <b>{!v.objUI.titleQName}</b>
+          </div>
+
+          <div class="slds-form">
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control clsbold">
+                <lightning:select
+                  name="PossibleCareers1"
+                  label="{!v.objUI.PossibleCareers1QName}"
+                  aura:id="datavalidate"
+                  value="{!v.wrpcon.PossibleCareers1}"
+                  required="true"
+                >
+                  <aura:iteration
+                    items="{!v.objUI.PossibleCareers1ndata}"
+                    var="option"
+                  >
+                    <option text="{!option.label}" value="{!option.value}" />
+                  </aura:iteration>
+                </lightning:select>
+
+                <!-- <lightning:radioGroup
+                name="PossibleCareers1"
+                aura:id="datavalidate"
+                label="{!v.objUI.PossibleCareers1QName}"
+                options="{!v.objUI.PossibleCareers1ndata}"
+                type="radio"
+                value="{!v.wrpcon.PossibleCareers1}"
+                required="true"
+              /> -->
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control clsbold">
+                <lightning:select
+                  name="PossibleCareers2"
+                  label="{!v.objUI.PossibleCareers2QName}"
+                  aura:id="datavalidate"
+                  value="{!v.wrpcon.PossibleCareers2}"
+                  required="true"
+                >
+                  <aura:iteration
+                    items="{!v.objUI.PossibleCareers2ndata}"
+                    var="option"
+                  >
+                    <option text="{!option.label}" value="{!option.value}" />
+                  </aura:iteration>
+                </lightning:select>
+
+                <!-- <lightning:radioGroup
+                name="PossibleCareers2"
+                aura:id="datavalidate"
+                label="{!v.objUI.PossibleCareers2QName}"
+                options="{!v.objUI.PossibleCareers2ndata}"
+                type="radio"
+                value="{!v.wrpcon.PossibleCareers2}"
+                required="true"
+              /> -->
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control clsbold">
+                <lightning:select
+                  name="PossibleCareers3"
+                  label="{!v.objUI.PossibleCareers3QName}"
+                  aura:id="datavalidate"
+                  value="{!v.wrpcon.PossibleCareers3}"
+                  required="true"
+                >
+                  <aura:iteration
+                    items="{!v.objUI.PossibleCareers3ndata}"
+                    var="option"
+                  >
+                    <option text="{!option.label}" value="{!option.value}" />
+                  </aura:iteration>
+                </lightning:select>
+                <!-- <lightning:radioGroup
+                name="PossibleCareers3"
+                aura:id="datavalidate"
+                label="{!v.objUI.PossibleCareers3QName}"
+                options="{!v.objUI.PossibleCareers3ndata}"
+                type="radio"
+                value="{!v.wrpcon.PossibleCareers3}"
+                required="true"
+              /> -->
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="Nextstep1"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Nextstep1QName}"
+                  options="{!v.objUI.Nextstep1ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Nextstep1}"
+                  required="true"
+                />
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="Nextstep2"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Nextstep2QName}"
+                  options="{!v.objUI.Nextstep2ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Nextstep2}"
+                  required="true"
+                />
+              </div>
+            </div>
+
+            <div class="slds-form-element slds-form-element_stacked">
+              <div class="slds-form-element__control">
+                <lightning:radioGroup
+                  name="Intenttostudy3"
+                  aura:id="datavalidate"
+                  label="{!v.objUI.Intenttostudy3QName}"
+                  options="{!v.objUI.Intenttostudy3ndata}"
+                  type="radio"
+                  value="{!v.wrpcon.Intenttostudy3}"
+                  required="true"
+                />
+              </div>
+            </div>
+          </div>
+        </aura:if>
+
+        <hr />
+
+        <div class="slds-align_absolute-center slds-m-bottom_medium">
+          <b>{!v.pageConstant.submitlabel}</b>
+        </div>
+        <div class="slds-align_absolute-center">
+          <lightning:button
+            variant="brand"
+            aura:id="btnsubmit"
+            type="submit"
+            label="{!v.pageConstant.submitbutton}"
+            onclick="{!c.savedata}"
+            disabled="{!v.issubmitdisabled}"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</aura:component>

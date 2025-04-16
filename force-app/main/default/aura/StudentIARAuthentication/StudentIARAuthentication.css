@@ -1,0 +1,35 @@
+.THIS .slds-select{
+    height: 60px;
+    font-size: 15px;
+    padding: 0 42px;
+    color:#000;
+    line-height: 60px;
+    background:#fff;
+    border: #d2e1f5 1px solid;
+    font-weight: 400;
+    display: block;
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    border-radius: 36px;
+    border-color: #1b96ff;
+	box-shadow: 0 0 3px #0176d3;
+}
+
+.THIS .slds-select_container:before {
+    border-bottom: 5px solid currentColor;
+    top: calc((1.75rem / 2) - -6px);
+}
+
+.THIS .slds-select_container:after {
+    border-top: 5px solid currentColor;
+    bottom: calc((1.75rem / 2) - -6px);
+}
+
+.THIS .cls-label-hide label {
+    display:none;
+}
+
+.THIS .slds-select:focus, .THIS .slds-select.slds-has-focus {
+    border-color: var(--lwc-colorBorderInputActive,rgb(27, 150, 255));
+    box-shadow: var(--lwc-shadowButtonFocus,0 0 3px #0176d3);
+}

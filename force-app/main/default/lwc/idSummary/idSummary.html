@@ -1,0 +1,74 @@
+<template>
+    <lightning-card>
+        <lightning-spinner alternative-text="Loading" size="medium" if:true={isLoading}></lightning-spinner>
+        <lightning-layout multiple-rows>
+
+            <lightning-layout-item size="12">
+                <div class="slds-align_absolute-center slds-text-heading_medium slds-m-bottom_small">
+                    <b>Interest Data : Summary</b>
+                </div>
+                <div>
+                    <p class="slds-align_absolute-center slds-m-around_small">
+                        This form is used to fill the Interest Data for Students. Make sure to fill the correct
+                        code for each student
+                    </p>                 
+                </div>
+                <div class="slds-box">
+                    <ul class="slds-p-horizontal_small">
+                        <li><b>School Name:</b> {schoolName}</li>
+                        <li><b>Grade:</b> {grd}</li>
+                        <li><b>Batch Code:</b> {batchNumber}</li>
+                    </ul>
+    
+            </div>
+                <div class="slds-m-top_medium">
+                    <p class="slds-align_absolute-left slds-m-left_medium slds-m-right_medium ">
+                        Total Students : {batchTotalStudents}
+                    </p>
+                    <p class="slds-align_absolute-left slds-m-bottom_small slds-m-left_medium slds-m-right_medium">
+                        Interest Data is filled : {countSubmittedStudents}
+                    </p>
+                </div>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12">
+                <lightning-button variant="brand" 
+                    label="Add Interest Data"
+                    data-name="addAssement"
+                    onclick={addAssementHandler} 
+                    class="slds-m-left_x-small slds-align_absolute-center slds-m-top_small">
+                </lightning-button>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12">
+                <lightning-button variant="brand" 
+                    label="Back"
+                    data-name="backButton"
+                    onclick={handleBackButton} 
+                    class="slds-m-left_x-small slds-align_absolute-center slds-m-top_small slds-m-bottom_medium">
+                </lightning-button>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12">   
+                <div class="slds-box_xx-small">
+                    <p class="slds-align_absolute-left slds-m-top_small slds-m-left_medium slds-m-right_medium">
+                        Below are the students whose Interest Data is already filled
+                    </p>
+                    <div style="margin: 15px;height:400px;">
+                        <lightning-datatable
+                        key-field="id"
+                        data={tableData}
+                        columns={tableColumns}
+                        hide-checkbox-column="true"
+                        default-sort-direction={defaultSortDirection}
+                        sorted-direction={sortDirection}
+                        sorted-by={sortedBy}
+                        onsort={onHandleSort}>
+                        </lightning-datatable>
+                    </div>
+                </div>
+            </lightning-layout-item>
+
+        </lightning-layout>    
+    </lightning-card>
+</template>
