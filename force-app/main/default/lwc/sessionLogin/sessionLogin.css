@@ -1,0 +1,34 @@
+.loginLogo{
+    margin-top: 15px;
+    height: 75px;
+}
+.contentAdj{
+    background-color: white;
+    height: 400px;
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: flex-start; /* Aligns content to the top */
+    padding-top: 0; /* Remove any default padding */
+}
+@media only screen and (max-width: 767px){
+    .contentAdj{
+        width: 110%;
+    }
+}
+.image-with-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* Adjust spacing between image and text */
+}
+.login-text {
+    font-size: 0.8rem;
+}
+.custom-input {
+    --lwc-colorBorderInput: #d4d4d4e2; /* border colour*/
+    --lwc-borderRadiusMedium: 0.4rem;
+    --lwc-heightInput: 2.2rem;
+}
+.btnStyle{
+    --lwc-buttonColorBackgroundPrimary:rgb(249, 249, 8);
+}
