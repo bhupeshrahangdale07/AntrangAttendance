@@ -1,11 +1,11 @@
 <template>
-    <lightning-layout horizontal-align="center" vertical-align="center">
-        <lightning-layout-item size="3" class="contentAdj">
+    <lightning-layout horizontal-align="center" vertical-align="center" class="layoutAdj">
+        <lightning-layout-item size="4" class="contentAdj">
             <div class="image-with-text">
                 <img src={antarangLogo} class="loginLogo" />
                 <div class="login-text">LOGIN</div>
-                <lightning-input placeholder="         Enter Antarang E-mail Id" style="width: 235px;" variant="label-hidden" class="custom-input"></lightning-input>
-                <lightning-button label="LOGIN" class="btnStyle"></lightning-button>
+                <lightning-input onchange={handleInputChange} placeholder="Enter Antarang E-mail Id" variant="label-hidden" class="custom-input"></lightning-input>
+                <lightning-button label="LOGIN" class="btnStyle" onclick={loginHandler}></lightning-button>
             </div>
         </lightning-layout-item>
     </lightning-layout>

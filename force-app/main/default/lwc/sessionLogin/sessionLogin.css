@@ -1,10 +1,10 @@
 .loginLogo{
     margin-top: 15px;
-    height: 75px;
+    height: 95px;
 }
 .contentAdj{
     background-color: white;
-    height: 400px;
+    height: 500px;
     display: flex;
     justify-content: center; /* Centers horizontally */
     align-items: flex-start; /* Aligns content to the top */
@@ -12,7 +12,16 @@
 }
 @media only screen and (max-width: 767px){
     .contentAdj{
-        width: 110%;
+        width: 90%;
+        height: 370px;
+    }
+}
+.layoutAdj{
+    margin-top : 20px;
+}
+@media only screen and (max-width: 767px){  
+    .layoutAdj{
+    margin-top : 50px;
     }
 }
 .image-with-text {
@@ -22,13 +31,30 @@
     gap: 15px; /* Adjust spacing between image and text */
 }
 .login-text {
+    font-size: 1.2rem;
+}
+@media only screen and (max-width: 767px){ 
+    .login-text {
     font-size: 0.8rem;
+}
 }
 .custom-input {
     --lwc-colorBorderInput: #d4d4d4e2; /* border colour*/
     --lwc-borderRadiusMedium: 0.4rem;
-    --lwc-heightInput: 2.2rem;
+    --lwc-heightInput: 2.8rem;
+    width: 360px;
+}
+@media only screen and (max-width: 767px){ 
+    .custom-input {
+        width: 250px;
+        font-size: 1.0rem;
+        margin-bottom: 2px;
+    }
 }
 .btnStyle{
-    --lwc-buttonColorBackgroundPrimary:rgb(249, 249, 8);
+    --lwc-buttonColorBackgroundPrimary:#FAC710 !important;
+    background-color: #FAC710;
+}
+.slds-button {
+    background-color: #FAC710;
 }
