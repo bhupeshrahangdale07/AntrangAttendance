@@ -1,9 +1,9 @@
-public with sharing class SessionLoginController {
+public without sharing class SessionLoginController {
 
     @AuraEnabled
     public static object checkEmail(String strEmail){
         try {
-            Boolean formLogin;
+            Boolean formLogin = false;
             Map<String, Object> result = new Map<String, Object>();
         Id recordTypeId = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName()
             .get('CA_Trainer')
@@ -11,7 +11,7 @@ public with sharing class SessionLoginController {
         AntarangSetting__c antarangSett = AntarangSetting__c.getOrgDefaults(); // updated: 23.03.2023
         
         result.put('grade', getdynamicpicklistval('Batch__c', 'Grade__c'));
-        Contact con = new Contact();
+        List<Contact> con = new List<Contact>();
         string labelForDomain = System.Label.Antarang_Domain;
         if((String.isNotBlank(strEmail) && strEmail.contains('@') && labelForDomain.contains(strEmail.split('@').get(1)))) {
             for (Contact objcon : [
@@ -23,27 +23,35 @@ public with sharing class SessionLoginController {
                 ORDER BY CreatedDate DESC
             LIMIT 1
         ]) {
+            System.debug('objcon- '+objcon);
+            if(objcon != null){
             formLogin = objcon.Form_Login__c;
-            con = objcon;
+            con.add(objcon);
+            }
         }
         if(formLogin){
             system.debug('Already Logged In');
             result.put('Already Logged In', new Contact());
-        } else{
-            Contact updateCon = [Select Id, Form_Login__c from Contact Where Id =: con.Id];
+        } else if(con.size() > 0){
+            system.debug('Contact-- '+ con[0]);
+            Contact updateCon = [Select Id, Form_Login__c from Contact Where Id =: con[0].Id];
             system.debug('Contact- '+updateCon);
             updateCon.Form_Login__c = true;
             update updateCon;
-            result.put('contact', con);
+            result.put('contact', con[0]);
+        } else {
+            result.put('error', 'No matching contact found.');
         }
         
         return result;
         }else{
-            result.put('contact', con);
+            result.put('contact', new contact());
         return result;
         }
         } catch (Exception e) {
+            system.debug('Error at line no- '+e.getLineNumber());
             throw new AuraHandledException(e.getMessage());
+            
         }
     }
     @AuraEnabled

@@ -1,6 +1,6 @@
 .loginLogo{
     margin-top: 15px;
-    height: 95px;
+    height: 110px;
 }
 .contentAdj{
     background-color: white;
@@ -12,7 +12,7 @@
 }
 @media only screen and (max-width: 767px){
     .contentAdj{
-        width: 90%;
+        width: 150%;
         height: 370px;
     }
 }
@@ -28,7 +28,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px; /* Adjust spacing between image and text */
+    gap: 20px; /* Adjust spacing between image and text */
 }
 .login-text {
     font-size: 1.2rem;
@@ -53,8 +53,5 @@
 }
 .btnStyle{
     --lwc-buttonColorBackgroundPrimary:#FAC710 !important;
-    background-color: #FAC710;
-}
-.slds-button {
     background-color: #FAC710;
 }
