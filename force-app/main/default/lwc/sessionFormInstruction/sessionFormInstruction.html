@@ -1,0 +1,86 @@
+<template>
+    <lightning-card title="Form Instructions:" class="customCard">
+        <div>
+            <ul class="instruction-list">
+                <li>Keep the tab open or minimised to stay logged in. Closing the tab will log you out automatically
+                </li>
+                <li>Click on Save to save the changes made</li>
+                <li>Adding Date and Start Time both are required</li>
+                <li>All sessions have to be taken in order. Eg. Session 5 cannot be scheduled for before Session 4
+                    (except in Flexible Sessions)</li>
+                <li>Multiple sessions cannot be scheduled at the same time (Start Time difference should be at least 40
+                    minutes)</li>
+                <li>For On-time Scheduling, session's Date and Start Time should be more than 24 hours from time of
+                    submitting the form, otherwise it will be marked as Late Scheduling</li>
+                <li>Once session schedule is saved, if Date or Start Time is modified, session will be flagged as
+                    Rescheduled, along with a counter</li>
+                <li>The before session's Start Time - Date and Start Time will get locked, and to edit this, a query
+                    will need to be raised on Helpdesk</li>
+                <li>At scheduled Start Time - Class Attendance (or Student + Parent Attendance) for the session will
+                    open for entry</li>
+                <li>Once you Save the attendance number, it gets locked. You will not be able to make any further
+                    changes, so please re-check before saving</li>
+                <li>Once you save the attendance number, individual student attendance will open, but can be submitted
+                    only if previous sessions attendant is complete.Save as Draft to temporarily save attendance, and Submit Attendance to complete session's data
+                    entry and lock all details</li>
+                <li>Overall Class Attendance number should be same as number of students marked 'Present', or you'll
+                    need to give a valid reason</li>
+                <li>If all conditions are met and you are still getting an error, please reload the page and try again
+                </li>
+            </ul>
+        </div>
+    </lightning-card>
+
+    <div class="slds-p-around_medium status-container btnGroup">
+
+        <!-- First Row -->
+        <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium ">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 addTopClass">
+                <div class="status-item">
+                    <div class="statusBtn"><lightning-button variant="brand" label="Complete" class="status-button1">
+                    </lightning-button></div>
+                    <div class="status-description">In the session, individual Student Attendance is submitted</div>
+                </div>
+            </div>
+
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 addTopClass">
+                <div class="status-item">
+                     <div class="statusBtn"><lightning-button variant="brand" label="Unscheduled" class="status-button2">
+                    </lightning-button></div>
+                    <div class="status-description">No Student/Parent/Flexible Session schedule has been saved</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row -->
+        <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 addTopClass">
+                <div class="status-item">
+                     <div class="statusBtn"><lightning-button variant="brand" label="Ready For Attendance" class="status-button3">
+                    </lightning-button></div>
+                    <div class="status-description">If all conditions are met and you are still getting an error, please reload the page</div>
+                </div>
+            </div>
+
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 addTopClass">
+                <div class="status-item">
+                     <div class="statusBtn"><lightning-button variant="brand" label="Incomplete" class="status-button4">
+                    </lightning-button></div>
+                    <div class="status-description">Session is ready for attendance submission</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Third Row -->
+        <div class="slds-grid slds-wrap slds-gutters">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 addTopClass">
+                <div class="status-item">
+                     <div class="statusBtn"><lightning-button variant="brand" label="Schedule" class="status-button5">
+                    </lightning-button></div>
+                    <div class="status-description">If all conditions are met and you are still getting an error, please reload the page</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</template>

@@ -1,4 +1,7 @@
 <template>
+    <template if:true={showLoading}>
+        <lightning-spinner  variant="brand" alternative-text="Loading" size="medium" class="spinnerClass"></lightning-spinner>
+    </template>
     <lightning-layout horizontal-align="center" vertical-align="center" class="layoutAdj">
         <lightning-layout-item size="4" class="contentAdj">
             <div class="image-with-text">

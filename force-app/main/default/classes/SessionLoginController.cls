@@ -13,6 +13,7 @@ public without sharing class SessionLoginController {
         result.put('grade', getdynamicpicklistval('Batch__c', 'Grade__c'));
         List<Contact> con = new List<Contact>();
         string labelForDomain = System.Label.Antarang_Domain;
+            system.debug('labelForDomain- '+antarangSett.Academic_Year__c);
         if((String.isNotBlank(strEmail) && strEmail.contains('@') && labelForDomain.contains(strEmail.split('@').get(1)))) {
             for (Contact objcon : [
             SELECT id, npe01__WorkEmail__c, Form_Login__c

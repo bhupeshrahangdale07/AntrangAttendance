@@ -6,13 +6,15 @@ import checkEmail from '@salesforce/apex/SessionLoginController.checkEmail'
 export default class SessionLogin extends NavigationMixin(LightningElement) {
 
     antarangLogo = Antarang_logo;
-    enteredEmail;
+    enteredEmail = '';
     conRecordId;
+    showLoading = false;
     handleInputChange(event) {
         this.enteredEmail = event.detail.value;
     }
 
     loginHandler() {
+        this.showLoading = true;
         console.log('Value- ' + this.enteredEmail);
         if (this.enteredEmail == undefined || this.enteredEmail == null || this.enteredEmail == "") {
             debugger;
@@ -23,6 +25,7 @@ export default class SessionLogin extends NavigationMixin(LightningElement) {
                 mode: 'dismissable'
             });
             this.dispatchEvent(evt);
+            this.showLoading = false;
         } else {
             checkEmail({ strEmail: this.enteredEmail })
                 .then((result) => {
@@ -36,23 +39,17 @@ export default class SessionLogin extends NavigationMixin(LightningElement) {
                                 variant: 'error'
                             });
                             this.dispatchEvent(evt);
+                            this.showLoading = false;
                         } else {
-                            try{
+                            
                              //this.contact = JSON.parse(result);
                              this.conRecordId = result.contact["Id"];
-                            } catch(e){
-                                console.log('Email error- '+e);
-                            }
-                            const evt = new ShowToastEvent({
-                                title: 'Success',
-                                message: 'Logged In Successfully!',
-                                variant: 'success'
-                            });
-                            this.dispatchEvent(evt);
+                            
+                            
                             const secretCode = Math.floor(1000 + Math.random() * 9000).toString();
-                           
+                           console.log('this.conRecordId- '+this.conRecordId);
+                           console.log('secretCode- '+secretCode);
                             window.name = secretCode;
-                        try{
                              let pageReference = {
                                  type: 'comm__namedPage',
                                 attributes: {
@@ -64,9 +61,14 @@ export default class SessionLogin extends NavigationMixin(LightningElement) {
                                  }
                              };
                              this[NavigationMixin.Navigate](pageReference);
-                        } catch (err) {
-                             console.log('Error-- '+err);
-                        }
+                            const evt = new ShowToastEvent({
+                                title: 'Success',
+                                message: 'Logged In Successfully!',
+                                variant: 'success'
+                            });
+                            this.dispatchEvent(evt);
+                        console.log('Redirect Page');
+                        this.showLoading = false;
                         }
                     } else if (result.hasOwnProperty('Already Logged In')) {
                         console.log('Already Logged In');
@@ -76,6 +78,7 @@ export default class SessionLogin extends NavigationMixin(LightningElement) {
                                 variant: 'warning'
                             });
                             this.dispatchEvent(evt);
+                            this.showLoading = false;
                     } else if('error'){
                         const evt = new ShowToastEvent({
                                 title: 'Not Found',
@@ -83,6 +86,7 @@ export default class SessionLogin extends NavigationMixin(LightningElement) {
                                 variant: 'error'
                             });
                             this.dispatchEvent(evt);
+                            this.showLoading = false;
                     }
                 })
                 .catch((error) => {

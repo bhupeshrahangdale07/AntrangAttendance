@@ -1,13 +1,13 @@
 .headerImage{
     float:left;
-    height: 45px;
-    margin-left: 15px;
+    height: 50px;
+    margin-left: 25px;
     margin-top: 10px;
     margin-bottom: 2px;
 }
 .headerText{
-    font-size: 18px;
-    margin-right: 15px;
+    font-size: 20px;
+    margin-right: 25px;
 }
 @media only screen and (max-width: 767px){
     .headerText{

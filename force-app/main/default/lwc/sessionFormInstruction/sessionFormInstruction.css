@@ -1,0 +1,127 @@
+/* instructionComponent.css */
+.customCard{
+	--slds-c-card-color-background: #E6E6E6;
+	--sds-c-card-radius-border: 0;
+	--sds-c-card-color-border: #E6E6E6;
+	--sds-c-card-heading-font-weight: bold;
+	--slds-c-card-text-color: #49445C;
+}
+.instruction-list {
+    list-style-type: none;
+    padding-left: 30px;
+    margin-top: 20px;
+}
+
+.instruction-list li {
+    /* padding: 0.5rem 0;
+    border-bottom: 1px solid #dddbda; */
+    position: relative;
+    padding-left: 0.7rem;
+    line-height: 1.3;
+	color: #49445C;
+	padding: 2px;
+}
+
+.instruction-list li:before {
+    content: "•";
+    color: #49445C;
+    /* font-weight: bold; */
+	font-size: 0.6rem;
+    position: absolute;
+    left: -12px;
+    top: 15%;
+}
+
+.instruction-list li:last-child {
+    border-bottom: none;
+}
+.btn1{
+	--slds-c-button-brand-color-background: #92DB72 !important;
+	--sds-c-button-brand-color-border: #0e0e0d5c;
+	--slds-c-button-brand-text-color:  #000000;
+	padding-right: ;
+}
+
+.btnGroup{
+padding-left: 40px;
+}
+.status-button1 {
+	--slds-c-button-brand-color-background: #92DB72 !important;
+	--sds-c-button-brand-color-border: #0e0e0d5c;
+	--slds-c-button-brand-text-color:  #000000;
+    min-width: 120px;
+    margin-right: 1rem;
+}
+.status-button2 {
+	--slds-c-button-brand-color-background: #E88776 !important;
+	--sds-c-button-brand-color-border: #0e0e0d5c;
+	--slds-c-button-brand-text-color:  #000000;
+    min-width: 120px;
+    margin-right: 1rem;
+}
+.status-button3 {
+	--slds-c-button-brand-color-background: #9ABBFE !important;
+	--sds-c-button-brand-color-border: #0e0e0d5c;
+	--slds-c-button-brand-text-color:  #000000;
+    min-width: 120px;
+    margin-right: 1rem;
+}
+.status-button4 {
+	--slds-c-button-brand-color-background: #E88776 !important;
+	--sds-c-button-brand-color-border: #0e0e0d5c;
+	--slds-c-button-brand-text-color:  #000000;
+    min-width: 120px;
+    margin-right: 1rem;
+}
+.status-button5 {
+	--slds-c-button-brand-color-background: #EEDA5F !important;
+	--sds-c-button-brand-color-border: #0e0e0d5c;
+	--slds-c-button-brand-text-color:  #000000;
+    min-width: 120px;
+    margin-right: 1rem;
+}
+.status-description {
+    color: var(--lwc-colorTextWeak, #49445C);
+}
+.instruction-list li{
+
+}
+.statusBtn button.slds-button.slds-button_brand {
+    width: 85%;
+}
+.statusBtn {
+    width: 30%;
+}
+.status-description {
+    width: 70%;
+    padding-top: 8px;
+}
+.status-item {
+    display: flex;
+}
+
+.slds-p-around_medium.status-container.btnGroup {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+@media (max-width: 767px) {
+    .slds-p-around_medium.status-container.btnGroup{
+		padding-left: 0px;
+    	padding-right: 0px;
+	}
+	.instruction-list li:before{
+		left: -12px;
+    	top: 15%;
+	}
+	div.status-description {
+		padding-top: 0px !important;
+		font-size: 10px;
+		align-items: center;
+			display: flex
+		;
+	}
+	.slds-col.slds-size_1-of-1.slds-medium-size_1-of-2.addTopClass {
+		margin-bottom: 15px;
+	}
+	
+}

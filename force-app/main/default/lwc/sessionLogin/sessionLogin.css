@@ -12,7 +12,7 @@
 }
 @media only screen and (max-width: 767px){
     .contentAdj{
-        width: 150%;
+        width: 80%;
         height: 370px;
     }
 }
@@ -54,4 +54,7 @@
 .btnStyle{
     --lwc-buttonColorBackgroundPrimary:#FAC710 !important;
     background-color: #FAC710;
+}
+.spinnerClass{
+     --lwc-brandPrimary: #50A771;
 }
