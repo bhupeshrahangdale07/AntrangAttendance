@@ -1,0 +1,68 @@
+<template>
+    <lightning-card class="attendance-card" hide-header=true>
+        <div class="header">
+            <!-- <div style="text-align: center;width: 100%;font-size: 30px;">
+                <h1><b>Student Attendance</b></h1>
+            </div> -->
+            <div class="signOutDiv">
+                <lightning-button variant="destructive" label="Sign Out" title="Sign Out" onclick={handleSignOut}
+                    class="slds-m-left_x-small signOutButton"></lightning-button>
+            </div>
+        </div>
+        <div class="contentCls">
+            <h1 style="
+                font-size: 25px;
+                text-align: center;
+            "><b>Student Attendance</b></h1>
+            <div class="attendance-table">
+                <div class="row">
+                    <div>Session Name</div>
+                    <div style="padding-left: 125px;">Class Attendance</div>
+                </div>
+            </div>
+            <div class="session-input">
+                <lightning-input value={sessionName}></lightning-input>
+                <lightning-input value={classAttendance}></lightning-input>
+            </div>
+
+            <div class="attendance-table">
+                <div class="row">
+                    <div>Student Name</div>
+                    <div style="padding-left: 125px;">Attendance</div>
+                </div>
+
+                <!-- <template for:each={students} for:item="student"> -->
+                <!-- <div class="row" key={student.id}> -->
+                <!-- <div class="column">{student.name}</div>
+                    <div class="column"> -->
+                <div class="session-info">
+                    <lightning-input value={sessionName} class="input-style"></lightning-input>
+                    <lightning-input value={classAttendance}></lightning-input>
+                </div>
+                <div class="session-info">
+                    <lightning-input value={sessionName} class="input-style"></lightning-input>
+                    <lightning-input value={classAttendance}></lightning-input>
+                </div>
+                <!-- </div> -->
+                <!-- </div> -->
+                <!-- </template> -->
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px">
+            <lightning-button label="Save as Draft" variant="brand" class="slds-m-right_x-large"></lightning-button>
+            <lightning-button label="Submit Attendance" variant="success"></lightning-button>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <div class="back-link slds-text-align_center">
+                <div class=" short-line line-above"></div>
+                <a href="#" onclick={handleBackToScheduling} class="slds-text-link_reset"
+                    style="margin-top: 5px; margin-bottom: 5px;">
+                    <lightning-icon icon-name="utility:chevronleft" alternative-text="GO BACK TO SCHEDULING"
+                        title="GO BACK TO SCHEDULING" size="x-small" class="slds-m-right_small"></lightning-icon>
+                    GO BACK TO SCHEDULING
+                </a>
+                <div class=" short-line line-below"></div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

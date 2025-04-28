@@ -1,0 +1,84 @@
+.attendance-card {
+	--sds-c-card-radius-border: 0;
+}
+.signOutDiv .signOutButton {
+	--sds-c-button-brand-color-background : #DB583F;
+}
+.signOutDiv{
+    float: right;
+	margin-left: auto;
+	margin-right: 10px;
+}
+.contentCls {
+	padding-left: 40px; 
+	padding-right: 40px
+}
+@media (max-width: 767px) {
+	.contentCls {
+	padding-left: 20px; 
+	padding-right: 20px
+	}
+}
+
+.header {
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: center;
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.session-info {
+	--lwc-heightInput: 1.5rem;
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 8px;
+	margin-top: -15px;
+	
+}
+
+.session-input{
+
+	--lwc-heightInput: 1.5rem;
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 20px;
+	margin-top: -15px;
+}
+
+
+.attendance-table {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    padding: 0.5rem 0;
+	font-size: 0.8rem;
+}
+.back-link a {
+    color: #000000;
+    text-transform: uppercase;
+    font-size: 0.8125rem;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}
+
+.short-line {
+    height: 1px;
+    width: 80%; /* Adjust this percentage to control line length */
+    background-color: #dddbda;
+    margin: 4px 0;
+}
+
+/* Position the lines relative to the container */
+.line-above {
+    margin-bottom: 4px;
+}
+
+.line-below {
+    margin-top: 4px;
+}
