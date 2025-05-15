@@ -1,77 +1,181 @@
 <template>
     <lightning-card class="attendance-card" hide-header=true>
+        <template if:true={showLoading}>
+            <lightning-spinner variant="brand" alternative-text="Loading" size="medium" class="spinnerClass">
+            </lightning-spinner>
+        </template>
         <div class="header">
-            <!--<div style="text-align: center">
+            <!-- <div style="text-align: center;width: 100%;font-size: 30px;">
                 <h1><b>Student Attendance</b></h1>
-            </div>-->
+            </div> -->
             <div class="signOutDiv">
                 <lightning-button variant="destructive" label="Sign Out" title="Sign Out" onclick={handleSignOut}
                     class="slds-m-left_x-small signOutButton"></lightning-button>
             </div>
         </div>
         <div class="contentCls">
-             <h1 style="
+            <h1 style="
                 font-size: 25px;
                 text-align: center;
-            "><b>Student Attendance</b></h1>
+            "><b>Attendance</b></h1>
             <div class="attendance-table">
-                <div class="row">
-                    <div>Session Name</div>
-                    <div style="padding-left: 125px;">Class Attendance</div>
+                <div class="row" style="    --lwc-heightInput: 1.5rem;
+                    display: flex
+                ;
+                    gap: 2rem;
+                    margin-top: -15px;">
+                    <div style="width: 15%;">Session Name</div>
+                    <div>Parent Attendance</div>
                 </div>
             </div>
             <div class="session-input">
-                <lightning-input value={sessionName}></lightning-input>
-                <lightning-input value={classAttendance}></lightning-input>
+                <div class="sessionDiv">{sessionName}</div>
+                <div class="sessionDiv" style="height: 30px;">{classAttendance}</div>
+                <!-- <lightning-input value={sessionName} disabled></lightning-input> -->
+                <!-- <lightning-input value={classAttendance} disabled></lightning-input> -->
             </div>
 
-            <div class="attendance-table">
+            <!-- <div class="attendance-table">
                 <div class="row">
                     <div>Student Name</div>
-                    <div style="padding-left: 125px;">Parent Attendance</div>
-                    <div style="padding-left: 125px;">Student Attendance</div>
-
+                    <div style="padding-left: 125px;">Attendance</div>
                 </div>
-
-                <!-- <template for:each={students} for:item="student"> -->
-                <!-- <div class="row" key={student.id}> -->
-                <!-- <div class="column">{student.name}</div>
-                    <div class="column"> -->
-                <div class="session-info">
-                    <lightning-input value={sessionName} class="input-style"></lightning-input>
-                    <lightning-input value={classAttendance}></lightning-input>
-                    <lightning-input value={classAttendance}></lightning-input>
-                </div>
-                <div class="session-info">
-                    <lightning-input value={sessionName} class="input-style"></lightning-input>
-                    <lightning-input value={classAttendance}></lightning-input>
-                    <lightning-input value={classAttendance}></lightning-input>
-                </div>
-                <div class="session-info">
-                    <lightning-input value={sessionName} class="input-style"></lightning-input>
-                    <lightning-input value={classAttendance}></lightning-input>
-                    <lightning-input value={classAttendance}></lightning-input>
-                </div>
-                <!-- </div> -->
-                <!-- </div> -->
-                <!-- </template> -->
+                <template if:true={showAttendanceTable}>
+                    <template for:each={attendanceData} for:item="student" >
+                    <div class="session-info" key={student.studentId}>
+                        <lightning-input value={student.studentName} disabled></lightning-input>
+                        <template if:true={sessionAttSubmitted}>
+                            <lightning-combobox style="width: 170px;" value={student.stdAttendance} options={attendanceOptions} 
+                                data-student-id={student.studentId} onchange={handleAttendanceChange} class="input-style" disabled>
+                                </lightning-combobox>
+                        </template>
+                        <template if:false={sessionAttSubmitted}>
+                            <lightning-combobox style="width: 170px;" value={student.stdAttendance} options={attendanceOptions} 
+                                data-student-id={student.studentId} onchange={handleAttendanceChange} class="input-style">
+                                </lightning-combobox>
+                        </template>
+                        
+                    </div>
+                    </template>
+                </template>
+                <template if:false={showAttendanceTable}>
+                    <p style="color:red">No Student found</p>
+                </template>
+            </div> -->
+            <template if:true={showAttendanceTable}>
+                <lightning-accordion allow-multiple-sections-open active-section-name={allSectionNames}>
+                    <template for:each={attendanceData} for:item="student">
+                        <lightning-accordion-section name={student.studentId} label={student.studentName} key={student.studentId}>
+                            <div class="session-info">
+                                <div class="checkbox-container">
+                                Wrong Batch
+                                <lightning-input data-student-id={student.studentId} type="checkbox" name="wrongBatch" class="checkBoxCls" onchange={handleWrongBatch}  checked={student.stdWrongBatch} disabled={sessionAttSubmitted}></lightning-input>
+                                </div>
+                                <template lwc:if={student.stdWrongBatch}>
+                                <lightning-combobox
+                                    style="width: 170px;" label="Parent Attendance"
+                                    placeholder = '--None--'
+                                    value={student.parentAttendance}
+                                    options={attendanceOptions}
+                                    data-student-id={student.studentId}
+                                    onchange={handleAttendanceChange}
+                                    class="input-style"
+                                    disabled={student.stdWrongBatch}>
+                                </lightning-combobox>
+                                <lightning-combobox label="Student Attendance"
+                                    style="width: 170px;"
+                                    placeholder = '--None--'
+                                    value={student.stdAttendance}
+                                    options={attendanceOptions}
+                                    data-student-id={student.studentId}
+                                    onchange={handleParentAttendanceChange}
+                                    class="input-style"
+                                    disabled={student.stdWrongBatch}>
+                                </lightning-combobox>
+                                </template>
+                                <template lwc:else>
+                                <lightning-combobox
+                                    style="width: 170px;" label="Parent Attendance"
+                                    value={student.parentAttendance}
+                                    options={attendanceOptions}
+                                    data-student-id={student.studentId}
+                                    onchange={handleAttendanceChange}
+                                    class="input-style"
+                                    disabled={sessionAttSubmitted}  
+                                    message-when-value-missing="Parent Attendance is required"
+                                    required>
+                                </lightning-combobox>
+                                <lightning-combobox label="Student Attendance"
+                                    style="width: 170px;"
+                                    value={student.stdAttendance}
+                                    options={attendanceOptions}
+                                    data-student-id={student.studentId}
+                                    onchange={handleParentAttendanceChange}
+                                    class="input-style"
+                                    message-when-value-missing="Student Attendance is required"
+                                    required
+                                    disabled={sessionAttSubmitted}>
+                                </lightning-combobox>
+                                </template>
+                            </div>
+                        </lightning-accordion-section>
+                    </template>
+                </lightning-accordion>
+            </template>
+            <template if:false={showAttendanceTable}>
+                <p style="color:red">No Student found</p>
+            </template>
+        </div>
+        <template if:true={sessionAttSubmitted} >
+            <div style="text-align: center; margin-top: 20px" if:true={showAttendanceTable}>
+            <lightning-button label="Save as Draft" variant="brand" class="slds-m-right_x-large saveBtn" onclick={onclickSaveDraft} disabled></lightning-button>
+            <lightning-button label="Submit Attendance" variant="brand" class="submitBtn" onclick={onclickSubmitAttendance} disabled></lightning-button>
             </div>
-        </div>
-        <div style="text-align: center; margin-top: 20px">
-            <lightning-button label="Save as Draft" variant="brand" class="slds-m-right_x-large"></lightning-button>
-            <lightning-button label="Submit Attendance" variant="success"></lightning-button>
-        </div>
+        </template>
+        <template if:false={sessionAttSubmitted}>
+            <div style="text-align: center; margin-top: 20px" if:true={showAttendanceTable}>
+            <lightning-button label="Save as Draft" variant="brand" class="slds-m-right_x-large saveBtn" onclick={onclickSaveDraft}></lightning-button>
+            <lightning-button label="Submit Attendance" variant="brand" class="submitBtn" onclick={onclickSubmitAttendance}></lightning-button>
+            </div>
+        </template>
+        
         <div style="text-align: center; margin-top: 20px;">
             <div class="back-link slds-text-align_center">
                 <div class=" short-line line-above"></div>
-                <a href="#" onclick={handleBackToScheduling} class="slds-text-link_reset"
+                <a onclick={handleBackToScheduling} class="slds-text-link_reset"
                     style="margin-top: 5px; margin-bottom: 5px;">
                     <lightning-icon icon-name="utility:chevronleft" alternative-text="GO BACK TO SCHEDULING"
-                        title="GO BACK TO SCHEDULING" size="x-small" class="slds-m-right_small"></lightning-icon>
+                        title="GO BACK TO SCHEDULING" size="x-small" class="slds-m-right_small iconCls"></lightning-icon>
                     GO BACK TO SCHEDULING
                 </a>
                 <div class=" short-line line-below"></div>
             </div>
         </div>
+        <!-- modal start -->
+        <template if:true={isShowModal}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open pendingSessionModal">
+                <div class="slds-modal__container">                   
+                    <!-- modal body start -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1" style="padding: 30px;">
+                        <div class="slds-col headingText" style="margin-left: 20px;">
+                            <h4><b>Enter Reason for difference in Attendance</b></h4>
+                        </div>
+                        <div class="slds-col">
+                            <lightning-combobox
+                                value={reason} options={reasonOption}
+                                onchange={handleReasonChange}>
+                            </lightning-combobox>
+                        </div>
+                        <div class="btnGrp">
+                            <lightning-button onclick={onclickCancel} label="Cancel" variant="brand" class="slds-m-right_xx-large btnCancel"></lightning-button>
+                            <lightning-button label="Ok" onclick={onclickOk} variant="brand" class="btnOk"></lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        <!-- modal end -->
     </lightning-card>
 </template>

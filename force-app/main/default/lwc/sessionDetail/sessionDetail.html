@@ -141,13 +141,13 @@
                                                     <lightning-input type="time" label="Start Time"
                                                         value={session.startTimeFormatted}
                                                         disabled={session.disableStartTimeNDate} data-session-id={session.id} 
-                                                        onchange={changeDateTime}></lightning-input>
+                                                        onchange={changeDateTime}></lightning-input> 
                                                 </lightning-layout-item>
 
                                                 <lightning-layout-item size="2" padding="around-small">
                                                     <div class={classAtten}>
-                                                    <lightning-input label="Class Attendance" class="classAttendanceLabel"
-                                                        value={session.studentAttendance} disabled={session.isEditable}></lightning-input>
+                                                    <lightning-input label="Class Attendance" class="classAttendanceLabel" type="number" data-session-id={session.id}
+                                                        value={session.studentAttendance} disabled={session.disableAttendance} onchange={handleClassAttend}></lightning-input>
                                                         </div>
                                                 </lightning-layout-item>
 
@@ -155,11 +155,16 @@
                                                     <div class="slds-form-element individualInput">
                                                         <label class="slds-form-element__label">Individual Attendance</label>
                                                         <div class="slds-form-element__control">
-                                                            <a href="#" class="slds-text-link"
-                                                                onclick={handleAttendanceClick} data-session-id={session.id}>
-                                                                Open student-wise attendance
-                                                            </a>
-                                                        </div>
+                                                        <template if:true={session.indAttentLink}>
+                                                        <a href="javascript:void(0);" class="slds-text-link"
+                                                            onclick={handleAttendanceClick} data-session-id={session.id}>
+                                                            Open student-wise attendance
+                                                        </a>
+                                                        </template>
+                                                        <template if:false={session.indAttentLink}>
+                                                            Open student-wise attendance
+                                                        </template>
+                                                    </div>
                                                     </div>
 
                                                 </lightning-layout-item>
@@ -213,32 +218,32 @@
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-input type="date" label="Date" value={session.sessionDate}
-                                                    disabled={session.disableStartTimeNDate}></lightning-input>
+                                                <lightning-input type="date" label="Date" value={session.sessionDate} data-session-id={session.id} 
+                                                    disabled={session.disableStartTimeNDate} onchange={changeDateTime}></lightning-input>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-input type="time" label="Start Time"
-                                                    value={session.startTimeFormatted}
-                                                    disabled={session.disableStartTimeNDate}></lightning-input>
+                                                    value={session.startTimeFormatted} data-session-id={session.id} 
+                                                    disabled={session.disableStartTimeNDate} onchange={changeDateTime}></lightning-input>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-combobox name="hmAttended" label="HM Attended" 
+                                                <lightning-combobox name="hmAttended" label="HM Attended" data-session-id={session.id}
                                                     value={session.hmAttended}
-                                                    options={optionsHmAttended} disabled={session.isEditable}></lightning-combobox>
+                                                    options={optionsHmAttended} disabled={session.disableAttendance} onchange={changeHmAttended}></lightning-combobox>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-combobox name="sessionLead" label="Session Lead" 
+                                                <lightning-combobox name="sessionLead" label="Session Lead" data-session-id={session.id}
                                                     value={session.sessionLead}
-                                                    options={optionsSessionLead} disabled={session.isEditable}></lightning-combobox>
+                                                    options={optionsSessionLead} disabled={session.disableAttendance} onchange={changeSessionLead}></lightning-combobox>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <div class={classAtten}>
-                                                <lightning-input label="Class Attendance" class="classAttendanceLabel"
-                                                    value={session.studentAttendance} disabled={session.isEditable}></lightning-input>
+                                                <lightning-input label="Class Attendance" class="classAttendanceLabel" data-session-id={session.id} type="number"
+                                                    value={session.studentAttendance} disabled={session.disableAttendance} onchange={handleClassAttend}></lightning-input>
                                                 </div>
                                             </lightning-layout-item>
 
@@ -246,10 +251,15 @@
                                                 <div class="slds-form-element individualInput">
                                                     <label class="slds-form-element__label">Individual Attendance</label>
                                                     <div class="slds-form-element__control">
+                                                        <template if:true={session.indAttentLink}>
                                                         <a href="javascript:void(0);" class="slds-text-link"
                                                             onclick={handleAttendanceClick} data-session-id={session.id}>
                                                             Open student-wise attendance
                                                         </a>
+                                                        </template>
+                                                        <template if:false={session.indAttentLink}>
+                                                            Open student-wise attendance
+                                                        </template>
                                                     </div>
                                                 </div>
 
@@ -303,46 +313,51 @@
                                                     class={session.statusClassName} disabled></lightning-input>
                                             </lightning-layout-item>
                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-input type="date" label="Date" value={session.sessionDate}
-                                                    disabled={session.disableStartTimeNDate}></lightning-input>
+                                                <lightning-input type="date" label="Date" value={session.sessionDate} data-session-id={session.id} 
+                                                    disabled={session.disableStartTimeNDate} onchange={changeDateTime}></lightning-input>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-input type="time" label="Start Time"
-                                                    value={session.startTimeFormatted}
-                                                    disabled={session.disableStartTimeNDate}></lightning-input>
+                                                    value={session.startTimeFormatted} data-session-id={session.id} 
+                                                    disabled={session.disableStartTimeNDate} onchange={changeDateTime}></lightning-input>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-combobox name="hmAttended" label="HM Attended" 
-                                                    value={session.hmAttended}
-                                                    options={optionsHmAttended} disabled={session.isEditable}></lightning-combobox>
+                                                    value={session.hmAttended} data-session-id={session.id}
+                                                    options={optionsHmAttended} disabled={session.disableAttendance} onchange={changeHmAttended}></lightning-combobox>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-combobox name="sessionLead" label="Session Lead" 
-                                                    value={session.sessionLead}
-                                                    options={optionsSessionLead} disabled={session.isEditable}></lightning-combobox>
+                                                    value={session.sessionLead} data-session-id={session.id}
+                                                    options={optionsSessionLead} disabled={session.disableAttendance} onchange={changeSessionLead}></lightning-combobox>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-input label="Parent attendance" class="classAttendanceLabel"
-                                                    value={session.parentAttendance} disabled={session.isEditable}></lightning-input>
+                                                <lightning-input label="Parent attendance" class="classAttendanceLabel" type="number" data-session-id={session.id}
+                                                    value={session.parentAttendance} disabled={session.disableAttendance} onchange={handleParentAttend}></lightning-input>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-input label="Student Attendance"
-                                                    value={session.studentAttendance} disabled={session.isEditable}></lightning-input>
+                                                <lightning-input label="Student Attendance" type="number" data-session-id={session.id}
+                                                    value={session.studentAttendance} disabled={session.disableAttendance} onchange={handleClassAttend}></lightning-input>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <div class="slds-form-element individualInput">
                                                     <label class="slds-form-element__label">Individual Attendance</label>
                                                     <div class="slds-form-element__control">
-                                                        <a href="#" class="slds-text-link"
+                                                        <template if:true={session.indAttentLink}>
+                                                        <a href="javascript:void(0);" class="slds-text-link"
                                                             onclick={handleParentAttendanceClick} data-session-id={session.id}>
                                                             Open student-wise attendance
                                                         </a>
+                                                        </template>
+                                                        <template if:false={session.indAttentLink}>
+                                                            Open student-wise attendance
+                                                        </template>
                                                     </div>
                                                 </div>
 
@@ -392,21 +407,21 @@
                                                     <div style="margin-top: 4px; margin-bottom: 19px;">Facilitator Name</div>
                                                     <div class="facilitatorNameCls">{session.facilitatorName}</div>
                                             </lightning-layout-item>
-
+                                            
                                             <lightning-layout-item size="2" padding="around-small"
                                                 class="sessionStatusInAccordion">
                                                 <lightning-input label="Session Status" value={session.status}
                                                     class={session.statusClassName} disabled></lightning-input>
                                             </lightning-layout-item>
                                                 <lightning-layout-item size="2" padding="around-small">
-                                                    <lightning-input type="date" label="Date" value={session.sessionDate}
-                                                        disabled={session.disableStartTimeNDate}></lightning-input>
+                                                    <lightning-input type="date" label="Date" value={session.sessionDate} data-session-id={session.id} 
+                                                        disabled={session.disableStartTimeNDate} onchange={changeDateTime}></lightning-input>
                                                 </lightning-layout-item>
 
                                                 <lightning-layout-item size="2" padding="around-small">
                                                     <lightning-input type="time" label="Start Time"
-                                                        value={session.startTimeFormatted}
-                                                        disabled={session.disableStartTimeNDate}></lightning-input>
+                                                        value={session.startTimeFormatted} data-session-id={session.id} 
+                                                        disabled={session.disableStartTimeNDate} onchange={changeDateTime}></lightning-input>
                                                 </lightning-layout-item>              
 
                                         </lightning-layout>
@@ -416,9 +431,19 @@
                                                     <template for:each={indStudentData} for:item="student">
                                                         <lightning-accordion-section name={student.studentId} label={student.studentName} key={student.studentId}>
                                                             <div class="session-info session-infoMob">
-                                                                <lightning-combobox name="sessionLead" label="Session Lead"  style="width: 170px;"
-                                                                    value={indSessionLead}
-                                                                    options={optionsSessionLead} disabled={session.isEditable}>
+                                                                <div class="checkbox-container">
+                                                                Wrong Batch
+                                                                <lightning-input data-student-id={student.studentId} 
+                                                                type="checkbox" name="wrongBatch" class="checkBoxCls" style="    margin-top: 20px;"
+                                                                onchange={handleWrongBatch} checked={student.stdWrongBatch} 
+                                                                disabled={student.disableWrongBatch}></lightning-input>
+                                                                </div>
+                                                                <template lwc:if={student.stdWrongBatch}>
+                                                                <lightning-combobox name="sessionLead" label="Session Lead"  
+                                                                onchange={handleSessionLead} data-student-id={student.studentId}
+                                                                    style="width: 170px;"
+                                                                    value={student.stdLead}
+                                                                    options={optionsSessionLead} disabled={student.stdWrongBatch}>
                                                                 </lightning-combobox>
                                                                 <div class="session-info" style="margin-top:0px;">
                                                                  <lightning-combobox label="Student Attendance"
@@ -426,21 +451,47 @@
                                                                     value={student.stdAttendance}
                                                                     options={attendanceOptions}
                                                                     data-student-id={student.studentId}
-                                                                    onchange={handleParentAttendanceChange}
+                                                                    onchange={handleAttendanceChange}
                                                                     class="input-style"
-                                                                    disabled={sessionAttSubmitted}>
+                                                                    disabled={student.stdWrongBatch}>
                                                                 </lightning-combobox>
                                                                 <lightning-combobox
                                                                     style="width: 170px;" label="Parent Attendance"
                                                                     value={student.parentAttendance}
                                                                     options={attendanceOptions}
                                                                     data-student-id={student.studentId}
-                                                                    onchange={handleAttendanceChange}
+                                                                    onchange={handleParentAttendanceChange}
                                                                     class="input-style"
-                                                                    disabled={sessionAttSubmitted}>
+                                                                    disabled={student.stdWrongBatch}>
                                                                 </lightning-combobox>
                                                                 </div>
-                                                               
+                                                               </template>
+                                                               <template lwc:else>
+                                                                <lightning-combobox name="sessionLead" label="Session Lead"  style="width: 170px;"
+                                                                    value={student.stdLead}
+                                                                    options={optionsSessionLead} disabled={student.disableStudent}>
+                                                                </lightning-combobox>
+                                                                <div class="session-info" style="margin-top:0px;">
+                                                                 <lightning-combobox label="Student Attendance"
+                                                                    style="width: 170px;"
+                                                                    value={student.stdAttendance}
+                                                                    options={attendanceOptions}
+                                                                    data-student-id={student.studentId}
+                                                                    onchange={handleAttendanceChange}
+                                                                    class="input-style"
+                                                                    disabled={student.disableStudent}>
+                                                                </lightning-combobox>
+                                                                <lightning-combobox
+                                                                    style="width: 170px;" label="Parent Attendance"
+                                                                    value={student.parentAttendance}
+                                                                    options={attendanceOptions}
+                                                                    data-student-id={student.studentId}
+                                                                    onchange={handleParentAttendanceChange}
+                                                                    class="input-style"
+                                                                    disabled={student.disableStudent}>
+                                                                </lightning-combobox>
+                                                                </div>
+                                                               </template>
                                                             </div>
                                                         </lightning-accordion-section>
                                                     </template>
@@ -500,9 +551,10 @@
                                         name="reason" 
                                         data-index={index}
                                         data-id={session.id}
-                                        value={session.reason}
+                                        value={session.reasonForLateSchedule}
                                         options={lateScheduleReasonOption}
                                         onchange={handleLateScheduleChange}>
+                                        
                                     </lightning-combobox>
                                 </div>
                             </template>

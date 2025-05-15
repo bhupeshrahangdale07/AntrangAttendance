@@ -69,17 +69,33 @@
                             <div class="session-info">
                                 <div class="checkbox-container">
                                 Wrong Batch
-                                <lightning-input data-student-id={student.studentId} type="checkbox" name="wrongBatch" value={isWrongBatchChecked} class="checkBoxCls" checked={isWrongBatchChecked} onchange={handleWrongBatch}></lightning-input>
+                                <lightning-input data-student-id={student.studentId} 
+                                type="checkbox" name="wrongBatch" class="checkBoxCls" onchange={handleWrongBatch} checked={student.stdWrongBatch} disabled={sessionAttSubmitted}></lightning-input>
                                 </div>
+                                <template lwc:if={student.stdWrongBatch}>
+                                    <lightning-combobox label="Attendance"
+                                    style="width: 170px;"
+                                    placeholder = '--None--'
+                                    value={student.stdAttendance}
+                                    options={attendanceOptions}
+                                    data-student-id={student.studentId}
+                                    onchange={handleAttendanceChange}
+                                    class="input-style marginOnMob"
+                                    disabled={student.stdWrongBatch}>
+                                </lightning-combobox>
+                                </template>
+                                <template lwc:else>
                                 <lightning-combobox label="Attendance"
                                     style="width: 170px;"
                                     value={student.stdAttendance}
                                     options={attendanceOptions}
                                     data-student-id={student.studentId}
                                     onchange={handleAttendanceChange}
-                                    class="input-style"
-                                    disabled={sessionAttSubmitted}>
+                                    class="input-style marginOnMob" 
+                                    message-when-value-missing="Student Attendance is required"
+                                    disabled={sessionAttSubmitted} required>
                                 </lightning-combobox>
+                                </template>
                             </div>
                         </lightning-accordion-section>
                     </template>
