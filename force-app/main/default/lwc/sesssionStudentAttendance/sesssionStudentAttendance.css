@@ -1,23 +1,76 @@
 .attendance-card {
-	--sds-c-card-radius-border: 0;
+    --sds-c-card-radius-border: 0;
 }
+
 .signOutDiv .signOutButton {
-	--sds-c-button-brand-color-background : #DB583F;
+    --sds-c-button-brand-color-background: #DB583F;
 }
-.signOutDiv{
+.spinnerClass{
+     --lwc-brandPrimary: #50A771;
+}
+.signOutDiv {
     float: right;
-	margin-left: auto;
-	margin-right: 10px;
+    margin-left: auto;
+    margin-right: 10px;
 }
+
 .contentCls {
-	padding-left: 40px; 
-	padding-right: 40px
+    padding-left: 40px;
+    padding-right: 40px
 }
-@media (max-width: 767px) {
-	.contentCls {
-	padding-left: 20px; 
-	padding-right: 20px
-	}
+.btnGrp{
+    text-align: center;
+    margin-top: 40px;
+}
+.headingText{
+    text-align:center;font-size: 16px;margin-bottom: 5px;
+}
+.sessionDiv{
+    background-color: var(--slds-g-color-neutral-base-95, var(--lwc-colorBackgroundInputDisabled, rgb(243, 243, 243)));
+    border-color: var(--slds-g-color-border-base-1, var(--lwc-colorBorderInputDisabled, rgb(201, 201, 201)));
+    color: var(--slds-g-color-neutral-base-50, var(--lwc-colorTextInputDisabled, rgb(116, 116, 116)));
+    border: 1px solid;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 15px;
+    padding: 5px 10px;
+    align-items: center;
+    width: 15%;
+}
+@media only screen and (max-width: 767px){
+    .attendance-table .row div {
+        width: 50% !important;
+        margin-top: 30px;
+    }
+    div.sessionDiv{
+        width: 50% !important;
+    }
+    div.headingText{
+        text-align:center;font-size: 14px;margin-bottom: 5px;
+    }
+    .contentCls {
+        padding-left: 20px;
+        padding-right: 20px
+    }
+
+    div.line-above {
+        margin-bottom: 10px;
+        margin-left: 35px;
+    }
+
+    div.line-below {
+        margin-top: 10px;
+        margin-left: 35px;
+    }
+
+    div.short-line {
+        text-align: center;
+        height: 0.5px;
+        width: 80%;
+        background-color: #50A771;
+        margin: 4px 0;
+        margin: 10px auto;
+    }
 }
 
 .header {
@@ -29,21 +82,21 @@
 }
 
 .session-info {
-	--lwc-heightInput: 1.5rem;
+    --lwc-heightInput: 1.5rem;
     display: flex;
     gap: 2rem;
     margin-bottom: 8px;
-	margin-top: -15px;
-	
+    margin-top: -15px;
+
 }
 
-.session-input{
+.session-input {
 
-	--lwc-heightInput: 1.5rem;
+    --lwc-heightInput: 1.5rem;
     display: flex;
     gap: 2rem;
     margin-bottom: 20px;
-	margin-top: -15px;
+    margin-top: -15px;
 }
 
 
@@ -55,12 +108,13 @@
 .row {
     display: flex;
     padding: 0.5rem 0;
-	font-size: 0.8rem;
+    font-size: 0.8rem;
 }
+
 .back-link a {
-    color: #000000;
+    color: #878787;
     text-transform: uppercase;
-    font-size: 0.8125rem;
+    font-size: 15px;
 }
 
 .back-link a:hover {
@@ -69,8 +123,9 @@
 
 .short-line {
     text-align: center;
-    height: 1px;
-    width: 80%; /* Adjust this percentage to control line length */
+    height: 0.5px;
+    width: 19%;
+    /* Adjust this percentage to control line length */
     background-color: #50A771;
     margin: 4px 0;
 }
@@ -78,8 +133,40 @@
 /* Position the lines relative to the container */
 .line-above {
     margin-bottom: 10px;
+    margin-left: 615px;
 }
 
 .line-below {
     margin-top: 10px;
+    margin-left: 615px;
+}
+
+.iconCls {
+    --slds-g-color-neutral-base-50: #1A1A1A;
+}
+
+.saveBtn {
+    --slds-c-button-brand-color-background: #49445C;
+    --sds-c-button-brand-color-border: #49445C;
+}
+
+.submitBtn {
+    --slds-c-button-brand-color-background: #50A771;
+    --sds-c-button-brand-color-border: #50A771;
+}
+.checkbox-container {
+    display: flex;
+    flex-direction: column;
+    /* align-items: flex-start; */
+    margin-top: 16px;
+    text-align: center;
+    color: #696969;
+}
+.checkbox-container.input.slds-checkbox .slds-checkbox_faux {
+    --lwc-squareIconMediumContent : 25px;
+    height: 25px;
+}
+.checkBoxCls {
+    padding-top: 15px;
+    --lwc-squareIconMediumContent : 25px;
 }

@@ -28,7 +28,7 @@
                     <template if:false={showLoadingModal}>
                         <template if:false={showPendingSession}>
                             <p style="color: #50A771;font-weight: bold;padding-bottom: 25px;">All session data entry
-                                complete!</p>
+                                completed!</p>
                         </template>
                         <template if:true={showPendingSession}>
                             <table class="pendingSessionTable">
@@ -42,7 +42,7 @@
                                     <template for:each={sessionList} for:item="item" for:index="index">
 
                                         <tr key={item.school}>
-                                            <td>{item.displayIndex}</td>
+                                            <td><b>{item.displayIndex}</b></td>
                                             <td>
                                                 <strong>{item.school}</strong><br/>
                                                 <template for:each={item.batches} for:item="batch">
@@ -79,18 +79,22 @@
                 </lightning-record-picker> -->
                 <template if:true={flagIndicatingDataHasBeenLoadedInVariables}>
                     <c-Searchable-Combobox onselectoption={handleSelectOption} options={options}
-                        selected-value={schoolId} placeholder-data="Type only first 4 letters and selects from option"
+                        selected-value={schoolId} placeholder-data="Type only first 4 letter and selects from options"
                         label="School Name"></c-Searchable-Combobox>
                 </template>
             </div>
             <div class="section">
+                <template if:true={flagIndicatingDataHasBeenLoadedInVariables}>
                 <lightning-combobox name="grade" label="Grade" value={grade} placeholder="Select grade in school"
                     options={gradeOption} onchange={onchangeGrade} required></lightning-combobox>
+                </template>
             </div>
             <div class="section">
+                <template if:true={flagIndicatingDataHasBeenLoadedInVariables}>
                 <lightning-combobox name="batch" label="Batch Code" value={batch}
                     placeholder="Select batch code of class" options={batchOption} onchange={onchangeBatch} required>
                 </lightning-combobox>
+                </template>
             </div>
         </div>
         <div class="sessionFormInstruction">
@@ -106,59 +110,71 @@
                             active-section-name={activeChildSession}>
                             <template if:true={hasFlexibleSessions}>
                                 <template for:each={flexibleSessions} for:item="session">
+                                    <div class="childAccordionMain" key={session.id}>
                                     <lightning-accordion-section key={session.id} name={session.id}
-                                        label={session.name}>
-                                        <lightning-layout multiple-rows>
-                                            <lightning-layout-item size="2" padding="around-small">
-                                                <lightning-input class="facNameInAccordion" label="Facilitator Name"
-                                                    value={session.facilitatorName} disabled></lightning-input>
-                                            </lightning-layout-item>
+                                        label={session.name} class="childAccordion">
+                                            <div class="buttonsOnAcc">
+                                            <div if:true={session.scheduleOnTime} class="onTimeScheduleDiv"><img class="imgCls" src={OnTimeScheduleIcon} /><div class="textCls">On-time Scheduling</div></div>
+                                            <div if:true={session.scheduleLate}  class="lateScheduleDiv"><img class="imgCls" src={lateScheduleIcon} /><div class="textCls">Late Scheduling</div></div>
+                                            <div class="rescheduleInnerDiv" if:true={session.scheduleCounter} ><div class="reScheduleDiv"><img class="imgCls" src={reScheduleIcon} /><div class="textCls">Rescheduled</div></div><div class="reScheduleDivCounter">{session.scheduleCounter}</div></div>
+                                            </div>
+                                            <lightning-layout multiple-rows>
+                                                <lightning-layout-item size="2" padding="around-small">
+                                                    <!-- <lightning-input class="facNameInAccordion" label="Facilitator Name"
+                                                        value={session.facilitatorName} disabled></lightning-input> -->
+                                                        <div style="margin-top: 4px; margin-bottom: 19px;">Facilitator Name</div>
+                                                    <div class="facilitatorNameCls">{session.facilitatorName}</div>
+                                                </lightning-layout-item>
 
-                                            <lightning-layout-item size="2" padding="around-small"
-                                                class="sessionStatusInAccordion">
-                                                <lightning-input label="Session Status" value={session.status}
-                                                    class={session.statusClassName} disabled></lightning-input>
-                                            </lightning-layout-item>
+                                                <lightning-layout-item size="2" padding="around-small"
+                                                    class="sessionStatusInAccordion">
+                                                    <lightning-input label="Session Status" value={session.status}
+                                                        class={session.statusClassName} disabled></lightning-input>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item size="2" padding="around-small">
+                                                    <lightning-input type="date" label="Date" value={session.sessionDate}
+                                                        disabled={session.disableStartTimeNDate} data-session-id={session.id} 
+                                                        onchange={changeDateTime}></lightning-input>
+                                                </lightning-layout-item>
 
-                                            <lightning-layout-item size="2" padding="around-small">
-                                                <lightning-input type="date" label="Date" value={session.sessionDate}
-                                                    disabled={session.disableStartTimeNDate}></lightning-input>
-                                            </lightning-layout-item>
+                                                <lightning-layout-item size="2" padding="around-small">
+                                                    <lightning-input type="time" label="Start Time"
+                                                        value={session.startTimeFormatted}
+                                                        disabled={session.disableStartTimeNDate} data-session-id={session.id} 
+                                                        onchange={changeDateTime}></lightning-input>
+                                                </lightning-layout-item>
 
-                                            <lightning-layout-item size="2" padding="around-small">
-                                                <lightning-input type="time" label="Start Time"
-                                                    value={session.startTimeFormatted}
-                                                    disabled={session.disableStartTimeNDate}></lightning-input>
-                                            </lightning-layout-item>
+                                                <lightning-layout-item size="2" padding="around-small">
+                                                    <div class={classAtten}>
+                                                    <lightning-input label="Class Attendance" class="classAttendanceLabel"
+                                                        value={session.studentAttendance} disabled={session.isEditable}></lightning-input>
+                                                        </div>
+                                                </lightning-layout-item>
 
-                                            <lightning-layout-item size="2" padding="around-small">
-                                                <lightning-input label="Student Attendance"
-                                                    value={session.classAttendance} disabled></lightning-input>
-                                            </lightning-layout-item>
-
-                                            <lightning-layout-item size="2" padding="around-small">
-                                                <div class="slds-form-element individualInput">
-                                                    <label class="slds-form-element__label">Individual Attendance</label>
-                                                    <div class="slds-form-element__control">
-                                                        <a href="javascript:void(0);" class="slds-text-link"
-                                                            onclick={handleAttendanceClick}>
-                                                            Open student-wise attendance
-                                                        </a>
+                                                <lightning-layout-item size="2" padding="around-small">
+                                                    <div class="slds-form-element individualInput">
+                                                        <label class="slds-form-element__label">Individual Attendance</label>
+                                                        <div class="slds-form-element__control">
+                                                            <a href="#" class="slds-text-link"
+                                                                onclick={handleAttendanceClick} data-session-id={session.id}>
+                                                                Open student-wise attendance
+                                                            </a>
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                            </lightning-layout-item>
-                                        </lightning-layout>
-
+                                                </lightning-layout-item>
+                                                
+                                            </lightning-layout>
 
 
                                     </lightning-accordion-section>
-                                    <template if:false={session.isOpen}>
+                                    <!--<template if:true={session.isOpen}>-->
                                         <div class="childStatusAccordion" key={session.id}>
                                             <lightning-button variant="brand" label={session.status}
-                                                class={session.statusClassName}></lightning-button>
+                                                class={session.statusClassName} style="pointer-events: none;"></lightning-button>
                                         </div>
-                                    </template>
+                                    <!--</template>-->
+                                    </div>
                                 </template>
                             </template>
 
@@ -173,12 +189,21 @@
                         active-section-name={activeChildSession}>
                             <template if:true={hasStudentSessions}>
                                 <template for:each={studentSessions} for:item="session">
-                                    <lightning-accordion-section key={session.id} name={session.id}
+                                    <div class="childAccordionMain" key={session.id}>
+                                
+                                    <lightning-accordion-section class="childAccordion" key={session.id} name={session.id}
                                         label={session.name}>
+                                        <div class="buttonsOnAcc">
+                                        <div if:true={session.scheduleOnTime} class="onTimeScheduleDiv"><img class="imgCls" src={OnTimeScheduleIcon} /><div class="textCls">On-time Scheduling</div></div>
+                                        <div if:true={session.scheduleLate}  class="lateScheduleDiv"><img src={lateScheduleIcon} /><div class="textCls">Late Scheduling</div></div>
+                                        <div class="rescheduleInnerDiv" if:true={session.scheduleCounter} ><div class="reScheduleDiv"><img class="imgCls" src={reScheduleIcon} /><div class="textCls">Rescheduled</div></div><div class="reScheduleDivCounter">{session.scheduleCounter}</div></div>
+                                        </div>
                                         <lightning-layout multiple-rows>
                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-input class="facNameInAccordion" label="Facilitator Name"
-                                                    value={session.facilitatorName} disabled></lightning-input>
+                                                <!-- <lightning-input class="facNameInAccordion" label="Facilitator Name"
+                                                    value={session.facilitatorName} disabled></lightning-input> -->
+                                                    <div style="margin-top: 4px; margin-bottom: 19px;">Facilitator Name</div>
+                                                    <div class="facilitatorNameCls">{session.facilitatorName}</div>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small"
@@ -200,18 +225,21 @@
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-combobox name="hmAttended" label="HM Attended" 
-                                                    value={value}
-                                                    options={options}></lightning-combobox>
+                                                    value={session.hmAttended}
+                                                    options={optionsHmAttended} disabled={session.isEditable}></lightning-combobox>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-input label="Session Lead"
-                                                    value={session.sessionLead}></lightning-input>
+                                                <lightning-combobox name="sessionLead" label="Session Lead" 
+                                                    value={session.sessionLead}
+                                                    options={optionsSessionLead} disabled={session.isEditable}></lightning-combobox>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-input label="Student Attendance"
-                                                    value={session.classAttendance} disabled></lightning-input>
+                                                <div class={classAtten}>
+                                                <lightning-input label="Class Attendance" class="classAttendanceLabel"
+                                                    value={session.studentAttendance} disabled={session.isEditable}></lightning-input>
+                                                </div>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
@@ -219,13 +247,14 @@
                                                     <label class="slds-form-element__label">Individual Attendance</label>
                                                     <div class="slds-form-element__control">
                                                         <a href="javascript:void(0);" class="slds-text-link"
-                                                            onclick={handleAttendanceClick}>
+                                                            onclick={handleAttendanceClick} data-session-id={session.id}>
                                                             Open student-wise attendance
                                                         </a>
                                                     </div>
                                                 </div>
 
                                             </lightning-layout-item>
+
                                         </lightning-layout>
 
 
@@ -234,9 +263,10 @@
                                     <template if:false={session.isOpen}>
                                         <div class="childStatusAccordion" key={session.id}>
                                             <lightning-button variant="brand" label={session.status}
-                                                class={session.statusClassName}></lightning-button>
+                                                class={session.statusClassName} style="pointer-events: none;"></lightning-button>
                                         </div>
                                     </template>
+                                    </div>
                                 </template>
                             </template>
 
@@ -251,12 +281,20 @@
                         active-section-name={activeChildSession}>
                             <template if:true={hasParentSessions}>
                                 <template for:each={parentSessions} for:item="session">
-                                    <lightning-accordion-section key={session.id} name={session.id}
+                                    <div class="childAccordionMain" key={session.id}>
+                                    <lightning-accordion-section class="childAccordion" key={session.id} name={session.id}
                                         label={session.name}>
+                                        <div class="buttonsOnAcc">
+                                            <div if:true={session.scheduleOnTime} class="onTimeScheduleDiv"><img class="imgCls" src={OnTimeScheduleIcon} /><div class="textCls">On-time Scheduling</div></div>
+                                            <div if:true={session.scheduleLate}  class="lateScheduleDiv"><img class="imgCls" src={lateScheduleIcon} /><div class="textCls">Late Scheduling</div></div>
+                                            <div class="rescheduleInnerDiv" if:true={session.scheduleCounter} ><div class="reScheduleDiv"><img class="imgCls" src={reScheduleIcon} /><div class="textCls">Rescheduled</div></div><div class="reScheduleDivCounter">{session.scheduleCounter}</div></div>
+                                        </div>
                                         <lightning-layout multiple-rows>
                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-input class="facNameInAccordion" label="Facilitator Name"
-                                                    value={session.facilitatorName} disabled></lightning-input>
+                                                <!-- <lightning-input class="facNameInAccordion" label="Facilitator Name"
+                                                    value={session.facilitatorName} disabled></lightning-input> -->
+                                                    <div style="margin-top: 4px; margin-bottom: 19px;">Facilitator Name</div>
+                                                    <div class="facilitatorNameCls">{session.facilitatorName}</div>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small"
@@ -264,7 +302,6 @@
                                                 <lightning-input label="Session Status" value={session.status}
                                                     class={session.statusClassName} disabled></lightning-input>
                                             </lightning-layout-item>
-
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-input type="date" label="Date" value={session.sessionDate}
                                                     disabled={session.disableStartTimeNDate}></lightning-input>
@@ -277,51 +314,49 @@
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-input label="HM Attened"
+                                                <lightning-combobox name="hmAttended" label="HM Attended" 
                                                     value={session.hmAttended}
-                                                    ></lightning-input>
+                                                    options={optionsHmAttended} disabled={session.isEditable}></lightning-combobox>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-input label="Session Lead"
+                                                <lightning-combobox name="sessionLead" label="Session Lead" 
                                                     value={session.sessionLead}
-                                                   ></lightning-input>
+                                                    options={optionsSessionLead} disabled={session.isEditable}></lightning-combobox>
+                                            </lightning-layout-item>
+
+                                            <lightning-layout-item size="1" padding="around-small">
+                                                <lightning-input label="Parent attendance" class="classAttendanceLabel"
+                                                    value={session.parentAttendance} disabled={session.isEditable}></lightning-input>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-input label="Student Attendance"
-                                                    value={session.classAttendance} disabled></lightning-input>
-                                            </lightning-layout-item>
-
-                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-input label="Parent attendance"
-                                                    value={session.parentAttendance} disabled></lightning-input>
+                                                    value={session.studentAttendance} disabled={session.isEditable}></lightning-input>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <div class="slds-form-element individualInput">
                                                     <label class="slds-form-element__label">Individual Attendance</label>
                                                     <div class="slds-form-element__control">
-                                                        <a href="javascript:void(0);" class="slds-text-link"
-                                                            onclick={handleAttendanceClick}>
+                                                        <a href="#" class="slds-text-link"
+                                                            onclick={handleParentAttendanceClick} data-session-id={session.id}>
                                                             Open student-wise attendance
                                                         </a>
                                                     </div>
                                                 </div>
 
                                             </lightning-layout-item>
-                                        </lightning-layout>
-
-
-
+                                    </lightning-layout>
                                     </lightning-accordion-section>
                                     <p key={session.id}> {session.isOpen}</p>
                                     <template if:false={session.isOpen}>
                                         <div class="childStatusAccordion" key={session.id}>
                                             <lightning-button variant="brand" label={session.status}
-                                                class={session.statusClassName}></lightning-button>
+                                                class={session.statusClassName} style="pointer-events: none;"></lightning-button>
                                         </div>
                                     </template>
+                                    </div>
                                 </template>
                             </template>
 
@@ -332,7 +367,7 @@
                     </lightning-accordion-section>
                     <template if:true={showParentSessionStatus}>
                         <div class="parentSessionStatusBtn">
-                        <lightning-button variant="brand" label={ParentSessionStatusValue} class={ParentSessionStatusClass}></lightning-button>
+                        <lightning-button variant="brand" style="pointer-events: none;" label={ParentSessionStatusValue} class={ParentSessionStatusClass}></lightning-button>
                         </div>
                     </template>
 
@@ -342,12 +377,20 @@
                         active-section-name={activeChildSession}>
                             <template if:true={hasCounselingSessions}>
                                 <template for:each={counselingSessions} for:item="session">
-                                    <lightning-accordion-section key={session.id} name={session.id}
+                                    <div class="childAccordionMain" key={session.id}>
+                                    <lightning-accordion-section class="childAccordion" key={session.id} name={session.id}
                                         label={session.name}>
+                                        <div class="buttonsOnAcc">
+                                        <div if:true={session.scheduleOnTime} class="onTimeScheduleDiv"><img class="imgCls" src={OnTimeScheduleIcon} /><div class="textCls">On-time Scheduling</div></div>
+                                        <div if:true={session.scheduleLate}  class="lateScheduleDiv"><img class="imgCls" src={lateScheduleIcon} /><div class="textCls">Late Scheduling</div></div>
+                                        <div class="rescheduleInnerDiv" if:true={session.scheduleCounter} ><div class="reScheduleDiv"><img class="imgCls" src={reScheduleIcon} /><div class="textCls">Rescheduled</div></div><div class="reScheduleDivCounter">{session.scheduleCounter}</div></div>
+                                        </div>
                                         <lightning-layout multiple-rows>
                                             <lightning-layout-item size="2" padding="around-small">
-                                                <lightning-input class="facNameInAccordion" label="Facilitator Name"
-                                                    value={session.facilitatorName} disabled></lightning-input>
+                                                <!-- <lightning-input class="facNameInAccordion" label="Facilitator Name"
+                                                    value={session.facilitatorName} disabled></lightning-input> -->
+                                                    <div style="margin-top: 4px; margin-bottom: 19px;">Facilitator Name</div>
+                                                    <div class="facilitatorNameCls">{session.facilitatorName}</div>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="2" padding="around-small"
@@ -355,46 +398,67 @@
                                                 <lightning-input label="Session Status" value={session.status}
                                                     class={session.statusClassName} disabled></lightning-input>
                                             </lightning-layout-item>
+                                                <lightning-layout-item size="2" padding="around-small">
+                                                    <lightning-input type="date" label="Date" value={session.sessionDate}
+                                                        disabled={session.disableStartTimeNDate}></lightning-input>
+                                                </lightning-layout-item>
 
-                                            <lightning-layout-item size="2" padding="around-small">
-                                                <lightning-input type="date" label="Date" value={session.sessionDate}
-                                                    disabled={session.disableStartTimeNDate}></lightning-input>
-                                            </lightning-layout-item>
+                                                <lightning-layout-item size="2" padding="around-small">
+                                                    <lightning-input type="time" label="Start Time"
+                                                        value={session.startTimeFormatted}
+                                                        disabled={session.disableStartTimeNDate}></lightning-input>
+                                                </lightning-layout-item>              
 
-                                            <lightning-layout-item size="2" padding="around-small">
-                                                <lightning-input type="time" label="Start Time"
-                                                    value={session.startTimeFormatted}
-                                                    disabled={session.disableStartTimeNDate}></lightning-input>
-                                            </lightning-layout-item>
-
-                                            <!-- <lightning-layout-item size="2" padding="around-small">
-                                                <lightning-input label="Student Attendance"
-                                                    value={session.classAttendance} disabled></lightning-input>
-                                            </lightning-layout-item>
-
-                                            <lightning-layout-item size="2" padding="around-small">
-                                                <div class="slds-form-element individualInput">
-                                                    <label class="slds-form-element__label">Individual Attendance</label>
-                                                    <div class="slds-form-element__control">
-                                                        <a href="javascript:void(0);" class="slds-text-link"
-                                                            onclick={handleAttendanceClick}>
-                                                            Open student-wise attendance
-                                                        </a>
-                                                    </div>
-                                                </div>
-
-                                            </lightning-layout-item> -->
                                         </lightning-layout>
-
-
+                                        <div class="indCounStudentDiv">
+                                            <template if:true={showIndividualStudent}>
+                                                <lightning-accordion allow-multiple-sections-open active-section-name={allSectionNames}>
+                                                    <template for:each={indStudentData} for:item="student">
+                                                        <lightning-accordion-section name={student.studentId} label={student.studentName} key={student.studentId}>
+                                                            <div class="session-info session-infoMob">
+                                                                <lightning-combobox name="sessionLead" label="Session Lead"  style="width: 170px;"
+                                                                    value={indSessionLead}
+                                                                    options={optionsSessionLead} disabled={session.isEditable}>
+                                                                </lightning-combobox>
+                                                                <div class="session-info" style="margin-top:0px;">
+                                                                 <lightning-combobox label="Student Attendance"
+                                                                    style="width: 170px;"
+                                                                    value={student.stdAttendance}
+                                                                    options={attendanceOptions}
+                                                                    data-student-id={student.studentId}
+                                                                    onchange={handleParentAttendanceChange}
+                                                                    class="input-style"
+                                                                    disabled={sessionAttSubmitted}>
+                                                                </lightning-combobox>
+                                                                <lightning-combobox
+                                                                    style="width: 170px;" label="Parent Attendance"
+                                                                    value={student.parentAttendance}
+                                                                    options={attendanceOptions}
+                                                                    data-student-id={student.studentId}
+                                                                    onchange={handleAttendanceChange}
+                                                                    class="input-style"
+                                                                    disabled={sessionAttSubmitted}>
+                                                                </lightning-combobox>
+                                                                </div>
+                                                               
+                                                            </div>
+                                                        </lightning-accordion-section>
+                                                    </template>
+                                                </lightning-accordion>
+                                            </template>
+                                            <template if:false={showIndividualStudent}>
+                                                <p style="color:red">No Student found</p>
+                                            </template>
+                                        </div>
 
                                     </lightning-accordion-section>
                                     <template if:false={session.isOpen}>
                                         <div class="childStatusAccordion" key={session.id}>
                                             <lightning-button variant="brand" label={session.status}
-                                                class={session.statusClassName}></lightning-button>
+                                                class={session.statusClassName} style="pointer-events: none;"></lightning-button>
                                         </div>
                                     </template>
+                                    </div>
                                 </template>
                             </template>
 
@@ -405,7 +469,7 @@
                     </lightning-accordion-section>
                     <template if:true={showCounsellingSessionStatus}>
                         <div class="parentSessionStatusBtn">
-                            <lightning-button variant="brand" label={CounsellingSessionStatusValue} class={CounsellingSessionStatusClass}>
+                            <lightning-button style="pointer-events: none;" variant="brand" label={CounsellingSessionStatusValue} class={CounsellingSessionStatusClass}>
                             </lightning-button>
                         </div>
                     </template>
@@ -417,5 +481,42 @@
             </div>
         </template>
         <c-session-Footer></c-session-Footer>
+        <!-- modal start for Late schedule-->
+        <template if:true={isShowModalForLateSchedule}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open pendingSessionModal lateSchedulePopup">
+                <div class="slds-modal__container">                   
+                    <!-- modal body start -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2" style="padding: 30px;">
+                        <div class="slds-col headingText" style="margin-left: 20px;">
+                            <h4><b>Enter Reason for Late Scheduling</b></h4>
+                        </div>
+                        <template if:true={lateScheduleSessions}>
+                            <template for:each={lateScheduleSessions} for:item="session" for:index="index">
+                                <div key={session.id} class="slds-col lateScheduleDetails">
+                                    <div class="sessName">{session.name}</div>
+
+                                    <lightning-combobox
+                                        name="reason" 
+                                        data-index={index}
+                                        data-id={session.id}
+                                        value={session.reason}
+                                        options={lateScheduleReasonOption}
+                                        onchange={handleLateScheduleChange}>
+                                    </lightning-combobox>
+                                </div>
+                            </template>
+                        </template>
+                        
+                        <div class="btnGrp">
+                            <lightning-button onclick={onclickCancel} label="Cancel" variant="brand" class="slds-m-right_xx-large btnCancel"></lightning-button>
+                            <lightning-button label="Ok" onclick={onclickOk} variant="brand" class="btnOk"></lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        <!-- modal end -->
     </div>
 </template>
