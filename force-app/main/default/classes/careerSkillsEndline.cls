@@ -8,8 +8,12 @@ public without sharing class careerSkillsEndline {
     }
 
     @AuraEnabled
-    public static singleRecordWrapper getApexRecord(String studentId, String grade) {
+    public static singleRecordWrapper getApexRecord(String studentId, String grade, string batchId) {
         try{
+              List<Batch__c> batches = new List<Batch__c>([
+                SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                FROM Batch__c
+                WHERE Id = :batchId LIMIT 1]);
             singleRecordWrapper rsp = new singleRecordWrapper();
             String studentBarcode = '';
             do{
@@ -58,8 +62,32 @@ public without sharing class careerSkillsEndline {
                     rsp.studentGrade = 'Grade 9';
                 }*/
                 //=======================================================//
+                                    List<Career_Skill__c> csList = new List<Career_Skill__c>();
 
-                List<Career_Skill__c> csList = [
+				if(String.isNotBlank(batchId) && !batches.isEmpty()){
+                    csList = [
+                    SELECT Name, Student__r.Name, Barcode__c,
+                    Form_Submitted__c, Created_from_Form__c,    
+                    Q_11_1__c, Q_11_2__c, Q_11_3__c, Q_11_4__c, Q_11_5__c, Q_11_6__c, Q_11_7__c, Q_11_8__c, Q_11_9__c,
+                    Q_12_1__c, Q_12_2__c, Q_12_3__c, Q_12_4__c,
+                    Q_13__c, 
+                    Q_14__c,
+                    Q_15_1__c, Q_15_2__c, Q_15_3__c, Q_15_4__c, Q_15_5__c, Q_15_6__c, Q_15_7__c, Q_15_8__c, Q_15_9__c,
+                    Q_16__c
+                    FROM Career_Skill__c 
+                    WHERE Created_from_Form__c = true
+                    AND Student__c = :studentId
+                        AND Error_Status__c = 'No Error'
+                    /* AND Data_Clean_up__c  = false*/
+                        AND Academic_Year__c = :batches[0].Academic_Year__c
+                     AND Grade__c = :batches[0].Grade__c
+                        AND Barcode__c = :studentBarcode
+                    AND RecordTypeId = :csRecordTypeId  ORDER BY CreatedDate DESC
+                    LIMIT 1
+                ];
+
+                }else{
+                    csList = [
                     SELECT Name, Student__r.Name, Barcode__c,
                     Form_Submitted__c, Created_from_Form__c,    
                     Q_11_1__c, Q_11_2__c, Q_11_3__c, Q_11_4__c, Q_11_5__c, Q_11_6__c, Q_11_7__c, Q_11_8__c, Q_11_9__c,
@@ -76,6 +104,8 @@ public without sharing class careerSkillsEndline {
                     LIMIT 1
                 ];
 
+                }
+               
                 if(csList.isEmpty())break;
                 
                 rsp.apexRecord = csList[0];
@@ -377,8 +407,10 @@ public without sharing class careerSkillsEndline {
     }
 
     @AuraEnabled
-    public static String saveAllQA(String recordId, String studentId, String barCode, object ans, string lng, string typ){
+    public static String saveAllQA(String recordId, String studentId, String barCode, object ans, string lng, string typ, String batchId){
         try{
+            
+            
             string rspId = '';
             String jsonString = Json.serialize(ans);
             qAnswerAll qAll = (qAnswerAll) System.JSON.deserialize(jsonString, qAnswerAll.class); 
@@ -402,13 +434,66 @@ public without sharing class careerSkillsEndline {
             } 
             else 
             {
-                List<Career_Skill__c> existing = new List<Career_Skill__c>([
+                List<Career_Skill__c> existing = new List<Career_Skill__c>();
+                List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c
+                    WHERE Id = :batchId LIMIT 1]);
+                string grade = batches[0].grade__c;
+                    String studentBarcode = '';
+            List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+                if(String.isNotBlank(batchId) && !batches.isEmpty()){
+                    existing = new List<Career_Skill__c>([
                     SELECT Id 
                     FROM Career_Skill__c
                     WHERE Created_from_Form__c = true
                     AND RecordTypeId = :csRecordTypeId
                     AND Student__c = :studentId
-                    AND Barcode__c = :barCode]);   
+                    AND Error_Status__c = 'No Error'
+                    AND Academic_Year__c = :batches[0].Academic_Year__c
+                    AND Grade__c = :batches[0].Grade__c
+                    AND Barcode__c = :studentBarcode
+                    ORDER BY CreatedDate DESC
+                    LIMIT 1]);
+                }else{
+                    existing = new List<Career_Skill__c>([
+                    SELECT Id 
+                    FROM Career_Skill__c
+                    WHERE Created_from_Form__c = true
+                    AND RecordTypeId = :csRecordTypeId
+                    AND Student__c = :studentId
+                    AND Barcode__c = :barCode]);
+                }    
+                /*List<Career_Skill__c> existing = new List<Career_Skill__c>([
+                    SELECT Id 
+                    FROM Career_Skill__c
+                    WHERE Created_from_Form__c = true
+                    AND RecordTypeId = :csRecordTypeId
+                    AND Student__c = :studentId
+                    AND Barcode__c = :barCode]);   */
 
                 if(!existing.isEmpty())
                 {

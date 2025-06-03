@@ -10,8 +10,6 @@ public without sharing class StudentFeedbackCtrl {
     Integer maxRecords,
     String defaultWhereclause
   ) {
-      
-      system.debug('extendedWhereClause :: '+extendedWhereClause);
     searchString = String.escapeSingleQuotes(searchString);
     objectApiName = String.escapeSingleQuotes(objectApiName);
     idFieldApiName = String.escapeSingleQuotes(idFieldApiName);

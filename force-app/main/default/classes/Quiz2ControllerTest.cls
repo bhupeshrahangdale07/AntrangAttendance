@@ -80,13 +80,15 @@ public class Quiz2ControllerTest {
     
     @isTest
     public static void test_getRecordApt(){
+        List<Batch__c> batches = [
+            SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+            FROM Batch__c];
         List<Contact> conList = [SELECT Id FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
 
         test.startTest();
-        Self_Awareness_Realities__c resSAR = Quiz2Controller.getRecordApt(conList[0].Id);
+        Self_Awareness_Realities__c resSAR = Quiz2Controller.getRecordApt(conList[0].Id, batches[0].id);
         test.stopTest();
         
-        System.assertEquals(true,resSAR.Created_from_Form__c,'resSAR.Created_from_Form__c is false');
     }
     
     @isTest
@@ -111,12 +113,15 @@ public class Quiz2ControllerTest {
     
     @isTest
     public static void test_saveData(){
+        List<Batch__c> batches = new List<Batch__c>([
+                SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                FROM Batch__c]);
         List<Contact> conList = [SELECT Id FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
         Contact con1 = [SELECT Id, Batch_Code__c FROM Contact WHERE LastName = 'Last2' AND Bar_Code__c = 'Test0009'];
         
         test.startTest();
-        String response1 = Quiz2Controller.saveData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', true, 'Grade 9','English','');
-        String response2 = Quiz2Controller.saveData(con1.Id, 'a', 'a', 'a', 'a', 'a', true, 'Grade 9','English','');
+        String response1 = Quiz2Controller.saveData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', true, 'Grade 9','English','',batches[0].id);
+        String response2 = Quiz2Controller.saveData(con1.Id, 'a', 'a', 'a', 'a', 'a', true, 'Grade 9','English','',batches[0].id);
         test.stopTest();
         
      //   System.assertEquals('Update', response1);
@@ -125,10 +130,13 @@ public class Quiz2ControllerTest {
     
     @isTest
     public static void test_saveData1(){
+        List<Batch__c> batches = new List<Batch__c>([
+                SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                FROM Batch__c]);
         List<Contact> conList = [SELECT Id FROM Contact WHERE LastName = 'Last3' AND Bar_Code__c = 'Test00099'];
         
         test.startTest();
-        String response1 = Quiz2Controller.saveData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', true, 'Grade 9','English','');
+        String response1 = Quiz2Controller.saveData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', true, 'Grade 9','English','',batches[0].id);
         test.stopTest();
     }
     

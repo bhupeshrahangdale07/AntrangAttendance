@@ -321,7 +321,7 @@
                                 <!--### display all records of Session attribute one by one by aura:iteration ###-->
                                 <aura:iteration items="{!v.sessioneditRec}" var="objSession" indexVar="sNo">
                                     <!-- Child Lightning Component --> 
-                                    <aura:if isTrue="{!objSession.isParentSession}">
+                                    <aura:if isTrue="{!AND(objSession.isParentSession,!objSession.isFlexibleSession)}">
                                         <c:SessionEdit 
                                                        singleRec="{!objSession}"
                                                        showSaveCancelBtn="{!v.showSaveCancelBtn}"

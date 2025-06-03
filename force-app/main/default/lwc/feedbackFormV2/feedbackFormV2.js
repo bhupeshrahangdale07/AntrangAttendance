@@ -284,7 +284,8 @@ export default class FeedbackFormV2 extends NavigationMixin(LightningElement) {
     }
     getRecordAptFun(){
         getRecordApt({
-            studentId : this.rxStudentId
+            studentId : this.rxStudentId,
+            batchId : this.selectedBatchId
         }).then(result => {
             if(result){
                 this.showForm = true;
@@ -366,6 +367,7 @@ export default class FeedbackFormV2 extends NavigationMixin(LightningElement) {
     }
     saveData(){
         saveData({
+            batchId : this.selectedBatchId,
             studentId : this.rxStudentId,
             fb1 : this.feedback1Value,
             fb2 : this.feedback2Value,

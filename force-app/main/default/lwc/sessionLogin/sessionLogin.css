@@ -29,6 +29,7 @@
     flex-direction: column;
     align-items: center;
     gap: 20px; /* Adjust spacing between image and text */
+        margin-top: 10%;
 }
 .login-text {
     font-size: 1.2rem;
@@ -43,7 +44,12 @@
     --lwc-borderRadiusMedium: 0.4rem;
     --lwc-heightInput: 2.8rem;
     width: 360px;
+    text-align: center;
 }
+.custom-input input.slds-input[type="text"] {
+    text-align: center !important;
+}
+
 @media only screen and (max-width: 767px){ 
     .custom-input {
         width: 250px;
@@ -52,8 +58,10 @@
     }
 }
 .btnStyle{
-    --lwc-buttonColorBackgroundPrimary:#FAC710 !important;
-    background-color: #FAC710;
+    --slds-c-button-brand-color-background: #FAC710 !important;
+    --sds-c-button-brand-color-border: #0e0e0d5c;
+	--slds-c-button-brand-text-color:  #000000;
+    /* background-color: #FAC710; */
 }
 .spinnerClass{
      --lwc-brandPrimary: #50A771;

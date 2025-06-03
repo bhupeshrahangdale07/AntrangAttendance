@@ -19,7 +19,9 @@
                 <li><b>School Name: </b> {schoolName}</li>
                 <li><b>Grade: </b> {rxGrade}</li>
                 <li><b>Batch Code: </b> {batchNumber}</li>
-                <li><b>Student Name: </b>{studentName}</li>
+								 <template if:true={studentPresent}>
+										                <li><b>Student Name: </b>{studentName}</li>
+								</template>
             </ul>
         </div>
         <template if:true={nowStudentPresent}>

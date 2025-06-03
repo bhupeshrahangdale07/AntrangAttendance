@@ -58,82 +58,23 @@ public without sharing class OmrCdm1Form5Class {
         }
         
     }
-    
-    // Common method for Baseline Forms
     @AuraEnabled
-    public static responseWrapper getStudentDataV2(String batchId, string grade,string type) {  
+    public static responseWrapper getStudentDataV2(String batchId, string grade) {  
          try{
             responseWrapper rsp = new responseWrapper();
             do{
-                List<Batch__c> batches = [
+                List<Batch__c> baches = [
                     SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
                     FROM Batch__c
                     WHERE Id = :batchId LIMIT 1];
 
-                if(batches.isEmpty())break;
-                rsp.batchGrade = batches[0].Grade__c;
-                rsp.batchName = batches[0].Name;
-                rsp.schoolName = batches[0].School_Name__r.Name;
-				rsp.batchNumber = batches[0].Batch_Number__c;
+                if(baches.isEmpty())break;
+                rsp.batchGrade = baches[0].Grade__c;
+                rsp.batchName = baches[0].Name;
+                rsp.schoolName = baches[0].School_Name__r.Name;
+				rsp.batchNumber = baches[0].Batch_Number__c;
                 List<Contact> studentList = new List<Contact>();
-                if(type=='CDM1'){
-                   studentList = [ SELECT Id, Name, Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Batch_Code__c, 
-                                       G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c,                 
-                                       ( SELECT Created_from_Form__c, Barcode__c, Form_Submitted__c 
-                                         FROM OMR_Assessments__r 
-                                         WHERE Created_from_Form__c = true AND RecordType.Name='Baseline')
-                                  FROM Contact
-                                  WHERE ( Batch_Code__c = :batchId OR 
-                                        G10_Batch_Code__c = :batchId OR
-                                        G11_Batch_Code__c = :batchId OR G12_Batch_Code__c = :batchId) 
-                                ORDER BY Name ]; 
-                }else if(type=='CDM2'){
-                   studentList = [ SELECT Id, Name, Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Batch_Code__c, 
-                                       G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c,                 
-                                       ( SELECT Created_from_Form__c, Barcode__c, Form_Submitted__c 
-                                         FROM CDM2__r 
-                                         WHERE Created_from_Form__c = true AND RecordType.Name='Baseline')
-                                  FROM Contact
-                                  WHERE ( Batch_Code__c = :batchId OR 
-                                        G10_Batch_Code__c = :batchId OR
-                                        G11_Batch_Code__c = :batchId OR G12_Batch_Code__c = :batchId) 
-                                ORDER BY Name ]; 
-                }else if(type=='CP'){
-                   studentList = [ SELECT Id, Name, Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Batch_Code__c, 
-                                       G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c,                 
-                                       ( SELECT Created_from_Form__c, Barcode__c, Form_Submitted__c 
-                                         FROM Career_Plannings__r 
-                                         WHERE Created_from_Form__c = true AND RecordType.Name='Baseline')
-                                  FROM Contact
-                                  WHERE ( Batch_Code__c = :batchId OR 
-                                        G10_Batch_Code__c = :batchId OR
-                                        G11_Batch_Code__c = :batchId OR G12_Batch_Code__c = :batchId) 
-                                ORDER BY Name ]; 
-                }else if(type=='CS'){
-                   studentList = [ SELECT Id, Name, Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Batch_Code__c, 
-                                       G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c,                 
-                                       ( SELECT Created_from_Form__c, Barcode__c, Form_Submitted__c 
-                                         FROM Career_Skills__r
-                                         WHERE Created_from_Form__c = true AND RecordType.Name='Baseline')
-                                FROM Contact
-                                WHERE ( Batch_Code__c = :batchId OR 
-                                        G10_Batch_Code__c = :batchId OR
-                                        G11_Batch_Code__c = :batchId OR G12_Batch_Code__c = :batchId) 
-                                ORDER BY Name ]; 
-                }else if(type=='PFF' || type=='MPF'){
-                    studentList = [ SELECT Id, Name, Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Batch_Code__c, 
-                                       G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c,                 
-                                       ( SELECT Created_from_Form__c, Barcode__c, Form_Submitted__c,Future_Planning_form_submitted__c,Feedback_form_submitted__c 
-                                         FROM Planning_for_future__r
-                                         WHERE Created_from_Form__c = true AND RecordType.Name='Baseline')
-                                FROM Contact
-                                WHERE ( Batch_Code__c = :batchId OR 
-                                        G10_Batch_Code__c = :batchId OR
-                                        G11_Batch_Code__c = :batchId OR G12_Batch_Code__c = :batchId) 
-                                ORDER BY Name ];
-                }
-                
-                /*if(grade == 'Grade 10'){
+                if(grade == 'Grade 10'){
                     studentList = new List<Contact>([
                     SELECT Id, Name, 
                     Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, 
@@ -165,7 +106,7 @@ public without sharing class OmrCdm1Form5Class {
                         G11_Batch_Code__c = :batchId OR G12_Batch_Code__c = :batchId) 
                         ORDER BY Name
                     ]);
-                }*/
+                }
                 
                 if(studentList.isEmpty())break;
                 
@@ -173,6 +114,7 @@ public without sharing class OmrCdm1Form5Class {
                 List<Contact> gradeStudentList = new List<Contact>();
                 for(Contact con : studentList)
                 {
+                    //=========================================================//
                     if(grade == 'Grade 11' && con.G11_Batch_Code__c != null)
                     {
                         batchGradeStudents++;   
@@ -193,69 +135,42 @@ public without sharing class OmrCdm1Form5Class {
                         batchGradeStudents++;
                         gradeStudentList.add(con);    
                     }
-                    //====stuen=====================================================//
+                    //=========================================================//
                 }
 
                 if(gradeStudentList.isEmpty())break;
-
                 rsp.batchTotalStudents = batchGradeStudents;
                 rsp.gradeStudentList = gradeStudentList;
+
                 List<Contact> submittedStudentList = new List<Contact>();  
-                for(Contact con : gradeStudentList){
-                    if(!con.OMR_Assessments__r.isEmpty()){
-                         for(OMR_Assessment__c cdm1 : con.OMR_Assessments__r)
+                for(Contact con : gradeStudentList)
+                {   /*
+                    String studentBarcode = '';
+                    if(grade == 'Grade 9')
+                    {
+                        studentBarcode = con.Grade_9_Barcode__c;
+                    }
+                    else if(grade == 'Grade 10')
+                    {
+                        studentBarcode = con.Grade_10_Barcode__c;
+                    }
+                    else if(grade == 'Grade 11')
+                    {
+                        studentBarcode = con.Grade_11_Barcode__c;
+                    }*/
+                    if(grade == 'Grade 10' && !con.Career_Plannings__r.isEmpty()){
+                         for(Career_Planning__c fp : con.Career_Plannings__r)
                         {
-                            if(cdm1.Form_Submitted__c)
+                            if(fp.Form_Submitted__c)
                             {
                                 submittedStudentList.add(con); 
                                 break;
                             }
                         }
-                    }
-                    if(!con.CDM2__r.isEmpty()){
-                         for(CDM2__c cdm2 : con.CDM2__r)
+                    }else if(!con.Planning_for_future__r.isEmpty() && (grade == 'Grade 9' || grade == 'Grade 12')){
+                        for(Future_Planning__c fp : con.Planning_for_future__r)
                         {
-                            if(cdm2.Form_Submitted__c)
-                            {
-                                submittedStudentList.add(con); 
-                                break;
-                            }
-                        }
-                    }
-                    if(!con.Career_Plannings__r.isEmpty()){
-                         for(Career_Planning__c cp : con.Career_Plannings__r)
-                        {
-                            if(cp.Form_Submitted__c)
-                            {
-                                submittedStudentList.add(con); 
-                                break;
-                            }
-                        }
-                    }
-                    if(!con.Career_Skills__r.isEmpty()){
-                         for(Career_Skill__c cp : con.Career_Skills__r)
-                        {
-                            if(cp.Form_Submitted__c)
-                            {
-                                submittedStudentList.add(con); 
-                                break;
-                            }
-                        }
-                    }
-                   if(!con.Planning_for_future__r.isEmpty() && type=='PFF'){
-                         for(Future_Planning__c pff : con.Planning_for_future__r)
-                        {
-                            if(pff.Future_Planning_form_submitted__c)
-                            {
-                                submittedStudentList.add(con); 
-                                break;
-                            }
-                        }
-                    }
-                    if(!con.Planning_for_future__r.isEmpty() && type=='MPF'){
-                         for(Future_Planning__c mpf : con.Planning_for_future__r)
-                        {
-                            if(mpf.Feedback_form_submitted__c)
+                            if(fp.Future_Planning_form_submitted__c)
                             {
                                 submittedStudentList.add(con); 
                                 break;
@@ -264,9 +179,7 @@ public without sharing class OmrCdm1Form5Class {
                     }
                 }  
                 
-                if(submittedStudentList.isEmpty()){
-                    break;
-                }
+                if(submittedStudentList.isEmpty())break;
                 rsp.submittedStudentList = submittedStudentList;
             }while(false);
             return rsp;
@@ -309,7 +222,7 @@ public without sharing class OmrCdm1Form5Class {
             batchGrade = ''; 
             batchName = '';
             schoolName = '';
-            batchNumber = '';
+             batchNumber = '';
         }
     }
 }

@@ -82,12 +82,6 @@ export default class Quiz1Grade9V2 extends NavigationMixin(LightningElement) {
             this.typ = decodeURI(rxCurrentPageReference.state.typ);
             this.lng = decodeURI(rxCurrentPageReference.state.lng);
             this.isEnglish = (this.lng == 'English') ? true : false;
-
-            this.rxStudentId = currentPageReference.state.studentId;
-            if(this.rxStudentId && this.rxStudentId !== ''){
-                this.getApexRecordSAF();
-            }
-
             getBatchCodeName({
                 batchId : decodeURI(rxCurrentPageReference.state.bid)
             }).then(result => {

@@ -198,6 +198,7 @@ export default class InterestStudentDetailsFormV2 extends NavigationMixin(Lightn
     }
     getRecordAptFun(){
         getRecordApt({
+            batchId: this.selectedBatchId,
             studentId : this.rxStudentId
         }).then(result => {
             //console.log('awarenessData = '+result['Interest_Test_1__c']);
@@ -334,7 +335,7 @@ export default class InterestStudentDetailsFormV2 extends NavigationMixin(Lightn
             lng : this.lng,
             interest1 : interest1,
             interest2 : interest2,
-            interest3 : interest3
+            interest3 : interest3,
         }).then(result => {
            console.log('res = ',result);
             this.showToastPopMessage(this.successTitle,this.successMsg,'success');

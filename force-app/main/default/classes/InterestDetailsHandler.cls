@@ -118,9 +118,66 @@ public without sharing class InterestDetailsHandler {
         }
     }
     @AuraEnabled
-    public static Self_Awareness_and_Feedback__c getRecordApt(String studentId) {
+    public static Self_Awareness_and_Feedback__c getRecordApt(String batchId, String studentId) {
         try{
-            List<Self_Awareness_and_Feedback__c> sf =  new List<Self_Awareness_and_Feedback__c>([select id,Created_from_Form__c,
+             List<Batch__c> batches = new List<Batch__c>([
+                SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                FROM Batch__c
+                WHERE Id = :batchId LIMIT 1]);
+            string grade = batches[0].grade__c;
+			String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+           
+            List<Self_Awareness_and_Feedback__c> sf = new List<Self_Awareness_and_Feedback__c>();
+            String BaselineRecordTypeId = Schema.SObjectType.Self_Awareness_and_Feedback__c.getRecordTypeInfosByDeveloperName().get('Baseline').getRecordTypeId();
+            if(String.isNotBlank(batchId) && !batches.isEmpty()){
+                sf = new List<Self_Awareness_and_Feedback__c>([
+                    select id,Created_from_Form__c,Barcode__c ,Interest_1__c,Interest_2__c,Interest_3__c,
+                    Interest_Test_1__c,Interest_Test_10__c,Interest_Test_11__c,Interest_Test_12__c,
+                    Interest_Test_13__c,Interest_Test_14__c,Interest_Test_15__c,Interest_Test_16__c,
+                    Interest_Test_17__c,Interest_Test_18__c,Interest_Test_19__c,Interest_Test_2__c,
+                    Interest_Test_20__c,Interest_Test_21__c,Interest_Test_22__c,Interest_Test_23__c,
+                    Interest_Test_24__c,Interest_Test_25__c,Interest_Test_26__c,Interest_Test_27__c,
+                    Interest_Test_28__c,Interest_Test_29__c,Interest_Test_3__c,Interest_Test_30__c,
+                    Interest_Test_31__c,Interest_Test_32__c,Interest_Test_33__c,Interest_Test_34__c,
+                    Interest_Test_35__c,Interest_Test_36__c,Interest_Test_37__c,Interest_Test_38__c,
+                    Interest_Test_39__c,Interest_Test_4__c,Interest_Test_40__c,Interest_Test_41__c,Interest_Test_42__c,
+                    Interest_Test_43__c,Interest_Test_44__c,Interest_Test_45__c,Interest_Test_46__c,Interest_Test_47__c,Interest_Test_48__c,
+                    Interest_Test_5__c,Interest_Test_6__c,Interest_Test_7__c,Interest_Test_8__c,Interest_Test_9__c, Student__c, Student__r.name 
+                    from  Self_Awareness_and_Feedback__c
+                    WHERE Created_from_Form__c = true
+                    AND RecordTypeId = :BaselineRecordTypeId
+                    AND Student__c = :studentId
+                    AND Error_Status__c = 'No Error'
+                    AND Academic_Year__c = :batches[0].Academic_Year__c
+                    AND Grade__c = :batches[0].Grade__c 
+                    AND Barcode__c  = :studentBarcode 
+                    ORDER BY CreatedDate DESC limit 1]);
+            }else{
+                sf =  new List<Self_Awareness_and_Feedback__c>([select id,Created_from_Form__c,Interest_1__c,Interest_2__c,Interest_3__c,
                                                             Interest_Test_1__c,Interest_Test_10__c,Interest_Test_11__c,Interest_Test_12__c,
                                                             Interest_Test_13__c,Interest_Test_14__c,Interest_Test_15__c,Interest_Test_16__c,
                                                             Interest_Test_17__c,Interest_Test_18__c,Interest_Test_19__c,Interest_Test_2__c,
@@ -130,7 +187,9 @@ public without sharing class InterestDetailsHandler {
                                                             Interest_Test_31__c,Interest_Test_32__c,Interest_Test_33__c,Interest_Test_34__c,
                                                             Interest_Test_35__c,Interest_Test_36__c,Interest_Test_37__c,Interest_Test_38__c,
                                                                                                  Interest_Test_39__c,Interest_Test_4__c,Interest_Test_40__c,Interest_Test_41__c,Interest_Test_42__c,Interest_Test_43__c,Interest_Test_44__c,Interest_Test_45__c,Interest_Test_46__c,Interest_Test_47__c,Interest_Test_48__c,Interest_Test_5__c,Interest_Test_6__c,Interest_Test_7__c,Interest_Test_8__c,Interest_Test_9__c, Student__c, Student__r.name from  Self_Awareness_and_Feedback__c
-                                                            where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' limit 1]);
+                                                            where Student__c =: studentId
+                                                                and Created_from_Form__c = true and RecordType.Name='Baseline' limit 1]);
+            }
                 if(!sf.isEmpty()){
                     return sf[0];
                 }
@@ -201,7 +260,33 @@ public without sharing class InterestDetailsHandler {
         
     }
     @AuraEnabled
-    public static string saveDataForFormV2(String studentId, List<Map<String, Object>> answerSet,boolean saveFlag, string grade, string typ, string lng, string interest1, string interest2, string interest3) {
+    public static string saveDataForFormV2(String batchId, String studentId, List<Map<String, Object>> answerSet,boolean saveFlag, string grade, 
+                                           string typ, string lng, string interest1, string interest2, string interest3) {
+        String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
         system.debug('questionAnswers = '+answerSet);
         List<QuestionAnswer> dataMap = new List<QuestionAnswer>();
         for (Map<String, Object> qa : answerSet) {
@@ -215,7 +300,37 @@ public without sharing class InterestDetailsHandler {
             dataMap.add(qaObj);
         }
         String returnStr = '';
-        List<Self_Awareness_and_Feedback__c> sf =  new List<Self_Awareness_and_Feedback__c>([select id,Created_from_Form__c, Interest_1__c,Interest_Test_1__c,Interest_Test_10__c,Interest_Test_11__c,Interest_Test_12__c,
+
+        List<Batch__c> batches = new List<Batch__c>([
+            SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+            FROM Batch__c
+            WHERE Id = :batchId LIMIT 1]);
+        List<Self_Awareness_and_Feedback__c> sf = new List<Self_Awareness_and_Feedback__c>();
+        String BaselineRecordTypeId =Schema.SObjectType.Self_Awareness_and_Feedback__c.getRecordTypeInfosByDeveloperName().get('Baseline').getRecordTypeId();
+        if(String.isNotBlank(batchId) && !batches.isEmpty()){
+            sf = new List<Self_Awareness_and_Feedback__c>([
+                select id,Created_from_Form__c, Interest_1__c,Interest_Test_1__c,Interest_Test_10__c,Interest_Test_11__c,Interest_Test_12__c,
+                Interest_Test_13__c,Interest_Test_14__c,Interest_Test_15__c,Interest_Test_16__c,
+                Interest_Test_17__c,Interest_Test_18__c,Interest_Test_19__c,Interest_Test_2__c,
+                Interest_Test_20__c,Interest_Test_21__c,Interest_Test_22__c,Interest_Test_23__c,
+                Interest_Test_24__c,Interest_Test_25__c,Interest_Test_26__c,Interest_Test_27__c,
+                Interest_Test_28__c,Interest_Test_29__c,Interest_Test_3__c,Interest_Test_30__c,
+                Interest_Test_31__c,Interest_Test_32__c,Interest_Test_33__c,Interest_Test_34__c,
+                Interest_Test_35__c,Interest_Test_36__c,Interest_Test_37__c,Interest_Test_38__c,
+                Interest_Test_39__c,Interest_Test_4__c,Interest_Test_40__c,Interest_Test_41__c,Interest_Test_42__c,Interest_Test_43__c,
+                Interest_Test_44__c,Interest_Test_45__c,Interest_Test_46__c,Interest_Test_47__c,Interest_Test_48__c,Interest_Test_5__c,
+                Interest_Test_6__c,Interest_Test_7__c,Interest_Test_8__c,Interest_Test_9__c,  Interest_2__c, Interest_3__c, Student__c 
+                from  Self_Awareness_and_Feedback__c
+                WHERE Created_from_Form__c = true
+                AND RecordTypeId = :BaselineRecordTypeId
+                AND Student__c = :studentId
+                AND Error_Status__c = 'No Error'
+                AND Academic_Year__c = :batches[0].Academic_Year__c
+                AND Grade__c = :batches[0].Grade__c
+                AND Barcode__c  = :studentBarcode
+                ORDER BY CreatedDate DESC limit 1]);
+        }else{
+            sf =  new List<Self_Awareness_and_Feedback__c>([select id,Created_from_Form__c, Interest_1__c,Interest_Test_1__c,Interest_Test_10__c,Interest_Test_11__c,Interest_Test_12__c,
                                                             Interest_Test_13__c,Interest_Test_14__c,Interest_Test_15__c,Interest_Test_16__c,
                                                             Interest_Test_17__c,Interest_Test_18__c,Interest_Test_19__c,Interest_Test_2__c,
                                                             Interest_Test_20__c,Interest_Test_21__c,Interest_Test_22__c,Interest_Test_23__c,
@@ -225,6 +340,7 @@ public without sharing class InterestDetailsHandler {
                                                             Interest_Test_35__c,Interest_Test_36__c,Interest_Test_37__c,Interest_Test_38__c,
                                                                                                  Interest_Test_39__c,Interest_Test_4__c,Interest_Test_40__c,Interest_Test_41__c,Interest_Test_42__c,Interest_Test_43__c,Interest_Test_44__c,Interest_Test_45__c,Interest_Test_46__c,Interest_Test_47__c,Interest_Test_48__c,Interest_Test_5__c,Interest_Test_6__c,Interest_Test_7__c,Interest_Test_8__c,Interest_Test_9__c,  Interest_2__c, Interest_3__c, Student__c from  Self_Awareness_and_Feedback__c
                                                             where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' and Error_Status__c = 'No Error' limit 1]); //V1.0
+        }
     	if(!sf.isEmpty()){
             returnStr = 'Update';
             system.debug('saveFlag ='+saveFlag);
@@ -246,12 +362,31 @@ public without sharing class InterestDetailsHandler {
         return returnStr;
     }
     @AuraEnabled
-    public static string saveData(String studentId, string apt1, string apt2, string apt3,boolean saveFlag, string grade, String typ, String lng) {
+    public static string saveData(String batchId, String studentId, string apt1, string apt2, string apt3,boolean saveFlag, string grade, String typ, String lng) {
         system.debug(':::studentId = '+studentId);
 		String returnStr = '';
         try{
-			List<Self_Awareness_and_Feedback__c> sf =  new List<Self_Awareness_and_Feedback__c>([select id,Created_from_Form__c, Interest_1__c, Interest_2__c, Interest_3__c, Student__c from  Self_Awareness_and_Feedback__c
+
+            List<Batch__c> batches = new List<Batch__c>([
+            SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+            FROM Batch__c
+            WHERE Id = :batchId LIMIT 1]);
+        List<Self_Awareness_and_Feedback__c> sf = new List<Self_Awareness_and_Feedback__c>();
+        String BaselineRecordTypeId = Schema.SObjectType.Self_Awareness_and_Feedback__c.getRecordTypeInfosByDeveloperName().get('Baseline').getRecordTypeId();
+        if(String.isNotBlank(batchId) && !batches.isEmpty()){
+            sf = new List<Self_Awareness_and_Feedback__c>([
+                select id,Created_from_Form__c, Interest_1__c, Interest_2__c, Interest_3__c, Student__c from  Self_Awareness_and_Feedback__c
+                WHERE Created_from_Form__c = true
+                AND RecordTypeId = :BaselineRecordTypeId
+                AND Student__c = :studentId
+                AND Error_Status__c = 'No Error'
+                AND Academic_Year__c = :batches[0].Academic_Year__c
+                AND Grade__c = :batches[0].Grade__c    
+                ORDER BY CreatedDate DESC limit 1]);
+        }else{
+            sf =  new List<Self_Awareness_and_Feedback__c>([select id,Created_from_Form__c, Interest_1__c, Interest_2__c, Interest_3__c, Student__c from  Self_Awareness_and_Feedback__c
                                                             where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' limit 1]);
+        }
             if(!sf.isEmpty()){
 				returnStr = 'Update';
                 system.debug('saveFlag ='+saveFlag);

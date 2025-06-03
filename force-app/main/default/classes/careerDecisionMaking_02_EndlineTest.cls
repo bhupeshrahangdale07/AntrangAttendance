@@ -2,8 +2,8 @@
 public class careerDecisionMaking_02_EndlineTest {
 	@testsetup
     public static void testData()
-    {
-        Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId();
+    { 
+        Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId() ;
         Account account = new Account();
         account.Name = 'Shreeram School';  
         account.RecordTypeId = RecordTypeIdAccount;
@@ -52,9 +52,9 @@ public class careerDecisionMaking_02_EndlineTest {
     {
         List<Contact> conList = [SELECT Id FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
         test.startTest();
-        careerDecisionMaking_02_Endline.singleRecordWrapper rspWrap = careerDecisionMaking_02_Endline.getRecordCDM2(conList[0].Id, 'Grade 9');
-        careerDecisionMaking_02_Endline.getRecordCDM2(conList[0].Id, 'Grade 10');
-        careerDecisionMaking_02_Endline.getRecordCDM2(conList[0].Id, 'Grade 11');
+        careerDecisionMaking_02_Endline.singleRecordWrapper rspWrap = careerDecisionMaking_02_Endline.getRecordCDM2(conList[0].Id, 'Grade 9','');
+        careerDecisionMaking_02_Endline.getRecordCDM2(conList[0].Id, 'Grade 10','');
+        careerDecisionMaking_02_Endline.getRecordCDM2(conList[0].Id, 'Grade 11','');
         test.stopTest();
         
         System.assertEquals('First Last',rspWrap.studentName,'Contact Size is Not Matched');
@@ -120,8 +120,8 @@ public class careerDecisionMaking_02_EndlineTest {
         qAll.q06_12.answer = 'A';
         
         test.startTest();
-        careerDecisionMaking_02_Endline.saveAllQA(cdm2List[0].Id, conList[0].Id , 'Test009', qAll, 'English', 'Form V2' );
-        careerDecisionMaking_02_Endline.saveAllQA(null, conList[0].Id , 'Test009', qAll, 'English', 'Form V2' );
+        careerDecisionMaking_02_Endline.saveAllQA('',cdm2List[0].Id, conList[0].Id , 'Test009', qAll, 'English', 'Form V2' );
+        //careerDecisionMaking_02_Endline.saveAllQA('',null, conList[0].Id , 'Test009', qAll, 'English', 'Form V2' );
         test.stopTest();
     }
     

@@ -1,0 +1,206 @@
+<template>
+    <template if:true={showLoading}>
+        <lightning-spinner variant="brand" alternative-text="Loading" size="medium" class="spinnerClass">
+        </lightning-spinner>
+    </template>
+    <!-- modal start -->
+    <template if:true={isShowModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open pendingSessionModal">
+            <div class="slds-modal__container">
+                <!-- modal header start -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={hideModalBox}>
+                        <lightning-icon icon-name="utility:close"
+                        alternative-text="close"
+                        variant="inverse"
+                        size="x-small" class="closeIcon"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                </header>
+
+                <!-- modal body start -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1" style="padding: 30px;">
+                    <template if:true={showLoadingModal}>
+                        <lightning-spinner variant="brand" alternative-text="Loading" size="medium"
+                            class="spinnerClass"></lightning-spinner>
+                    </template>
+                    <template if:false={showLoadingModal}>
+                        <template if:false={showPendingSession}>
+                            <p style="color: #50A771;font-weight: bold;padding-bottom: 25px;">All check-in data entry
+                                completed!</p>
+                        </template>
+                        <template if:true={showPendingSession}>
+                            <table class="pendingSessionTable">
+                                <thead>
+                                    <tr>
+                                        <th>S.No.</th>
+                                        <th>HM Session Data Pending For:</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={sessionList} for:item="item" for:index="index">
+
+                                        <tr key={item.school}>
+                                            <td><b>{item.index}</b></td>
+                                            <td>
+                                                <a href={item.value}
+                                                        style="text-decoration:underline;"
+                                                        onclick={onClickPendingSession}>
+                                                    <strong>{item.key}</strong>
+                                                </a>
+                                                
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </template>
+                    </template>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <div class="sessionDetail">
+        <div class="mainMenuDiv">
+            <div class="button-wrapper">
+                <lightning-button 
+                    label="Main Menu" 
+                    variant="neutral" 
+                    onclick={handleClickMainMenu} 
+                    class="main-menu-button"
+                >
+                </lightning-button>
+            </div>
+        </div>
+        <div class="signOutDiv">
+            <lightning-button variant="destructive" label="Sign Out" title="Sign Out" onclick={handleSignOut}
+                class="slds-m-left_x-small signOutButton"></lightning-button>
+        </div>
+        <div class="sessionFields">
+            <div class="section">
+                <template if:true={flagIndicatingDataHasBeenLoadedInVariables}>
+                    <c-Searchable-Combobox onselectoption={handleSelectOption} options={options}
+                        selected-value={schoolId} placeholder-data="Type only first 4 letter and selects from options"
+                        label="School Name"></c-Searchable-Combobox>
+                </template>
+            </div>
+        </div>
+        <div class="sessionFormInstruction">
+            <c-h-m-session-form-instruction></c-h-m-session-form-instruction>
+        </div>
+        <div class="sessionAccordion">
+            <lightning-accordion allow-multiple-sections-open class="accordion" active-section-name="HMSession">
+                 <lightning-accordion-section name="HMSession" label="HM Sessions">
+                    <lightning-accordion allow-multiple-sections-open active-section-name={activeChildSession} 
+                    class="accordion">
+                    <template if:true={hasHMSessions}>
+                        <template for:each={hmSessions} for:item="session">
+                            <div class="childAccordionMain" key={session.id}>
+                                <lightning-accordion-section name={session.id} label={session.name} class="childAccordion" >
+                                    <div class="buttonsOnAcc">
+                                        <div if:true={session.scheduleOnTime} class="onTimeScheduleDiv"><img class="imgCls" src={OnTimeScheduleIcon} /><div class="textCls">On-time Scheduling</div></div>
+                                        <div if:true={session.scheduleLate}  class="lateScheduleDiv"><img src={lateScheduleIcon} /><div class="textCls">Late Scheduling</div></div>
+                                        <div class="rescheduleInnerDiv" if:true={session.scheduleCounter} ><div class="reScheduleDiv"><img class="imgCls" src={reScheduleIcon} /><div class="textCls">Rescheduled</div></div><div class="reScheduleDivCounter">{session.scheduleCounter}</div></div>
+                                        </div>
+                                    <lightning-layout multiple-rows>
+                                        <lightning-layout-item size="2" padding="around-small">
+                                                <div style="margin-top: 4px; margin-bottom: 19px;">Facilitator Name</div>
+                                            <div class="facilitatorNameCls">{session.facilitatorName}</div>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item size="2" padding="around-small"
+                                            class="sessionStatusInAccordion">
+                                            <lightning-input label="Session Status" value={session.status}
+                                                class={session.statusClassName} disabled></lightning-input>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item size="2" padding="around-small">
+                                            <lightning-input type="date" label="Date" value={session.sessionDate}
+                                                disabled={session.disableStartTimeNDate} data-session-id={session.id} 
+                                                onchange={changeDateTime} message-when-value-missing="Date is required"
+                                                required={session.dateRequired}></lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item size="2" padding="around-small">
+                                            <lightning-input type="time" label="Start Time"
+                                                value={session.startTimeFormatted}
+                                                disabled={session.disableStartTimeNDate} data-session-id={session.id} 
+                                                onchange={changeDateTime}
+                                                message-when-value-missing="Start Time is required"
+                                                required={session.startTimeRequired}></lightning-input> 
+                                        </lightning-layout-item>
+                                        <lightning-layout-item size="2" padding="around-small">
+                                            <lightning-combobox name="hmAttended" label="HM Attended" data-session-id={session.id}
+                                                value={session.hmAttended}
+                                                options={optionsHmAttended} disabled={session.disableAttendance} 
+                                                onchange={changeHmAttended} required={session.hmRequired}
+                                                message-when-value-missing="HM Attended is required"></lightning-combobox>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item size="2" padding="around-small">
+                                            <lightning-combobox name="sessionLead" label="Session Lead" data-session-id={session.id}
+                                                value={session.sessionLead}
+                                                options={optionsSessionLead} disabled={session.disableAttendance}
+                                                onchange={changeSessionLead} required={session.leadRequired} 
+                                                message-when-value-missing="Session lead is required"></lightning-combobox>
+                                        </lightning-layout-item>
+                                    </lightning-layout>
+                                </lightning-accordion-section>
+                                <div class="childStatusAccordion" key={session.id} >
+                                    <lightning-button variant="brand" label={session.status}
+                                        class={session.statusClassName} style="pointer-events: none;"></lightning-button>
+                                </div>
+                            </div>
+                            
+                        </template>
+                    </template>
+                    <template if:false={hasHMSessions}>
+                        <p>No HM Sessions available at the moment.</p>
+                    </template>    
+                    </lightning-accordion>
+                 </lightning-accordion-section>
+            </lightning-accordion>
+            <div class="saveDiv">
+                <lightning-button variant="brand" label="Save" title="Save" onclick={handleSave}
+                    class="slds-m-left_x-small saveButton"></lightning-button>
+            </div>
+        </div>
+        <c-session-Footer></c-session-Footer>
+        <template if:true={isShowModalForLateSchedule}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open pendingSessionModal lateSchedulePopup">
+                <div class="slds-modal__container">                   
+                    <!-- modal body start -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2" style="padding: 30px;">
+                        <div class="slds-col headingText" style="margin-left: 20px;">
+                            <h4><b>Enter Reason for Late Scheduling</b></h4>
+                        </div>
+                        <template if:true={lateScheduleSessions}>
+                            <template for:each={lateScheduleSessions} for:item="session" for:index="index">
+                                <div key={session.id} class="slds-col lateScheduleDetails">
+                                    <div class="sessName">{session.name}</div>
+
+                                    <lightning-combobox
+                                        name="reason" 
+                                        data-index={index}
+                                        data-id={session.id}
+                                        value={session.reasonForLateSchedule}
+                                        options={lateScheduleReasonOption}
+                                        onchange={handleLateScheduleChange}>
+                                        
+                                    </lightning-combobox>
+                                </div>
+                            </template>
+                        </template>
+                        
+                        <div class="btnGrp">
+                            <lightning-button onclick={onclickCancel} label="Cancel" variant="brand" class="slds-m-right_xx-large btnCancel"></lightning-button>
+                            <lightning-button label="Ok" onclick={onclickOk} variant="brand" class="btnOk"></lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </div>
+</template>

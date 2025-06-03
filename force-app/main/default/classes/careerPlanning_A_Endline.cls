@@ -7,10 +7,15 @@ public without sharing class careerPlanning_A_Endline {
     }
 
     @AuraEnabled
-    public static singleRecordWrapper getApexRecord(String studentId, String grade) {
+    public static singleRecordWrapper getApexRecord(String studentId, String grade, String batchId) {
         try{
             singleRecordWrapper rsp = new singleRecordWrapper();
             String studentBarcode = '';
+            List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c
+                    WHERE Id = :batchId LIMIT 1]);
+
             do{
                 List<Contact> studentContact = new List<Contact>([
                     SELECT Id, Name, Bar_Code__c, 
@@ -58,19 +63,46 @@ public without sharing class careerPlanning_A_Endline {
                 }*/
                 //=======================================================//
 
-                List<Career_Planning__c> cpList = [
-                    SELECT Name, Student__r.Name, Barcode__c,
-                    Form_Submitted__c, Created_from_Form__c,    
-                    Q_7__c, Q_8__c,
-                    Q_9_1__c, Q_9_2__c, Q_9_3__c, Q_9_4__c, Q_9_5__c, Q_9_6__c, Q_9_7__c,
-                    Q_10__c
-                    FROM Career_Planning__c 
-                    WHERE Created_from_Form__c = true
-                    AND Student__c = :studentId
-                    AND Barcode__c = :studentBarcode
-                    AND RecordTypeId = :cpRecordTypeId
-                    LIMIT 1
-                ];
+
+                List<Career_Planning__c> cpList = new List<Career_Planning__c>();
+                
+                if(String.isNotBlank(batchId) && !batches.isEmpty()){
+                    cpList = new List<Career_Planning__c>([
+                                SELECT Name, Student__r.Name, Barcode__c,
+                                Form_Submitted__c, Created_from_Form__c,    
+                                Q_7__c, Q_8__c,
+                                Q_9_1__c, Q_9_2__c, Q_9_3__c, Q_9_4__c, Q_9_5__c, Q_9_6__c, Q_9_7__c,
+                                Q_10__c
+                                FROM Career_Planning__c 
+                                WHERE Created_from_Form__c = true
+                                AND Student__c = :studentId
+                                AND RecordTypeId = :cpRecordTypeId
+                                AND Error_Status__c = 'No Error'
+                                // AND Data_Clean_up__c  = false
+                                AND Academic_Year__c = :batches[0].Academic_Year__c
+                                AND Grade__c = :batches[0].Grade__c
+                        		AND Barcode__c = :studentBarcode 
+                                ORDER BY CreatedDate DESC
+                                LIMIT 1    
+                            ]);
+                }else{
+                    cpList = new List<Career_Planning__c>([
+                                SELECT Name, Student__r.Name, Barcode__c,
+                                Form_Submitted__c, Created_from_Form__c,    
+                                Q_7__c, Q_8__c,
+                                Q_9_1__c, Q_9_2__c, Q_9_3__c, Q_9_4__c, Q_9_5__c, Q_9_6__c, Q_9_7__c,
+                                Q_10__c
+                                FROM Career_Planning__c 
+                                WHERE Created_from_Form__c = true
+                                AND Student__c = :studentId
+                                AND Barcode__c = :studentBarcode 
+                                AND RecordTypeId = :cpRecordTypeId
+                                AND Error_Status__c = 'No Error'
+                                // AND Data_Clean_up__c  = false
+                                ORDER BY CreatedDate DESC
+                                LIMIT 1    
+                            ]);
+                }
 
                 if(cpList.isEmpty())break;
                 
@@ -226,7 +258,7 @@ public without sharing class careerPlanning_A_Endline {
     }
 
     @AuraEnabled
-    public static String saveAllQA(String recordIdCP, String studentId, String barCode, object ans, string lng, string typ){
+    public static String saveAllQA(String batchId, String recordIdCP, String studentId, String barCode, object ans, string lng, string typ){
         try{
             string rspId = '';
             String jsonString = Json.serialize(ans);
@@ -249,13 +281,59 @@ public without sharing class careerPlanning_A_Endline {
             } 
             else 
             {
-                List<Career_Planning__c> existing = new List<Career_Planning__c>([
-                    SELECT Id 
-                    FROM Career_Planning__c
-                    WHERE Created_from_Form__c = true
-                    AND RecordTypeId = :cpRecordTypeId
-                    AND Student__c = :studentId
-                    AND Barcode__c = :barCode]);   
+                List<Career_Planning__c> existing = new List<Career_Planning__c>();
+                List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c
+                    WHERE Id = :batchId LIMIT 1]);
+                string grade = batches[0].grade__c;
+				String studentBarcode = '';
+            List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+                    if(String.isNotBlank(batchId) && !batches.isEmpty()){
+                        existing = new List<Career_Planning__c>([SELECT Id
+                                                                    FROM Career_Planning__c 
+                                                                    WHERE Created_from_Form__c = true
+                                                                    AND Student__c = :studentId
+                                                                    AND RecordTypeId = :cpRecordTypeId
+                                                                    AND Error_Status__c = 'No Error'
+                                                                    // AND Data_Clean_up__c  = false
+                                                                    AND Academic_Year__c = :batches[0].Academic_Year__c
+                                                                    AND Grade__c = :batches[0].Grade__c
+                                                                 	AND Barcode__c  = :studentBarcode
+                                                                    ORDER BY CreatedDate DESC
+                                                                    LIMIT 1]);
+                    }else{
+                        existing = new List<Career_Planning__c>([
+                            SELECT Id 
+                            FROM Career_Planning__c
+                            WHERE Created_from_Form__c = true
+                            AND RecordTypeId = :cpRecordTypeId
+                            AND Student__c = :studentId
+                            AND Barcode__c = :barCode]);   
+                    }
 
                 if(!existing.isEmpty())
                 {

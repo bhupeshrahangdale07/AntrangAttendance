@@ -4,7 +4,9 @@ import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getBatchCodeName from '@salesforce/apex/BaselineController.getBatchCodeName';
 import getSchoolDistrictData from '@salesforce/apex/BaselineController.getSchoolDistrictData';
+
 export default class BaselineSubLinks_V2 extends NavigationMixin(LightningElement){
+
     showLoading = true;
     @api grade = null;
     @api batchCode = null;
@@ -57,13 +59,6 @@ export default class BaselineSubLinks_V2 extends NavigationMixin(LightningElemen
     }
 
     connectedCallback() {
-        window.name = JSON.stringify({ secretData: 'HiddenMessage123' });
-        console.log('enter');
-        const message = {
-            recordId: "001xx000003NGSFAA4",
-            name: "Burlington Textiles of America"
-        };
-        alert(JSON.stringify(message));
         this.buttonVisibility();
     }
 
@@ -154,8 +149,6 @@ export default class BaselineSubLinks_V2 extends NavigationMixin(LightningElemen
                 lng : encodeURI(this.lng)  
             }
         };
-       
-        
         this[NavigationMixin.Navigate](pageReference);
     }
 

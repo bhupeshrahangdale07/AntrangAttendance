@@ -157,6 +157,14 @@ public class IARPRecommendationTestCase {
         State_Govt_Body_Level__c state=new State_Govt_Body_Level__c();
         state.Name='SSC';
         insert state;
+                
+        Session_Mapping__c sm = new Session_Mapping__c();
+        sm.District__c = 'Pune';
+        sm.Name = 'Pune Session';
+        sm.Session_Number__c = 0;
+        sm.Grade__c = 'Grade 9';
+        sm.Description__c = 'description';
+        insert sm;
         
         //  triggerCheck.setVariable(true);
         District_Master__c distict=new District_Master__c();

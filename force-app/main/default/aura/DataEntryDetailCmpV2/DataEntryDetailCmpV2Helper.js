@@ -17,7 +17,6 @@
                     //helper.getButtonsVisibility(component, school, grade, batch);
                     if(batch != null && batch != ''){
                         helper.doAssignment(component);
-                        
                         /*
                         var districtData = component.get("v.districtFields");
                         if(grade === 'Grade 9'){
@@ -295,10 +294,12 @@
     
     doAssignment : function (component) {
         var districtData = component.get("v.districtFields");
+        console.log('districtData = ',districtData);
         var grade = component.get("v.selectedGrade");
         if(grade === 'Grade 9'){
             console.log('grade 9');
             component.set("v.baselineAssessmentButton",districtData.Show_Baseline_for_G9__c);
+            component.set("v.baseline2AssessmentButton",districtData.Show_Baseline_2_for_G9__c);
             component.set("v.studentDetailsButton",districtData.Show_Student_Details_for_G9__c);
             component.set("v.interestButton",districtData.Show_Interest_for_G9__c);
             component.set("v.aptitudeButton",districtData.Show_Aptitude_for_G9__c);
@@ -309,6 +310,7 @@
             component.set("v.endlineAssessmentButton",districtData.Show_Endline_for_G9__c);
         }else if(grade == 'Grade 10'){
             component.set("v.baselineAssessmentButton",districtData.Show_Baseline_for_G10__c);
+            component.set("v.baseline2AssessmentButton",districtData.Show_Baseline_2_for_G10__c);
             component.set("v.studentDetailsButton",districtData.Show_Student_Details_for_G10__c);
             component.set("v.interestButton",districtData.Show_Interest_for_G10__c);
             component.set("v.aptitudeButton",districtData.Show_Aptitude_for_G10__c);
@@ -319,6 +321,7 @@
             component.set("v.endlineAssessmentButton",districtData.Show_Endline_for_G10__c);
         }else if(grade == 'Grade 11'){
             component.set("v.baselineAssessmentButton",districtData.Show_Baseline_for_G11__c);
+            component.set("v.baseline2AssessmentButton",districtData.Show_Baseline_2_for_G11__c);
             component.set("v.studentDetailsButton",districtData.Show_Student_Details_for_G11__c);
             component.set("v.interestButton",districtData.Show_Interest_for_G11__c);
             component.set("v.aptitudeButton",districtData.Show_Aptitude_for_G11__c);
@@ -329,6 +332,7 @@
             component.set("v.endlineAssessmentButton",districtData.Show_Endline_for_G11__c);
         }else if(grade == 'Grade 12'){
             component.set("v.baselineAssessmentButton",districtData.Show_Baseline_for_G12__c);
+            component.set("v.baseline2AssessmentButton",districtData.Show_Baseline_2_for_G12__c);
             component.set("v.studentDetailsButton",districtData.Show_Student_Details_for_G12__c);
             component.set("v.interestButton",districtData.Show_Interest_for_G12__c);
             component.set("v.aptitudeButton",districtData.Show_Aptitude_for_G12__c);
@@ -338,13 +342,6 @@
             component.set("v.quiz2Button",districtData.Show_Quiz_2_for_G12__c);
             component.set("v.endlineAssessmentButton",districtData.Show_Endline_for_G12__c);
         }
- 
-        var schoolName = component.get("v.selectedValueFromList");
-        var batch = component.get("v.selectedBatchId");
-        if(batch && batch != '' &&
-           grade && grade != '' &&
-           schoolName && schoolName != ''){
-            component.set("v.displayButtonList",true);
-        }
+        component.set("v.displayButtonList",true); 
     }
 })

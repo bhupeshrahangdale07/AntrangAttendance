@@ -42,7 +42,8 @@ public class careerSkillsBaselineTest {
     
     @isTest
     public static void getApexRecordTest(){
-        careerSkillsBaseline.getApexRecord([select id from Contact limit 1].Id, 'Grade 9');
+        careerSkillsBaseline.getApexRecord([select id from Contact limit 1].Id, 'Grade 9', '');
+        careerSkillsBaseline.getApexRecord([select id from Contact limit 1].Id, 'Grade 9',[Select id from Batch__c limit 1].Id);
     }
     
     @isTest
@@ -52,7 +53,9 @@ public class careerSkillsBaselineTest {
     
     @isTest
     public static void saveAllQATest(){
-        careerSkillsBaseline.saveAllQA([select id from Career_Skill__c limit 1].Id, [select id from Contact limit 1].Id, 'Test009', new careerSkillsBaseline.qAnswerAll(), 'English', 'Form v2');
+        careerSkillsBaseline.saveAllQA([select id from Career_Skill__c limit 1].Id, [select id from Contact limit 1].Id, 'Test009', new careerSkillsBaseline.qAnswerAll(), 'English', 'Form v2',[Select id from Batch__c limit 1].Id);
+		careerSkillsBaseline.saveAllQA([select id from Career_Skill__c limit 1].Id, [select id from Contact limit 1].Id, 'Test009', new careerSkillsBaseline.qAnswerAll(), 'English', 'Form v2','');
+        careerSkillsBaseline.saveAllQA(null, [select id from Contact limit 1].Id, 'Test009', new careerSkillsBaseline.qAnswerAll(), 'English', 'Form v2',[Select id from Batch__c limit 1].Id);
     }
     
     @isTest

@@ -543,7 +543,8 @@ export default class CareerDecisionMaking_01_Endline_V2 extends NavigationMixin(
 
         getRecordCDM1({
             studentId : this.rxStudentId,
-            grade : this.grd
+            grade : this.grd,
+            batchId : this.bid
         }).then(result => {
             console.log('result : ' + JSON.stringify(result));
             //===========================================================//
@@ -1801,7 +1802,8 @@ export default class CareerDecisionMaking_01_Endline_V2 extends NavigationMixin(
                 barCode : this.rxStudentBarcode,
                 ans : allQA,
                 lng : this.lng,
-                typ : (this.typ == 'v2' || this.typ == 'Form V2') ? this.typ = 'Form V2' : 'Form V1'
+                typ : (this.typ == 'v2' || this.typ == 'Form V2') ? this.typ = 'Form V2' : 'Form V1',
+                batchId : this.bid
             }).then(result => {
                 //console.log('result : ' + JSON.stringify(result));
                 //===========================================================//

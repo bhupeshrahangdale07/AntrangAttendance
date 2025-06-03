@@ -136,7 +136,9 @@ export default class NgFormInterestStudentDetailsFormV2 extends NavigationMixin(
 
     getRecordAptFun(){
         console.log('this.rxStudentId=',this.rxStudentId);
+        console.log('this.selectedBatchId=',this.selectedBatchId);
         getRecordApt({
+            batchId : this.selectedBatchId,
             studentId : this.rxStudentId
         }).then(result => {
             console.log('awarenessData = '+result.Interest_1__c);
@@ -201,6 +203,7 @@ export default class NgFormInterestStudentDetailsFormV2 extends NavigationMixin(
         }
         
         saveData({
+            batchId : this.selectedBatchId,
             studentId : this.rxStudentId,
             apt1 : this.interestCode1Value,
             apt2 : this.interestCode2Value,

@@ -9,6 +9,7 @@ public class counsellingFormControllerTest {
         AntarangSetting__c antarangSett = new AntarangSetting__c();
         antarangSett.Max_Batch_Size__c = 30;
         antarangSett.Academic_Year__c = 2021;
+        antarangSett.Next_Academic_Year__c = 2022;
         Insert antarangSett;
         
         Account acc = new Account();
@@ -35,6 +36,7 @@ public class counsellingFormControllerTest {
         con.Email = 'test@antarangfoundation.org';
         con.Batch_Code__c = bat.id;
         con.Academic_Year__c = 2021;
+        con.npe01__WorkEmail__c = 'test@antarangfoundation.org';
         Insert con;
         conLst.add(con);
         
@@ -55,6 +57,7 @@ public class counsellingFormControllerTest {
         
         Test.startTest();
         counsellingFormController.checkEmailExist('test@antarangfoundation.org');
+        counsellingFormController.checkEmailExist('');
         counsellingFormController.saveCounselingStaus(bat.Id);
         counsellingFormController.fetchbatch(acc.Id,'Grade 9',con.Id);
         Map<String, Object> res = (Map<String, Object>)counsellingFormController.fetchStudent(bat.Id, con.Id,'Grade 9');

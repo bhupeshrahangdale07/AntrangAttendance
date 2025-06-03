@@ -4,22 +4,42 @@ V1.0      14/12/23  To exclude duplicate record from form submission
 
 */ 
 public without sharing class ApptitudeController {
-     @AuraEnabled
-    public static void logComponentClosed() {
-        system.debug('eneter in logComponentClosed');
-    }
     @AuraEnabled
     public static string getApptitudeRecord(String studentId, string grade, String batchId) {
         List<Batch__c> batches = [
             SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
             FROM Batch__c
             WHERE Id = :batchId LIMIT 1];
-        list<contact> contact= [select id,Bar_Code__c from contact where id =:studentId];	
+        String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }	
             list<Self_Awareness_and_Feedback__c> assesRec = [SELECT Created_from_Form__c, Barcode__c, Form_Submitted__c 
                             FROM Self_Awareness_and_Feedback__c 
                             WHERE Created_from_Form__c = true AND 
                             RecordType.Name='Baseline'  AND  
-                            Barcode__c = : contact[0].Bar_Code__c AND 
+                            Barcode__c = : studentBarcode AND 
                             Grade__c = :grade AND
                             Student__c = : studentId AND 
                             Academic_Year__c = : batches[0].Academic_Year__c AND
@@ -29,8 +49,39 @@ public without sharing class ApptitudeController {
         
     }
     @AuraEnabled
-    public static string saveDataForFormV2(String studentId, List<Map<String, Object>> answerSet,boolean saveFlag, string grade, string typ, string lng){
+    public static string saveDataForFormV2(String studentId, List<Map<String, Object>> answerSet,boolean saveFlag, string grade, string typ, 
+                                           string lng, string batchId){
         List<QuestionAnswer> dataMap = new List<QuestionAnswer>();
+        String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+
+        List<Batch__c> batches = new List<Batch__c>([
+            SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+            FROM Batch__c
+            WHERE Id = :batchId LIMIT 1]);
         for (Map<String, Object> qa : answerSet) {
             Decimal question = (Decimal)qa.get('question');
             String answer = (String)qa.get('answer');
@@ -50,7 +101,11 @@ public without sharing class ApptitudeController {
                                                            Numerical_3__c,Numerical_4__c,Numerical_5__c,Numerical_6__c,Numerical_7__c,Aptitude_1_Selected_By_Student__c, Aptitude_2_Selected_By_Student__c, Aptitude_3_Selected_By_Student__c,
                                                            Numerical_8__c,Mechanical_1__c,Mechanical_2__c,Mechanical_3__c,Mechanical_4__c,Mechanical_5__c,Mechanical_6__c,Mechanical_7__c,Mechanical_8__c,Abstract_Reasoning_Q_1__c,Abstract_Reasoning_Q_2__c,Abstract_Reasoning_Q_3__c,Abstract_Reasoning_Q_4__c,Abstract_Reasoning_Q_5__c,Abstract_Reasoning_Q_6__c,Abstract_Reasoning_Q_7__c,Abstract_Reasoning_Q_8__c,Verbal_1__c,Verbal_2__c,Verbal_3__c,Verbal_4__c,Verbal_5__c,Verbal_6__c,Verbal_7__c,Verbal_8__c,Creative_1__c,Creative_2__c,Creative_3__c,Creative_4__c,Creative_5__c,Creative_6__c,Creative_7__c,Creative_8__c 
                                                            from  Self_Awareness_and_Feedback__c
-                                                            where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' and Error_Status__c = 'No Error' limit 1]); //V1.0
+                                                           where Student__c =: studentId and Created_from_Form__c = true 
+                                                           AND Academic_Year__c = :batches[0].Academic_Year__c
+                                                            AND Grade__c = :batches[0].Grade__c 
+                                                            AND Barcode__c  = :studentBarcode 
+                                                           and RecordType.Name='Baseline' and Error_Status__c = 'No Error' limit 1]); //V1.0
     	if(!sf.isEmpty()){
             returnStr = 'Update';
             system.debug('saveFlag ='+saveFlag);
@@ -607,8 +662,39 @@ public without sharing class ApptitudeController {
     }
 
     @AuraEnabled
-    public static Self_Awareness_and_Feedback__c getRecordApt(String studentId) {
+    public static Self_Awareness_and_Feedback__c getRecordApt(String studentId, string batchId) {
         try{
+            List<Batch__c> batches = new List<Batch__c>([
+                SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                FROM Batch__c
+                WHERE Id = :batchId LIMIT 1]);
+            string grade = batches[0].grade__c;
+            String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+
             List<Self_Awareness_and_Feedback__c> sf =  new List<Self_Awareness_and_Feedback__c>([select id,Created_from_Form__c, Aptitude_1__c, 
                                                            Aptitude_2__c, Aptitude_3__c, Student__c, Student__r.name,
                                                            Spatial_Ability_Q_1__c,Spatial_Ability_Q_2__c,Spatial_Ability_Q_3__c,
@@ -617,7 +703,11 @@ public without sharing class ApptitudeController {
                                                            Numerical_3__c,Numerical_4__c,Numerical_5__c,Numerical_6__c,Numerical_7__c,
                                                            Numerical_8__c,Mechanical_1__c,Mechanical_2__c,Mechanical_3__c,Mechanical_4__c,Mechanical_5__c,Mechanical_6__c,Mechanical_7__c,Mechanical_8__c,Abstract_Reasoning_Q_1__c,Abstract_Reasoning_Q_2__c,Abstract_Reasoning_Q_3__c,Abstract_Reasoning_Q_4__c,Abstract_Reasoning_Q_5__c,Abstract_Reasoning_Q_6__c,Abstract_Reasoning_Q_7__c,Abstract_Reasoning_Q_8__c,Verbal_1__c,Verbal_2__c,Verbal_3__c,Verbal_4__c,Verbal_5__c,Verbal_6__c,Verbal_7__c,Verbal_8__c,Creative_1__c,Creative_2__c,Creative_3__c,Creative_4__c,Creative_5__c,Creative_6__c,Creative_7__c,Creative_8__c 
                                                            from  Self_Awareness_and_Feedback__c
-                                                            where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' limit 1]);
+                                                            where Student__c =: studentId and Created_from_Form__c = true  
+                                                            AND Academic_Year__c = :batches[0].Academic_Year__c
+                                                            AND Grade__c = :batches[0].Grade__c 
+                                                            AND Barcode__c  = :studentBarcode AND
+                                                            RecordType.Name='Baseline' limit 1]);
                 if(!sf.isEmpty()){
                     return sf[0];
                 }

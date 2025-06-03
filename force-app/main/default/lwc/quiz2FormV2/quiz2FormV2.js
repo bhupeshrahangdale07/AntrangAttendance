@@ -173,10 +173,10 @@ export default class Quiz2FormV2 extends NavigationMixin(LightningElement) {
         getAssesmentQuestion({
             objectName : 'Quiz - 2',
             formType : 'Form V2',
-            grade : ''
+            grade : this.selectedGrade
         }).then(result => {
             console.log('getAssesmentQuestion Result = '+JSON.stringify(result));
-            if(result){
+            if(result.length != 0){
                 this.assesmentQuestionAndLabel = result;
                 let que1 = this.getQuestionsAndOptions(1);
                 if(que1){
@@ -204,6 +204,9 @@ export default class Quiz2FormV2 extends NavigationMixin(LightningElement) {
                     this.quiz25Options = que5.options;
                 }
                 //this.getApexRecordSAF();
+            }else{
+                this.showToastPopMessage('','No questions available for Quiz 2','error');
+                this.backBtnNavigationHelper();
             }
             
         }).catch(error => {
@@ -259,7 +262,8 @@ export default class Quiz2FormV2 extends NavigationMixin(LightningElement) {
     }
     getRecordAptFun(){
         getRecordApt({
-            studentId : this.rxStudentId
+            studentId : this.rxStudentId,
+            batchId : this.selectedBatchId
         }).then(result => {
             if(result){
                 //this.showForm = true;
@@ -340,7 +344,8 @@ export default class Quiz2FormV2 extends NavigationMixin(LightningElement) {
             saveFlag : this.saveFlag,
             grade: this.selectedGrade,
             lng : this.lng,
-            typ : (this.typ == 'v2' || this.typ == 'Form V2') ? 'Form V2' : 'Form V1'
+            typ : (this.typ == 'v2' || this.typ == 'Form V2') ? 'Form V2' : 'Form V1',
+            batchId : this.selectedBatchId
         }).then(result => {
            console.log('res = ',result);
            this.backBtnNavigationHelper();

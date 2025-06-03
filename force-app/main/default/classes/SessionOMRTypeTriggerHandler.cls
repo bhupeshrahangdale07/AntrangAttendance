@@ -68,11 +68,11 @@ public class SessionOMRTypeTriggerHandler {
             system.debug('inside loop');
             if(s.OMR_Assessment_Count__c != oldSOTMap.get(s.Id).OMR_Assessment_Count__c) {    
                 system.debug('inside con');
-                if(s.OMR_Assessment_Count__c > 0 && (oldSOTMap.get(s.Id).OMR_Assessment_Count__c <= 0 || oldSOTMap.get(s.Id).OMR_Assessment_Count__c == null)) {
+                if(s.OMR_Assessment_Count__c > 0 && oldSOTMap.get(s.Id).OMR_Assessment_Count__c == 0) {
                     system.debug('inside new');
                     s.First_OMR_Uploaded_Date__c = Date.today();
                     slist.add(s);
-                } else if((s.OMR_Assessment_Count__c < 1 || s.OMR_Assessment_Count__c == null) && oldSOTMap.get(s.Id).OMR_Assessment_Count__c > 0) {
+                } else if(s.OMR_Assessment_Count__c < 1 && oldSOTMap.get(s.Id).OMR_Assessment_Count__c > 0) {
                     system.debug('iside old');
                     s.First_OMR_Uploaded_Date__c = null;
                     slist.add(s);

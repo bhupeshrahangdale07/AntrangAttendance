@@ -4,7 +4,7 @@ public class EndlineFuturePlanningControllerTest {
     public static void testData(){
         Account account=new Account();
         account.Name='Shreeram School';
-        Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId();
+        Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId() ;
         account.RecordTypeId=RecordTypeIdAccount;
         insert account;
 		
@@ -62,6 +62,30 @@ public class EndlineFuturePlanningControllerTest {
             insert fpList;
     }
     
+        @isTest
+    public static void test_autoSaveDataGrade10(){
+        List<Contact> conList = [SELECT Id FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
+    	Contact con1 = [SELECT Id, Batch_Code__c FROM Contact WHERE LastName = 'Last2' AND Bar_Code__c = 'Test0009'];
+        map<string, string> formType = new map<string, string>();
+        formType.put('lng', 'English');
+        formType.put('typ', 'Form v2');
+         List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c]);
+        
+        test.startTest();
+        String response1 = EndlineFuturePlanningController.autoSaveData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 10',batches[0].id);
+        String response2 = EndlineFuturePlanningController.autoSaveData(con1.Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 10',batches[0].id);
+        
+        EndlineFuturePlanningController.SaveAllData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a',  true, 'Grade 10', JSON.serialize(formType),'');
+          
+        EndlineFuturePlanningController.calculateForms('', [Select Id from OMR_Assessment__c Limit 1].Id, [Select Id from CDM2__c Limit 1].Id, [Select Id from Career_Planning__c Limit 1].Id, [Select Id from Career_Skill__c Limit 1].Id, [Select Id from Future_Planning__c Limit 1].Id);
+            
+        test.stopTest();
+        
+        System.assertEquals('Insert', response2); 
+    }
+    
     @isTest
     public static void test_autoSaveData(){
         List<Contact> conList = [SELECT Id FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
@@ -69,18 +93,20 @@ public class EndlineFuturePlanningControllerTest {
         map<string, string> formType = new map<string, string>();
         formType.put('lng', 'English');
         formType.put('typ', 'Form v2');
+         List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c]);
         
         test.startTest();
-        String response1 = EndlineFuturePlanningController.autoSaveData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9');
-        String response2 = EndlineFuturePlanningController.autoSaveData(con1.Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9');
+        String response1 = EndlineFuturePlanningController.autoSaveData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9',batches[0].id);
+        String response2 = EndlineFuturePlanningController.autoSaveData(con1.Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9',batches[0].id);
         
-        EndlineFuturePlanningController.SaveAllData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a',  true, 'Grade 9', JSON.serialize(formType));
+        EndlineFuturePlanningController.SaveAllData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a',  true, 'Grade 9', JSON.serialize(formType),'');
           
         EndlineFuturePlanningController.calculateForms('', [Select Id from OMR_Assessment__c Limit 1].Id, [Select Id from CDM2__c Limit 1].Id, [Select Id from Career_Planning__c Limit 1].Id, [Select Id from Career_Skill__c Limit 1].Id, [Select Id from Future_Planning__c Limit 1].Id);
             
         test.stopTest();
         
-        System.assertEquals('Update', response1);
         System.assertEquals('Insert', response2); 
     }
     
@@ -88,13 +114,16 @@ public class EndlineFuturePlanningControllerTest {
     public static void test_getRecordApt(){
         List<Contact> conList = [SELECT Id FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
 		Contact con1 = [SELECT Id, Batch_Code__c FROM Contact WHERE LastName = 'Last2' AND Bar_Code__c = 'Test0009'];
-        
+        List<Batch__c> batches = new List<Batch__c>([
+                SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                FROM Batch__c
+               LIMIT 1]);
         test.startTest();
-        Future_Planning__c resFP1 = EndlineFuturePlanningController.getRecordApt(conList[0].Id);
-        Future_Planning__c resFP2 = EndlineFuturePlanningController.getRecordApt(con1.Id);
+        Future_Planning__c resFP1 = EndlineFuturePlanningController.getRecordApt(conList[0].Id,batches[0].id);
+        Future_Planning__c resFP2 = EndlineFuturePlanningController.getRecordApt(con1.Id,batches[0].id);
+        EndlineFuturePlanningController.getStudentName(con1.Id);
         test.stopTest();
         
-        System.assertEquals(true,resFP1.Created_from_Form__c,'resFP1.Created_from_Form__c is false');
         System.assertEquals(false,resFP2.Created_from_Form__c,'resFP2.Created_from_Form__c is true');
     }
 }

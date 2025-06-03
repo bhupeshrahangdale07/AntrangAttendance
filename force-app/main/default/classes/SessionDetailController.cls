@@ -52,6 +52,9 @@ public without sharing class SessionDetailController {
                                                                     stdAttend.Attendance__c = std.stdAttendance;
                                                                     stdAttend.Guardian_Parent_Attendance__c = std.parentAttendance;
                                                                     stdAttend.Wrong_Batch__c = std.stdWrongBatch;
+                                                                    stdAttend.Session_Lead__c = std.stdLead;
+                                                                    stdAttend.Counseling_Date__c = std.stdCounselingDate;
+                                                                    stdAttend.Counseling_Time__c = std.stdCounselingTime;
                                                                     
                                                                     system.debug('std.stdWrongBatch- '+std.stdWrongBatch);
                                                                     sessionAttend.add(stdAttend);
@@ -72,6 +75,7 @@ public without sharing class SessionDetailController {
                                                             session__c session = [select id,Attendance_Submitted__c,Log_Reason__c from session__c where id = :sessionId limit 1];
                                                             session.Attendance_Submitted__c = true;
                                                             session.Log_Reason__c = reason;
+                                                            session.Session_Status__c = 'Complete';
                                                             update session;
                                                         }
                                                         status = true;
@@ -90,7 +94,7 @@ public without sharing class SessionDetailController {
         List<wrpSession> wrpSessionLSt = new List<wrpSession>();
         
         for(Session__c objSession : [select Id,Name,SessionDate__c,Session_Delivery__c,Session_Number__c,Total_Student_Present__c,
-                                     Session_Link__c,Session_Grade__c,Session_Type__c,HM_Attended__c,Session_Lead__c,
+                                     Session_Link__c,Session_Grade__c,Session_Type__c,HM_Attended__c,Session_Lead__c,Attendance_Submitted__c,
                                      Session_Code__c,Session_End_Time__c,Session_Start_Time__c, Session_Mode__c,Total_Parent_Present__c,
                                      Assigned_Facilitator__c,Assigned_Facilitator__r.Name,Assigned_Facilitator__r.npe01__WorkEmail__c,
                                      Session_Status__c,Scheduling_Type__c,Rescheduled_Counter__c,Late_Schedule__c,
@@ -111,14 +115,16 @@ public without sharing class SessionDetailController {
                                          objwrp.link = objSession.Session_Link__c;
                                          objwrp.endTime = objSession.Session_End_Time__c;
                                          objwrp.startTime = objSession.Session_Start_Time__c;
-                                         objwrp.parentAttendance = objSession.Total_Parent_Present__c;
-                                         objwrp.studentAttendance = objSession.Total_Student_Present__c;
-                                         objwrp.hmAttended = objSession.HM_Attended__c;
-                                         objwrp.sessionLead = objSession.Session_Lead__c;
+                                         objwrp.parentAttendance =  objSession.Total_Parent_Present__c != null ? objSession.Total_Parent_Present__c : 0;
+                                         objwrp.studentAttendance =  objSession.Total_Student_Present__c != null ? objSession.Total_Student_Present__c : 0;
+                                         objwrp.hmAttended = objSession.HM_Attended__c != null ? objSession.HM_Attended__c : '';
+                                         objwrp.sessionLead = objSession.Session_Lead__c != null ? objSession.Session_Lead__c : '';
                                          objwrp.scheduleOnTime = (objSession.Scheduling_Type__c == 'On Time') ? true : false;
                                          objwrp.scheduleLate = (objSession.Scheduling_Type__c == 'Late Schedule') ? true : false;
                                          objwrp.scheduleCounter = (objSession.Rescheduled_Counter__c == null) ? 0 : objSession.Rescheduled_Counter__c;
                                          objwrp.reasonForLateSchedule = objSession.Late_Schedule__c;
+                                         objwrp.attendanceSubmitted = objSession.Attendance_Submitted__c;
+                                         objwrp.sessionNumber = objSession.Session_Number__c;
                                          //objwrap.sessionStatus = objSession.Session_Status__c;
                                          if((
                                              objSession.Total_Student_Present__c > 0 ) ||
@@ -325,7 +331,7 @@ public without sharing class SessionDetailController {
         System.debug('sessionMap- '+ sessionMap);
         
         for(Session_Attendance__c sessionAttend :[
-            Select Id,Contact__c,Attendance__c,Wrong_Batch__c,Guardian_Parent_Attendance__c,Session__c,Session__r.Batch__r.Name,Session__r.Session_Grade__c From
+            Select Id,Contact__c,Attendance__c,Wrong_Batch__c,Session_Lead__c,Guardian_Parent_Attendance__c,Counseling_Date__c,Counseling_Time__c,Session__c,Session__r.Batch__r.Name,Session__r.Session_Grade__c From
             Session_Attendance__c where Session__c = :sessionID ORDER BY Session__r.Session_Number__c]){
                 stdExistingAttendance.put(sessionAttend.Contact__c+'_'+sessionAttend.Session__c,sessionAttend);
             }
@@ -360,12 +366,18 @@ public without sharing class SessionDetailController {
                 sessData.stdAttendance = stdExistingAttendance.get(con.Id+'_'+sessionID).Attendance__c; 
                 sessData.stdWrongBatch = stdExistingAttendance.get(con.Id+'_'+sessionID).Wrong_Batch__c; 
                 sessData.parentAttendance = stdExistingAttendance.get(con.Id+'_'+sessionID).Guardian_Parent_Attendance__c; 
+                sessData.stdLead = stdExistingAttendance.get(con.Id+'_'+sessionID).Session_Lead__c;
+                sessData.stdCounselingDate = stdExistingAttendance.get(con.Id+'_'+sessionID).Counseling_Date__c;
+                sessData.stdCounselingTime = stdExistingAttendance.get(con.Id+'_'+sessionID).Counseling_Time__c;
                 sessData.sessionAttendanceId = stdExistingAttendance.get(con.Id+'_'+sessionID).Id;
                 
             } else {
                 
                 sessData.stdAttendance = '';   
                 sessData.parentAttendance = '';
+                sessData.stdLead = '';
+                //sessData.stdCounselingDate = '';
+                //sessData.stdCounselingTime = '';
                 sessData.sessionAttendanceId = '';
                 sessData.stdWrongBatch = false;
                 
@@ -375,6 +387,9 @@ public without sharing class SessionDetailController {
             stdAttend.sessiondata = sesdata;
             stdAttend.stdAttendance = sesdata[0].stdAttendance;
             stdAttend.stdWrongBatch = sesdata[0].stdWrongBatch;
+            stdAttend.stdLead = sesdata[0].stdLead;
+            stdAttend.stdCounselingDate = sesdata[0].stdCounselingDate;
+            stdAttend.stdCounselingTime = sesdata[0].stdCounselingTime;
             stdAttend.sessionAttendanceId = sesdata[0].sessionAttendanceId;
             stdAttend.parentAttendance = sesdata[0].parentAttendance;
             stdAttend.sessionId = sesdata[0].sessionId;
@@ -468,6 +483,9 @@ public without sharing class SessionDetailController {
         
         @AuraEnabled
         public Decimal studentAttendance;
+
+        @AuraEnabled
+        public Decimal sessionNumber;
         
         @AuraEnabled
         public string hmAttended;
@@ -487,6 +505,10 @@ public without sharing class SessionDetailController {
         
         @AuraEnabled
         public boolean isAttendenceFound;
+
+        @AuraEnabled
+        public boolean attendanceSubmitted;
+     
         
         @AuraEnabled
         public boolean isNotLoggedInTrainerSession;
@@ -545,7 +567,16 @@ public without sharing class SessionDetailController {
         public String stdAttendance { get; set; }
         
         @AuraEnabled
-        public Boolean stdWrongBatch { get; set; }    
+        public Boolean stdWrongBatch { get; set; }  
+        
+        @AuraEnabled
+        public String stdLead { get; set; } 
+
+        @AuraEnabled
+        public Date stdCounselingDate {get; set;} 
+
+        @AuraEnabled
+        public Time stdCounselingTime {get; set;}
         
         @AuraEnabled
         public String sessionAttendanceId { get; set; }
@@ -583,5 +614,14 @@ public without sharing class SessionDetailController {
         
         @AuraEnabled
         public String lateReason { get; set; }
+        
+        @AuraEnabled
+        public String stdLead { get; set; }
+
+        @AuraEnabled
+        public Date stdCounselingDate {get; set;} 
+
+        @AuraEnabled
+        public Time stdCounselingTime {get; set;}
     }
 }

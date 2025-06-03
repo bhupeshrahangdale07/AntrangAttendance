@@ -31,7 +31,7 @@
                    
                 </div>
             </div>
-            <div class="slds-align_absolute-center">
+            <!--<div class="slds-align_absolute-center">
                 <lightning:button
                                   variant="brand"
                                   aura:id="btnsubmit"
@@ -39,7 +39,7 @@
                                   label="Login"
                                   onclick="{!c.checkemail}"
                                   />
-            </div>
+            </div>-->
         </div>
     </div>
 </aura:component>

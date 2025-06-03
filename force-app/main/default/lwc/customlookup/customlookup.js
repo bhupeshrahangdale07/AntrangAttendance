@@ -40,7 +40,6 @@ export default class Customlookup extends LightningElement {
         const { data, error } = value; // destructure the provisioned value
         this.isSearchLoading = false;
         if (data) {
-            console.log('From custom lookup component : '+JSON.stringify(data));
              this.hasRecords = data.length == 0 ? false : true; 
              this.lstResult = JSON.parse(JSON.stringify(data)); 
          }

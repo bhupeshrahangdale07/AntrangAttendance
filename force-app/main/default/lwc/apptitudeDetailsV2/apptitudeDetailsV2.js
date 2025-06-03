@@ -136,7 +136,14 @@ export default class ApptitudeDetailsV2 extends NavigationMixin(LightningElement
             this.dispatchEvent(event);
         });
     }
-
+    showToastMessage(message,variant){
+        const event = new ShowToastEvent({
+                title : 'Session Detail',
+                message : message,
+                variant : variant
+            });
+            this.dispatchEvent(event);
+    }
     backBtnHandler(event){
         let pageReference = {
             type: 'comm__namedPage',

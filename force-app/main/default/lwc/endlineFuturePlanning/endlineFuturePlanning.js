@@ -46,13 +46,10 @@ export default class EndlineFuturePlanning extends NavigationMixin(LightningElem
     studentName='';
 
     getRecordAptFun(){
-        debugger;
-        console.log('$$$ this.studentId: ', this.studentId);
         getRecordApt({
             studentId : this.studentId
         }).then(result => {
             if(result){
-                console.log('$$$ Endline Future Plannning getRecordApt: ', result);
                 this.showForm = true;
                 this.showLoading = false;
                 this.que17Value = result.Q_17__c;
@@ -104,7 +101,7 @@ export default class EndlineFuturePlanning extends NavigationMixin(LightningElem
             this.showForm = true;
             this.showLoading = false;
             console.log('error123=', error);
-            this.showToastPopMessage(error,'error')
+            //this.showToastPopMessage(error,'error')
 
         });
     }
@@ -221,7 +218,8 @@ export default class EndlineFuturePlanning extends NavigationMixin(LightningElem
             fp21:this.que21Value,
             fp22:this.que22Value,
             saveFlag : this.saveFlag,
-            grade : this.selectedGrade
+            grade : this.selectedGrade,
+            batchId : this.selectedBatchId
         }).then(result => {
             console.log('ddd')
            console.log('res = ',result);

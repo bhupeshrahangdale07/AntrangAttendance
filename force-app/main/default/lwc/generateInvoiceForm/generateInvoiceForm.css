@@ -15,7 +15,6 @@ span.slds-media__figure.slds-listbox__option-icon {
     display: none;
 }
 
-
 @media (max-width: 767px) {
     .slds-box{
         padding: 0px;

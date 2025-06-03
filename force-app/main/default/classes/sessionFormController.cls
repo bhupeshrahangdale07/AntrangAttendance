@@ -121,7 +121,8 @@ public without sharing class sessionFormController {
                                                             Session_Code__c,Session_End_Time__c,Session_Start_Time__c, Session_Mode__c,
                                      Assigned_Facilitator__c,Assigned_Facilitator__r.Name,Assigned_Facilitator__r.npe01__WorkEmail__c,
                                                             (select id from Sessions__r limit 1)
-                            from session__c where Batch__c =: batchId /*AND Session_Grade__c = :sessionGrade*/ AND Session_Type__c != 'Counseling' /*AND Session_Type__c != 'Parent'*/ order by session_Number__c ]){
+                            from session__c where Batch__c =: batchId /*AND Session_Grade__c = :sessionGrade*/ AND Session_Type__c != 'Counseling' /*AND Session_Type__c != 'Parent'*/
+                                     order by session_Number__c ]){
                                 wrpSession objwrp = new wrpSession();
                                 objwrp.id = objSession.Id;
                                 objwrp.WhereClause = ' AND RecordType.DeveloperName = \'CA_Trainer\' AND Academic_Year__c = '+Integer.valueOf(antarangSett.Academic_Year__c)+' ORDER BY Name';//antarangSett.Academic_Year__c != null ? Integer.valueOf(antarangSett.Academic_Year__c) : null;

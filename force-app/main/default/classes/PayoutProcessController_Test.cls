@@ -3,12 +3,6 @@ public class PayoutProcessController_Test {
 	
     @isTest
     public static void test2(){
-        User y = new User();
-        y.id='0051m000004iZ2O';
-        System.runAs(y) {
-            system.debug(System.OrgLimits.getMap().get('SingleEmail').getlimit());
-            system.debug(System.OrgLimits.getMap().get('SingleEmail').getValue());
-        }
 		AntarangSetting__c setting = new AntarangSetting__c(Academic_Year__c = 2023, Next_Academic_Year__c = 2024,Max_Batch_Size__c=2);
         insert setting;
         

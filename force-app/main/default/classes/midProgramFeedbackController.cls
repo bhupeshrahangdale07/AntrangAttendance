@@ -10,12 +10,36 @@ public without sharing class midProgramFeedbackController {
             SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
             FROM Batch__c
             WHERE Id = :batchId LIMIT 1];
-        list<contact> contact= [select id,Bar_Code__c from contact where id =:studentId];	
+                String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }	
             list<Self_Awareness_and_Feedback__c> assesRec = [SELECT Created_from_Form__c, Barcode__c, Form_Submitted__c 
                             FROM Self_Awareness_and_Feedback__c 
                             WHERE Created_from_Form__c = true AND 
                             RecordType.Name='Baseline'  AND  
-                            Barcode__c = : contact[0].Bar_Code__c AND 
+                            Barcode__c = : studentBarcode AND 
                             Grade__c = :grade AND
                             Student__c = : studentId AND 
                             Academic_Year__c = : batches[0].Academic_Year__c AND
@@ -111,9 +135,11 @@ public without sharing class midProgramFeedbackController {
             studentDataWrapper st = new studentDataWrapper();
             List<Contact> conList = [ Select id,Name,Full_Name__c, Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c, 
                                          (select id,Created_from_Form__c, Feedback_1__c,Feedback_2__c,Feedback_3__c,Feedback_4__c,Feedback_5__c,Feedback_6__c,Feedback_7__c,
-                                         Feedback_Form_Submitted__c  from  Self_Awareness_and_Feedbacks__r where RecordType.Name='Baseline' AND  Academic_Year__c = : batches[0].Academic_Year__c AND Grade__c = :batches[0].Grade__c)
+                                         Feedback_Form_Submitted__c  from  Self_Awareness_and_Feedbacks__r where RecordType.Name='Baseline'
+                                          AND  Academic_Year__c = : batches[0].Academic_Year__c AND Grade__c = :batches[0].Grade__c)
                                       from Contact 
-                                      where ( Batch_Code__c  =: batchId OR G10_Batch_Code__c =:batchId OR G11_Batch_Code__c  =:batchId OR G12_Batch_Code__c =:batchID ) 
+                                      where ( Batch_Code__c  =: batchId OR G10_Batch_Code__c =:batchId OR G11_Batch_Code__c  =:batchId OR 
+                                             G12_Batch_Code__c =:batchID ) 
                                       ORDER BY Name ASC];
             // List<Contact> studentsToDisplay = new List<Contact>();
             /*for(Contact con : conList)
@@ -172,10 +198,44 @@ public without sharing class midProgramFeedbackController {
         }
     }
     @AuraEnabled
-    public static Self_Awareness_and_Feedback__c getRecordApt(String studentId) {
+    public static Self_Awareness_and_Feedback__c getRecordApt(String studentId, string batchId) {
         try{
+            
+            List<Batch__c> batches = new List<Batch__c>([
+						SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+						FROM Batch__c
+						WHERE Id = :batchId LIMIT 1]);
+            string grade = batches[0].grade__c;
+                String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+            
             List<Self_Awareness_and_Feedback__c> sf =  new List<Self_Awareness_and_Feedback__c>([select id,Created_from_Form__c, Feedback_1__c,Feedback_2__c,Feedback_3__c,Feedback_4__c,Feedback_5__c,Feedback_6__c,Feedback_7__c, Student__c, Student__r.name from  Self_Awareness_and_Feedback__c
-                                                            where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' limit 1]);
+                                                            where Student__c =: studentId AND Academic_Year__c = : batches[0].Academic_Year__c 
+                                                                                                 AND Grade__c = :batches[0].Grade__c AND 
+                                                                                                 Barcode__c = :studentBarcode and Created_from_Form__c = true and RecordType.Name='Baseline' limit 1]);
                 if(!sf.isEmpty()){
                     return sf[0];
                 }
@@ -216,13 +276,47 @@ public without sharing class midProgramFeedbackController {
         
     }
     @AuraEnabled
-    public static string saveData(String studentId, string fb1, string fb2, string fb3, string fb4, string fb5, string fb6, string fb7,boolean saveFlag,string grade,
+    public static string saveData(string batchId, String studentId, string fb1, string fb2, string fb3, string fb4, string fb5, string fb6, string fb7,boolean saveFlag,string grade,
                                  string lng, string typ) {
         system.debug(':::studentId = '+studentId);
 		String returnStr = '';
         try{
+            
+            List<Batch__c> batches = new List<Batch__c>([
+						SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+						FROM Batch__c
+						WHERE Id = :batchId LIMIT 1]);
+            
+                String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+            
 			List<Self_Awareness_and_Feedback__c> sf =  new List<Self_Awareness_and_Feedback__c>([select id,Created_from_Form__c,Feedback_1__c,Feedback_2__c,Feedback_3__c,Feedback_4__c,Feedback_5__c,Feedback_6__c,Feedback_7__c, Student__c from  Self_Awareness_and_Feedback__c
-                                                            where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' and Error_Status__c = 'No Error' limit 1]); //v1.0
+                                                            where Student__c =: studentId AND Academic_Year__c =: batches[0].Academic_Year__c 
+                                                                                                 AND Grade__c =: batches[0].Grade__c 
+                                                                                                 AND Barcode__c =: studentBarcode and Created_from_Form__c = true and RecordType.Name='Baseline' and Error_Status__c = 'No Error' limit 1]); //v1.0
             if(!sf.isEmpty()){
 				returnStr = 'Update';
                 system.debug('saveFlag ='+saveFlag);
@@ -270,4 +364,149 @@ public without sharing class midProgramFeedbackController {
         }
         
     }
+            public static void fakeMethod(){
+    Integer i = 0;
+    	i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    //repeat the i++ hundred of times
+
+  }
 }

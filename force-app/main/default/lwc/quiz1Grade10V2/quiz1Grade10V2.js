@@ -9,8 +9,6 @@ import saveSingle from '@salesforce/apex/quiz1Grade10.saveSingle';
 import saveAllQA from '@salesforce/apex/quiz1Grade10.saveAllQA';
 import submitAndCalculate from '@salesforce/apex/quiz1Grade10.submitAndCalculate';
 import getBatchCodeName from '@salesforce/apex/BaselineController.getBatchCodeName';
-import getAssesmentQuestion from '@salesforce/apex/AssesementQuestionController.getAssesmentQuestion';
-
 export default class Quiz1Grade10V2 extends NavigationMixin(LightningElement) {
     lng;
     typ;
@@ -255,8 +253,8 @@ export default class Quiz1Grade10V2 extends NavigationMixin(LightningElement) {
     //Standard JavaScript connectedCallback() method called on page load
     connectedCallback() 
     {
-        //this.getApexRecordSAF();
-        this.getAssesmentQuestionFunc();
+        this.getApexRecordSAF();
+
         this.flag = 'connectedCallback';
         console.log('this.flag : ' + this.flag);
     }
@@ -273,7 +271,7 @@ export default class Quiz1Grade10V2 extends NavigationMixin(LightningElement) {
         console.log('this.flag : ' + this.flag);
     }
 
-    /*getApexRecordSAF(){
+    getApexRecordSAF(){
         this.isLoading = true;     //Turn ON the spinner
         getApexRecord({
             studentId : this.rxStudentId,
@@ -436,14 +434,14 @@ export default class Quiz1Grade10V2 extends NavigationMixin(LightningElement) {
                 //===========================================================//
                 this.isLoading = false;    //Turn OFF the spinner
                 //===========================================================//
-               
-                // const event = new ShowToastEvent({
-                //     title: 'Quiz1-Grade 10',
-                //     message: 'Record fields received successfuly : Quiz1-Grade 10',
-                //     variant: 'success'
-                // });                
-                // this.dispatchEvent(event);
-                
+                /*
+                const event = new ShowToastEvent({
+                    title: 'Quiz1-Grade 10',
+                    message: 'Record fields received successfuly : Quiz1-Grade 10',
+                    variant: 'success'
+                });                
+                this.dispatchEvent(event);
+                */
             }while(false);
             this.flag = 'getApexRecordSAF';
             console.log('this.flag : ' + this.flag);
@@ -465,7 +463,7 @@ export default class Quiz1Grade10V2 extends NavigationMixin(LightningElement) {
             });
             this.dispatchEvent(event);
         });
-    }*/
+    }
 
     reInitializeRecordSAF(){
         getApexRecord({

@@ -4,7 +4,7 @@ public class Quiz1ControllerTest {
     public static void testData(){
         Account account=new Account();
         account.Name='Shreeram School';
-        Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId();
+        Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId() ;
         account.RecordTypeId=RecordTypeIdAccount;
         insert account;
 
@@ -67,7 +67,7 @@ public class Quiz1ControllerTest {
         qAnsAll.q04.answer = 'A';
         qAnsAll.q05.answer = 'A';
         
-        Quiz1Controller.saveAllQA(conList[0].Id, '1', '1', '1', '1', '1', 'Grade 10', 'English', 'Form v2');
+        Quiz1Controller.saveAllQA(conList[0].Id, '1', '1', '1', '1', '1', 'Grade 10', 'English', 'Form v2','');
         
         Quiz1Controller.submitAndCalculate(saafList[0].Id);
         test.stopTest();
@@ -90,7 +90,7 @@ public class Quiz1ControllerTest {
         qAnsAll.q05.answer = 'A';
         
         test.startTest();
-        Quiz1Controller.saveAllQA(conList[0].Id, '1', '1', '1', '1', '1', 'Grade 10', 'English', 'Form v2');
+        Quiz1Controller.saveAllQA(conList[0].Id, '1', '1', '1', '1', '1', 'Grade 10', 'English', 'Form v2','');
         test.stopTest();
     }
     public class qAnswerAll{

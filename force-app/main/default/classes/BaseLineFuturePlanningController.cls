@@ -5,12 +5,58 @@ public without sharing class BaseLineFuturePlanningController {
         return database.query(query).id;
     }
 	@AuraEnabled
-    public static string autoSaveData(String studentId,string fp17,string fp18_1,string fp18_2,string fp18_3,string fp18_4,string fp18_5,string fp18_6,string fp18_7,string fp18_8,string fp18_9,string fp18_10,string fp18_11,string fp19,string fp20,string fp21,string fp22,boolean saveFlag, string grade, string typ, string lng) {
+    public static string autoSaveData(String studentId,string fp17,string fp18_1,string fp18_2,string fp18_3,string fp18_4,string fp18_5,
+                                      string fp18_6,string fp18_7,string fp18_8,string fp18_9,string fp18_10,string fp18_11,string fp19,
+                                      string fp20,string fp21,string fp22,boolean saveFlag, string grade, string typ, string lng, string batchId) {
  		system.debug(':::studentId = '+studentId);
 		String returnStr = '';
         try{
-			List<Future_Planning__c> sf =  new List<Future_Planning__c>([select id,Created_from_Form__c,Q_17__c,Q_18_1__c,Q_18_2__c,Q_18_3__c,Q_18_4__c,Q_18_5__c,Q_18_6__c,Q_18_7__c,Q_18_8__c,Q_18_9__c,Q_18_10__c,Q_18_11__c,Q_19__c,Q_20__c,Q_21__c,Q_22__c, Student__c from  Future_Planning__c
-                                                            where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' limit 1]);
+             List<Batch__c> batches = new List<Batch__c>([
+						SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+						FROM Batch__c
+						WHERE Id = :batchId LIMIT 1]);
+             String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+            List<Future_Planning__c> sf =  new List<Future_Planning__c>();
+            if(String.isNotBlank(batchId) && !batches.isEmpty()){
+                sf = [select id,Created_from_Form__c,Q_17__c,Q_18_1__c,Q_18_2__c,Q_18_3__c,Q_18_4__c,Q_18_5__c,Q_18_6__c,Q_18_7__c,Q_18_8__c,
+                      Q_18_9__c,Q_18_10__c,Q_18_11__c,Q_19__c,Q_20__c,Q_21__c,Q_22__c, Student__c from  Future_Planning__c
+                      where Student__c =: studentId and Created_from_Form__c = true 
+                      and RecordType.Name='Baseline' AND Grade__c = :grade
+                      AND Academic_Year__c = :batches[0].Academic_Year__c
+                      AND Barcode__c = :studentBarcode
+                      AND Error_Status__c = 'No Error'
+                    // AND Data_Clean_up__c  = false
+                    AND Grade__c = :batches[0].Grade__c  ORDER BY CreatedDate DESC limit 1];
+            }else{
+                sf = [select id,Created_from_Form__c,Q_17__c,Q_18_1__c,Q_18_2__c,Q_18_3__c,Q_18_4__c,Q_18_5__c,Q_18_6__c,Q_18_7__c,Q_18_8__c,Q_18_9__c,Q_18_10__c,Q_18_11__c,Q_19__c,Q_20__c,Q_21__c,Q_22__c, Student__c from  Future_Planning__c
+                                                            where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' limit 1];
+            }
+			/*List<Future_Planning__c> sf =  new List<Future_Planning__c>([select id,Created_from_Form__c,Q_17__c,Q_18_1__c,Q_18_2__c,Q_18_3__c,Q_18_4__c,Q_18_5__c,Q_18_6__c,Q_18_7__c,Q_18_8__c,Q_18_9__c,Q_18_10__c,Q_18_11__c,Q_19__c,Q_20__c,Q_21__c,Q_22__c, Student__c from  Future_Planning__c
+                                                            where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' limit 1]);*/
             if(!sf.isEmpty()){
 				returnStr = 'Update';
                 system.debug('saveFlag ='+saveFlag);
@@ -89,10 +135,56 @@ public without sharing class BaseLineFuturePlanningController {
         
     }
     @AuraEnabled
-    public static Future_Planning__c getRecordApt(String studentId) {
+    public static Future_Planning__c getRecordApt(String studentId, string batchId, string grade) {
         try{
-            List<Future_Planning__c> sf =  new List<Future_Planning__c>([select id,Created_from_Form__c, Q_17__c,Q_18_1__c,Q_18_2__c,Q_18_3__c,Q_18_4__c,Q_18_5__c,Q_18_6__c,Q_18_7__c,Q_18_8__c,Q_18_9__c,Q_18_10__c,Q_18_11__c,Q_19__c,Q_20__c,Q_21__c,Q_22__c, Student__c, Student__r.name from  Future_Planning__c
-                                                            where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' limit 1]);
+             String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+            List<Batch__c> batches = new List<Batch__c>([
+						SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+						FROM Batch__c
+						WHERE Id = :batchId LIMIT 1]);
+            List<Future_Planning__c> sf = new List<Future_Planning__c>();
+             if(String.isNotBlank(batchId) && !batches.isEmpty()){
+                 sf=[select id,Created_from_Form__c, Q_17__c,Q_18_1__c,Q_18_2__c,Q_18_3__c,Q_18_4__c,Q_18_5__c,Q_18_6__c,Q_18_7__c,Q_18_8__c,Q_18_9__c,Q_18_10__c,Q_18_11__c,Q_19__c,Q_20__c,Q_21__c,Q_22__c, Student__c, Student__r.name from  Future_Planning__c
+                                                            where Student__c =: studentId and Created_from_Form__c = true
+                                                                         AND Academic_Year__c = :batches[0].Academic_Year__c
+                                                                         AND Error_Status__c = 'No Error'
+                                										 // AND Data_Clean_up__c  = false
+                                                                         AND Grade__c = :batches[0].Grade__c
+                                                                         AND Barcode__c = : studentBarcode AND 
+                                                                                Grade__c = :grade 
+                                                                         and RecordType.Name='Baseline' ORDER BY CreatedDate DESC limit 1];
+             }else{
+                 sf=[select id,Created_from_Form__c, Q_17__c,Q_18_1__c,Q_18_2__c,Q_18_3__c,Q_18_4__c,Q_18_5__c,Q_18_6__c,Q_18_7__c,Q_18_8__c,Q_18_9__c,Q_18_10__c,Q_18_11__c,Q_19__c,Q_20__c,Q_21__c,Q_22__c, Student__c, Student__r.name from  Future_Planning__c
+                                                            where Student__c =: studentId and Created_from_Form__c = true
+                                                                         AND Error_Status__c = 'No Error'
+                                										 // AND Data_Clean_up__c  = false
+                                                                         and RecordType.Name='Baseline' ORDER BY CreatedDate DESC limit 1];
+             }
+            
                 if(!sf.isEmpty()){
                     system.debug(' sf[0] = '+ sf[0]);
                     return sf[0];

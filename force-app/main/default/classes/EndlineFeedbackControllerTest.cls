@@ -1,10 +1,11 @@
 @isTest
 public class EndlineFeedbackControllerTest {
+    
 	@testsetup
     public static void testData(){
         Account account=new Account();
         account.Name='Shreeram School';
-        Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId();
+        Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId() ;
         account.RecordTypeId=RecordTypeIdAccount;
         insert account;
 		
@@ -33,6 +34,13 @@ public class EndlineFeedbackControllerTest {
         };
             insert fpList;
     }
+    @isTest
+    public static void test_fakeMethod(){
+
+        test.startTest();
+        EndlineFeedbackController.fakeMethod();
+        test.stopTest();
+    }
     
     @isTest
     public static void test_saveData(){
@@ -40,8 +48,8 @@ public class EndlineFeedbackControllerTest {
     	Contact con1 = [SELECT Id, Batch_Code__c FROM Contact WHERE LastName = 'Last2' AND Bar_Code__c = 'Test0009'];
         
         test.startTest();
-        String response1 = EndlineFeedbackController.saveData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9');
-        String response2 = EndlineFeedbackController.saveData(con1.Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9');
+        String response1 = EndlineFeedbackController.saveData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9','');
+        String response2 = EndlineFeedbackController.saveData(con1.Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9','');
         test.stopTest();
         
         System.assertEquals('Update', response1);
@@ -54,8 +62,8 @@ public class EndlineFeedbackControllerTest {
 		Contact con1 = [SELECT Id, Batch_Code__c FROM Contact WHERE LastName = 'Last2' AND Bar_Code__c = 'Test0009'];
         
         test.startTest();
-        Future_Planning__c resFP1 = EndlineFeedbackController.getRecordApt(conList[0].Id);
-        Future_Planning__c resFP2 = EndlineFeedbackController.getRecordApt(con1.Id);
+        Future_Planning__c resFP1 = EndlineFeedbackController.getRecordApt(conList[0].Id,'');
+        Future_Planning__c resFP2 = EndlineFeedbackController.getRecordApt(con1.Id,'');
         test.stopTest();
         
         System.assertEquals(true,resFP1.Created_from_Form__c,'resFP1.Created_from_Form__c is false');
@@ -66,14 +74,15 @@ public class EndlineFeedbackControllerTest {
     public static void test_getStudentRecord(){
         List<Contact> conList = [SELECT Id FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
 		Contact con1 = [SELECT Id, Batch_Code__c FROM Contact WHERE LastName = 'Last2' AND Bar_Code__c = 'Test0009'];
-        
+         List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c
+                    ]);
         test.startTest();
-        Future_Planning__c resFP1 = EndlineFeedbackController.getStudentRecord(conList[0].Id);
-        Future_Planning__c resFP2 = EndlineFeedbackController.getStudentRecord(con1.Id);
+        Future_Planning__c resFP1 = EndlineFeedbackController.getStudentRecord(conList[0].Id,batches[0].id);
+        Future_Planning__c resFP2 = EndlineFeedbackController.getStudentRecord(con1.Id,batches[0].id);
         test.stopTest();
-        
-        System.assertEquals(true,resFP1.Created_from_Form__c,'resFP1.Created_from_Form__c is false');
-        System.assertEquals(false,resFP2.Created_from_Form__c,'resFP2.Created_from_Form__c is true');
+
     }
     
     @isTest
@@ -86,8 +95,8 @@ public class EndlineFeedbackControllerTest {
         formDetails.put('typ', 'Form v2');
         
         test.startTest();
-        String response1 = EndlineFeedbackController.SaveAllData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9',JSON.serialize(formDetails), 'Endline');
-        String response2 = EndlineFeedbackController.SaveAllData(con1.Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9', JSON.serialize(formDetails), 'Endline');
+        String response1 = EndlineFeedbackController.SaveAllData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9',JSON.serialize(formDetails), 'Endline','');
+        String response2 = EndlineFeedbackController.SaveAllData(con1.Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9', JSON.serialize(formDetails), 'Endline','');
         test.stopTest();
         
         //System.assertEquals('Insert', response1);

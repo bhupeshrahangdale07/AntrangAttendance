@@ -39,6 +39,7 @@ public class SchoolCodeUpdateHandler {
                       acc.Enrolled_Grade_12__c > oldvaluesMap.get(acc.Id).Enrolled_Grade_12__c))
                    )
                   ){
+                      system.debug('**acc.Academic_Year__c:'+ acc.Academic_Year__c);
                       if(acc.Academic_Year__c == setting.Academic_Year__c){
                           mapAccIdToStudents.put(acc.Id, acc);
                           currAcad = Integer.valueOf(setting.Academic_Year__c);
@@ -71,6 +72,8 @@ public class SchoolCodeUpdateHandler {
                 Map<Id, Integer> mapAccIdToBatchCntForGrade10 = new Map<Id, Integer>();
                 Map<Id, Integer> mapAccIdToBatchCntForGrade11 = new Map<Id, Integer>();
                 Map<Id, Integer> mapAccIdToBatchCntForGrade12 = new Map<Id, Integer>();
+                
+                Map<Id, String> mapBatchIdToDistrict = new Map<Id, String>();
                 
                 if(!isInsert){
                     List<AggregateResult> aggrResult = [SELECT COUNT(Id), School_Name__c  
@@ -300,19 +303,31 @@ public class SchoolCodeUpdateHandler {
                                     } else {
                                         s.OMR_s_received_for_session__c = 'NA';
                                     }
+                                    
                                     s.Batch__c = bc.Id;
+                                    mapBatchIdToDistrict.put(bc.Id, bc.School_Name__r.District__r.Name.trim().toLowerCase());
                                     
                                     //s.Assigned_facilitator__c = selectedFacilitor;
                                     s.Session_Grade__c = bc.Grade__c;
+                                    if(sm.Session_Type__c == 'Counseling'){
+                                        s.Session_Status__c = 'Incomplete';
+                                    }else{
+                                        s.Session_Status__c = 'Unscheduled';
+                                    }
                                     sessionList.add(s);
                                 }
                             }
                         }
-                        if(sessionList.size() > 0){
+                        
+                        if(!sessionList.isEmpty()){
                             Insert sessionList;
+                            if(isOmrTypesRequired){
+                                createOmrTypeRecords(sessionList, mapBatchIdToDistrict);
+                            }
                         }
                         
                         
+                        /* Commented below omr type record Creations as part of enhancement we migrated it new method. 
                         if(isOmrTypesRequired){
                             Map<string, List<Session_OMR_Types_Mapping__c>> mappingOmrTypesMap = new Map<string, List<Session_OMR_Types_Mapping__c>>();
                             for(Session_OMR_Types_Mapping__c objOmrTypeMapping : [SELECT Id, Name, Grade__c, OMR_Record_Type__c, OMR_Type__c, Session_Name__c, Session_Number__c, OMR_Assessment_Object__c 
@@ -344,10 +359,91 @@ public class SchoolCodeUpdateHandler {
                                 Insert omrTypeList;
                             }
                         }
+						*/
                     }
                 }
             }
         }
+    
+    public static void createOmrTypeRecords(List<session__c> sessions, Map<Id, String> batchIdtoDistrict){
+        List<session__c> omrRequiredSessions = new List<Session__c>();
+        List<Session_OMR_Type__c> omrTypeList = new List<Session_OMR_Type__c>();
+        Set<String> omrRequiredSessionsGrades = new Set<String>();
+        Set<Decimal> omrRequiredSessionsSessionNumber = new Set<Decimal>();
+        Set<String> omrRequiredSessionsDistricts = new Set<String>();
+        Set<String> omrRequiredSessionsGroups = new Set<String>();
+        
+        Map<String, String> districtToGroup = new Map<String, String>();
+        
+        for(session__c s : sessions){
+            if(s.OMR_required__c){
+                omrRequiredSessions.add(s);
+                omrRequiredSessionsGrades.add(s.Session_Grade__c);
+				omrRequiredSessionsSessionNumber.add(s.Session_Number__c); 
+                
+                if(batchIdtoDistrict.containsKey(s.Batch__c)){                    
+                    omrRequiredSessionsDistricts.add(batchIdtoDistrict.get(s.Batch__c).trim().toLowerCase());
+                }
+            }
+        }
+        
+        for(SOMRT_Groups__c objOmrTypeGroups : [SELECT Id, Name, Districts__c FROM SOMRT_Groups__c]){
+            for (String district : objOmrTypeGroups.Districts__c.split(',')) {
+                String key = district.trim().toLowerCase();
+                if(omrRequiredSessionsDistricts.contains(key)){
+                    districtToGroup.put(key, objOmrTypeGroups.Name); 
+                }
+            }
+        }
+            
+        if(!districtToGroup.isEmpty()){
+            omrRequiredSessionsGroups.addAll(districtToGroup.values());
+        }
+            
+        
+        Map<string, List<Session_OMR_Types_Mapping__c>> mappingOmrTypesMap = new Map<string, List<Session_OMR_Types_Mapping__c>>();
+        for(Session_OMR_Types_Mapping__c objOmrTypeMapping : [SELECT Id, Name, Grade__c, Group__c, OMR_Record_Type__c, OMR_Type__c, Session_Name__c, Session_Number__c, OMR_Assessment_Object__c 
+                                                              FROM Session_OMR_Types_Mapping__c
+                                                              WHERE Group__c IN:omrRequiredSessionsGroups 
+                                                              AND Grade__c IN:omrRequiredSessionsGrades 
+                                                              AND Session_Number__c IN: omrRequiredSessionsSessionNumber])
+        {
+            String key = (objOmrTypeMapping.Grade__c.trim() +'_' + String.valueOf(objOmrTypeMapping.Session_Number__c).trim() + '_' + objOmrTypeMapping.Group__c).trim().toLowerCase();
+            if(mappingOmrTypesMap.containsKey(key)){
+                mappingOmrTypesMap.get(key).add(objOmrTypeMapping);
+            }else{
+                mappingOmrTypesMap.put(key, new List<Session_OMR_Types_Mapping__c>{ objOmrTypeMapping }); 
+            }       
+        }
+        
+        for(session__c s : omrRequiredSessions){
+            String GroupName = '';
+            if(batchIdtoDistrict.containsKey(s.Batch__c) && districtToGroup.containsKey(batchIdtoDistrict.get(s.Batch__c))){                    
+                // GroupName = batchIdtoDistrict.get(s.Batch__c);
+                
+                GroupName = districtToGroup.get(batchIdtoDistrict.get(s.Batch__c));
+            }
+            
+            String key = (s.Session_Grade__c.trim() + '_' + string.valueOf(s.Session_Number__c).trim() + '_'  + GroupName).trim().toLowerCase();
+            
+            if(mappingOmrTypesMap.containsKey(key) ){
+                for(Session_OMR_Types_Mapping__c omrType : mappingOmrTypesMap.get(key)){
+                    Session_OMR_Type__c omr = new Session_OMR_Type__c();
+                    omr.Session__c = s.Id;
+                    omr.OMR_Type__c = omrType.OMR_Type__c;
+                    omr.OMR_Assessment_Object__c = omrType.OMR_Assessment_Object__c;
+                    omr.OMR_Assessment_Record_Type__c = omrType.OMR_Record_Type__c;
+                    
+                    omrTypeList.add(omr);
+                }
+            }
+        }
+        
+        if(!omrTypeList.isEmpty()){
+            Insert omrTypeList;
+        }
+        
+    }
         
         public static Integer calculatebatchcnt(Integer batchSize, Integer existingBatches, Integer studentCnt){
             if(studentCnt <= batchSize && existingBatches == 0 && studentCnt != 0){

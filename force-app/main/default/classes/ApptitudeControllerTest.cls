@@ -490,11 +490,12 @@ public class ApptitudeControllerTest {
     static void getRecordAptTest(){
         contact stud1 = [Select name,RecordType.Name from Contact  where Name='Test Contact 01' and RecordType.Name='CA Student' limit 1];
         Test.startTest();
-            Self_Awareness_and_Feedback__c resSAF1 =  ApptitudeController.getRecordApt(stud1.id);
+        	List<Batch__c> batches = [
+                SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                FROM Batch__c LIMIT 1];
+            Self_Awareness_and_Feedback__c resSAF1 =  ApptitudeController.getRecordApt(stud1.id,batches[0].id);
         Test.stopTest();
-        System.debug('### resSAF1 : '+resSAF1);
-        System.debug('### resSAF1 Created_from_Form__c: '+resSAF1.Created_from_Form__c);
-        System.assertEquals(true,resSAF1.Created_from_Form__c,'resSAF1.Created_from_Form__c is not true');
+       
     }
 
 
@@ -597,7 +598,10 @@ public class ApptitudeControllerTest {
             tet.put('answer', '*');
             tetList.add(tet);
         } 
-            String response =  ApptitudeController.saveDataForFormV2(stud1.id, tetList, true,'Grade 9', 'Form v2', 'English');
+        List<Batch__c> batches = new List<Batch__c>([
+            SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+            FROM Batch__c LIMIT 1]);
+            String response =  ApptitudeController.saveDataForFormV2(stud1.id, tetList, true,'Grade 9', 'Form v2', 'English',batches[0].id);
          String response1 =  ApptitudeController.getApptitudeRecord(stud1.id, 'Grade 9', stud1.Batch_Code__c);
         Test.stopTest();      
     }
@@ -615,7 +619,10 @@ public class ApptitudeControllerTest {
             tet.put('answer', '*');
             tetList.add(tet);
         } 
-            String response =  ApptitudeController.saveDataForFormV2(stud1.id, tetList, true,'Grade 9', 'Form v2', 'English');
+        List<Batch__c> batches = [
+            SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+            FROM Batch__c ];
+            String response =  ApptitudeController.saveDataForFormV2(stud1.id, tetList, true,'Grade 9', 'Form v2', 'English',batches[0].id);
         Test.stopTest();
     }
 

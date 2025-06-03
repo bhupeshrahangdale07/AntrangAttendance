@@ -701,9 +701,10 @@ export default class CarrerDecisionMaking02V2 extends NavigationMixin(LightningE
     getApexRecordCDM2(){
         getRecordCDM2({
             studentId : this.rxStudentId,
-            grade : this.grd
+            grade : this.grd,
+            batchId : this.bid
         }).then(result => {
-            //console.log('result : ' + JSON.stringify(result));
+            console.log('result : ' + JSON.stringify(result));
             //===========================================================//
             const singleRecordWrapper = JSON.parse(JSON.stringify(result));
             if(singleRecordWrapper.studentBarcode !== undefined)
@@ -3428,6 +3429,7 @@ export default class CarrerDecisionMaking02V2 extends NavigationMixin(LightningE
             console.log('$$$ lng: ',this.lng);
             console.log('$$$ typ: ',this.typ);
             saveAllQA({
+                batchId : this.bid,
                 recordIdCMD2 : this.rxRecordIdCMD2,
                 studentId : this.rxStudentId,
                 barCode : this.rxStudentBarcode,
@@ -3435,7 +3437,7 @@ export default class CarrerDecisionMaking02V2 extends NavigationMixin(LightningE
                 lng : this.lng,
             typ : (this.typ == 'v2' || this.typ == 'Form V2') ? 'Form V2' : 'Form V1'
             }).then(result => {
-                //console.log('result : ' + JSON.stringify(result));
+                console.log('result 1: ' + JSON.stringify(result));
                 //===========================================================//
                 this.rxRecordIdCMD2 = result;
                 //this.reInitializeRecordCDM2();

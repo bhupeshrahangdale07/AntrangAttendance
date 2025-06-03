@@ -4,7 +4,7 @@ public class quiz1Grade10Test {
     public static void testData(){
         Account account=new Account();
         account.Name='Shreeram School';
-        Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId();
+        Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId() ;
         account.RecordTypeId=RecordTypeIdAccount;
         insert account;
 
@@ -47,9 +47,9 @@ public class quiz1Grade10Test {
         quiz1Grade10 q1G10 = new quiz1Grade10();
         quiz1Grade10.qAnswerAll qSaveAll = new quiz1Grade10.qAnswerAll();
         
-        quiz1Grade10.getApexRecord(conList[0].Id, 'Grade 9');
-        quiz1Grade10.getApexRecord(conList[0].Id, 'Grade 10');
-        quiz1Grade10.getApexRecord(conList[0].Id, 'Grade 11');
+        quiz1Grade10.getApexRecord(conList[0].Id, 'Grade 9','');
+        quiz1Grade10.getApexRecord(conList[0].Id, 'Grade 10','');
+        quiz1Grade10.getApexRecord(conList[0].Id, 'Grade 11','');
         
         
         qAnswer qAns = new qAnswer();
@@ -82,9 +82,9 @@ public class quiz1Grade10Test {
         
 
         test.startTest();
-        quiz1Grade10.getApexRecord(conList[0].Id, 'Grade 9');
-        quiz1Grade10.getApexRecord(conList[0].Id, 'Grade 10');
-        quiz1Grade10.getApexRecord(conList[0].Id, 'Grade 11');
+        quiz1Grade10.getApexRecord(conList[0].Id, 'Grade 9','');
+        quiz1Grade10.getApexRecord(conList[0].Id, 'Grade 10','');
+        quiz1Grade10.getApexRecord(conList[0].Id, 'Grade 11','');
         test.stopTest();
     }
     

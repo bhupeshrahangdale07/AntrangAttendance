@@ -22,7 +22,7 @@
         var expires;
         if (days) {
             const date = new Date();
-            date.setTime(date.getTime() + (6* 1000));
+            date.setTime(date.getTime() + (1 * 24 * 60 * 60 * 1000));
             expires = "; expires=" + date.toGMTString();
         } else {
             expires = "";
@@ -57,17 +57,17 @@
                     
                     navService.navigate(pageReference);
                     */
-                    var pageName = 'payment_type__c';
-                     /* var pageName = 'LoginPage__c';
-                  if(res.UserType && res.UserType == 'Admin'){
+                    
+                    var pageName = 'LoginPage__c';
+                    if(res.UserType && res.UserType == 'Admin'){
                         pageName = 'GenrateInvoiceForm__c';
                     }else if(res.UserType && res.UserType == 'Supervisor'){
                         pageName = 'Approve_Payout__c';
                     }else if(res.UserType && res.UserType == 'Finance'){
                         pageName = 'Generate_payout_file_for_Finance__c';
-                    }*/
+                    }
                     this.createCookie('AntarangPaymentLogin', email, 1);
-                    this.navigateTo(component, pageName , res.UserType);
+                    this.navigateTo(component, pageName, res.UserType);
                 } else {
                     if(res.error && res.error != ''){
                         console.log('res.error =',res.error);

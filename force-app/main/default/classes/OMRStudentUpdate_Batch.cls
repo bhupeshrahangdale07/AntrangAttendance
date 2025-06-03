@@ -55,7 +55,7 @@ public class OMRStudentUpdate_Batch Implements Database.batchable<sObject>, sche
         
         //CDM1
         List<OMR_Assessment__c> ListCDM1 = New List<OMR_Assessment__c>();
-        For (OMR_Assessment__c cdm1 : [Select Id, Barcode__c, Student__c from OMR_Assessment__c where Student__c = Null AND Barcode__c != Null AND Created_from_Form__c = False AND (Barcode__c IN: Grade_11_Barcode_Map.keySet() OR Barcode__c IN: Grade_10_Barcode_Map.keySet() OR Barcode__c IN: Grade_9_Barcode_Map.keySet() )]){
+        For (OMR_Assessment__c cdm1 : [Select Id, Barcode__c, Student__c from OMR_Assessment__c where Student__c = Null AND Barcode__c != Null AND Created_from_Form__c = False]){
             If(cdm1 != Null){
                 If(Grade_9_Barcode_Map.containsKey(cdm1.Barcode__c)){
                     cdm1.Student__c = Grade_9_Barcode_Map.get(cdm1.Barcode__c).Id;
@@ -75,7 +75,7 @@ public class OMRStudentUpdate_Batch Implements Database.batchable<sObject>, sche
         
         //CDM2
         List<CDM2__c> ListCDM2 = New List<CDM2__c>();
-        For(CDM2__c cdm2 : [Select Id, Barcode__c, Student__c from CDM2__c where Student__c = Null AND Barcode__c != Null AND Created_from_Form__c = False AND (Barcode__c IN: Grade_11_Barcode_Map.keySet() OR Barcode__c IN: Grade_10_Barcode_Map.keySet() OR Barcode__c IN: Grade_9_Barcode_Map.keySet() )]){
+        For(CDM2__c cdm2 : [Select Id, Barcode__c, Student__c from CDM2__c where Student__c = Null AND Barcode__c != Null AND Created_from_Form__c = False]){
             If(cdm2 != Null){
                 If(Grade_9_Barcode_Map.containsKey(cdm2.Barcode__c)){
                     cdm2.Student__c = Grade_9_Barcode_Map.get(cdm2.Barcode__c).Id;
@@ -95,7 +95,7 @@ public class OMRStudentUpdate_Batch Implements Database.batchable<sObject>, sche
         
         //Career Planning
         List<Career_Planning__c> CPList = New List<Career_Planning__c>();
-        For(Career_Planning__c cp : [Select Id, Barcode__c, Student__c from Career_Planning__c where Student__c = Null AND Barcode__c != Null AND Created_from_Form__c = False AND (Barcode__c IN: Grade_11_Barcode_Map.keySet() OR Barcode__c IN: Grade_10_Barcode_Map.keySet() OR Barcode__c IN: Grade_9_Barcode_Map.keySet())]){
+        For(Career_Planning__c cp : [Select Id, Barcode__c, Student__c from Career_Planning__c where Student__c = Null AND Barcode__c != Null AND Created_from_Form__c = False]){
             If(cp != Null){
                 If(Grade_9_Barcode_Map.containsKey(cp.Barcode__c)){
                     cp.Student__c = Grade_9_Barcode_Map.get(cp.Barcode__c).Id;
@@ -115,7 +115,7 @@ public class OMRStudentUpdate_Batch Implements Database.batchable<sObject>, sche
         
         //Career Skill
         List<Career_Skill__c> CSList = New List<Career_Skill__c>();
-        For(Career_Skill__c cs : [Select Id, Barcode__c, Student__c from Career_Skill__c where Student__c = Null AND Barcode__c != Null AND Created_from_Form__c = False AND (Barcode__c IN: Grade_11_Barcode_Map.keySet() OR Barcode__c IN: Grade_10_Barcode_Map.keySet() OR Barcode__c IN: Grade_9_Barcode_Map.keySet() )]){
+        For(Career_Skill__c cs : [Select Id, Barcode__c, Student__c from Career_Skill__c where Student__c = Null AND Barcode__c != Null AND Created_from_Form__c = False]){
             If(cs != Null){
                 If(Grade_9_Barcode_Map.containsKey(cs.Barcode__c)){
                     cs.Student__c = Grade_9_Barcode_Map.get(cs.Barcode__c).Id;
@@ -135,7 +135,7 @@ public class OMRStudentUpdate_Batch Implements Database.batchable<sObject>, sche
         
         //Future Planning
         List<Future_Planning__c> FPList = New List<Future_Planning__c>();
-        For(Future_Planning__c fp : [Select Id, Barcode__c, Student__c from Future_Planning__c where Student__c = Null AND Barcode__c != Null AND Created_from_Form__c = False AND (Barcode__c IN: Grade_11_Barcode_Map.keySet() OR Barcode__c IN: Grade_10_Barcode_Map.keySet() OR Barcode__c IN: Grade_9_Barcode_Map.keySet() )]){
+        For(Future_Planning__c fp : [Select Id, Barcode__c, Student__c from Future_Planning__c where Student__c = Null AND Barcode__c != Null AND Created_from_Form__c = False]){
             If(fp != Null){
                 If(Grade_9_Barcode_Map.containsKey(fp.Barcode__c)){
                     fp.Student__c = Grade_9_Barcode_Map.get(fp.Barcode__c).Id;
@@ -161,10 +161,7 @@ public class OMRStudentUpdate_Batch Implements Database.batchable<sObject>, sche
                                                   Quiz_1_9__c, Quiz_1_10__c, Quiz_1_1_Marks__c, Quiz_1_10_Marks__c, Quiz_1_2_Marks__c, 
                                                   Quiz_1_3_Marks__c, Quiz_1_4_Marks__c, Quiz_1_5_Marks__c, Quiz_1_6_Marks__c, Quiz_1_7_Marks__c, 
                                                   Quiz_1_8_Marks__c, Quiz_1_9_Marks__c from Self_Awareness_and_Feedback__c 
-                                                  where Student__c = Null AND Barcode__c != Null AND Created_from_Form__c = False
-                                                 AND (Barcode__c IN: Grade_11_Barcode_Map.keySet() 
-                                                      OR Barcode__c IN: Grade_10_Barcode_Map.keySet() 
-                                                      OR Barcode__c IN: Grade_9_Barcode_Map.keySet())]){
+                                                  where Student__c = Null AND Barcode__c != Null AND Created_from_Form__c = False]){
                                                       
                                                       If(saf != Null){
                                                           If(Grade_9_Barcode_Map.containsKey(saf.Barcode__c)){
@@ -199,10 +196,7 @@ public class OMRStudentUpdate_Batch Implements Database.batchable<sObject>, sche
                                                Quiz_2_5__c, Quiz_2_6__c, Quiz_2_7__c, Quiz_2_8__c, Quiz_2_10__c, Quiz_2_9__c, Quiz_2_1_Marks__c, 
                                                Quiz_2_2_Marks__c, Quiz_2_3_Marks__c, Quiz_2_4_Marks__c, Quiz_2_5_Marks__c, Quiz_2_6_Marks__c, 
                                                Quiz_2_7_Marks__c, Quiz_2_8_Marks__c, Quiz_2_9_Marks__c, Quiz_2_10_Marks__c 
-                                               from Self_Awareness_Realities__c where Student__c = Null AND Barcode__c != Null AND Created_from_Form__c = False
-                                              AND (Barcode__c IN: Grade_11_Barcode_Map.keySet() 
-                                                   OR Barcode__c IN: Grade_10_Barcode_Map.keySet() 
-                                                   OR Barcode__c IN: Grade_9_Barcode_Map.keySet() )]){
+                                               from Self_Awareness_Realities__c where Student__c = Null AND Barcode__c != Null AND Created_from_Form__c = False]){
                                                    If(sar != Null){
                                                        If(Grade_9_Barcode_Map.containsKey(sar.Barcode__c)){
                                                            sar.Student__c = Grade_9_Barcode_Map.get(sar.Barcode__c).Id;

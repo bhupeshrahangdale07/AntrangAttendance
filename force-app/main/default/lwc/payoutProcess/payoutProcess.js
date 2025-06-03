@@ -142,7 +142,6 @@ export default class StudentOMRManager extends NavigationMixin(LightningElement)
 
     handleDate(event){
         this.invoiceDate = event.target.value;
-        console.log('***this.invoiceDate:',this.invoiceDate);
     }
     handlefacilitatorEmail(event){
         //alert(event.target.value);

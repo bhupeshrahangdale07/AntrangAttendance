@@ -69,7 +69,7 @@ public class SendEmailToBatchTrainerCtrlTest{
         
         batch.Donor_Name__c=account1.id;
         batch.Name='Batch 7';
-        batch.Grade__c='Grade 9';
+        batch.Grade__c='12th';
         batch.Number_of_students_facilitated__c=1.0;
         batch.Medium_Language_of_Instruction__c = 'Hindi';
         batch.Date_of_facilitation_starting__c = datetime.now() - 3;
@@ -154,7 +154,7 @@ public class SendEmailToBatchTrainerCtrlTest{
         
         batch.Donor_Name__c=account1.id;
         batch.Name='Batch 7';
-        batch.Grade__c='Grade 9';
+        batch.Grade__c='12th';
         batch.Number_of_students_facilitated__c=1.0;
         batch.Combined_Batch_no__c = 23;
         insert batch;      

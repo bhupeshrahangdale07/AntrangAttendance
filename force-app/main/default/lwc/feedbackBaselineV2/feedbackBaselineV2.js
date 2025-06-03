@@ -251,7 +251,8 @@ export default class FeedbackBaselineV2 extends NavigationMixin(LightningElement
 
     getStudentRecordFun(){
         getStudentRecord({
-            studentId : this.studentId
+            studentId : this.studentId,
+            batchId : this.selectedBatchId
         }).then(result => {
             if(result){
                 this.showForm = true;
@@ -499,6 +500,7 @@ export default class FeedbackBaselineV2 extends NavigationMixin(LightningElement
             'typ' : (this.typ == 'v2' || this.typ == 'Form V2') ? 'Form V2' : 'Form V1'
         };
         SaveAllData({
+            batchId : this.selectedBatchId,
             studentId : this.studentId,  
             F1 : this.queF1Value,
             F2 : this.queF2Value,

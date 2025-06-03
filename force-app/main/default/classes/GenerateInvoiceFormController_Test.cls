@@ -18,7 +18,7 @@ public class GenerateInvoiceFormController_Test {
         State_Govt_Body_Level__c state = new State_Govt_Body_Level__c(Name = 'Test State');
         insert state;
         
-        District_Master__c district = new District_Master__c(Name = 'TDistrict', State__c = state.id, 
+        District_Master__c district = new District_Master__c(State__c = state.id, 
                                                              Payout_Supervisor_Username__c = 'payout.supervisor@test.com',
                                                              Payout_Supervisor_Password__c = 'Password1',
                                                              Payout_Admin_Password__c = 'Password2',

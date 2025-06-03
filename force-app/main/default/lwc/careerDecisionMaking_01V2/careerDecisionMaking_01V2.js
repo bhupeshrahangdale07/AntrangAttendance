@@ -229,7 +229,8 @@ export default class CareerDecisionMaking_01V2 extends NavigationMixin(Lightning
 
         getRecordCDM1({
             studentId : this.rxStudentId,
-            grade : this.grd
+            grade : this.grd,
+            batchId : this.bid
         }).then(result => {
             console.log('result : ' + JSON.stringify(result));
             //===========================================================//
@@ -489,7 +490,8 @@ export default class CareerDecisionMaking_01V2 extends NavigationMixin(Lightning
     reInitializeRecordCDM1(){
         getRecordCDM1({
             studentId : this.rxStudentId,
-            grade : this.grd
+            grade : this.grd,
+            batchId : this.bid
         }).then(result => {
             //console.log('result : ' + JSON.stringify(result));
             //===========================================================//
@@ -1497,6 +1499,7 @@ export default class CareerDecisionMaking_01V2 extends NavigationMixin(Lightning
             //this.rxRecordIdCMD1 = null; //For temperary purpose delete afterwards
 
             saveAllQA({
+                batchId : this.bid,
                 recordIdCMD1 : this.rxRecordIdCMD1,
                 studentId : this.rxStudentId,
                 barCode : this.rxStudentBarcode,

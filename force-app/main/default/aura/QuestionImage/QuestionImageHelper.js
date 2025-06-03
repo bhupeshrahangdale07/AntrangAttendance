@@ -1,11 +1,13 @@
 ({
 	retrieveQuestionIamge : function(component, event) {
+        console.log(component.get("v.questionId"));
 		var action = component.get("c.fetchQuestionImage");
         action.setParams({
             questionId: component.get("v.questionId")
         });
         action.setCallback(this, function(response){
             var state = response.getState();
+            
             if(state === "SUCCESS"){
                 var result = response.getReturnValue();
                 

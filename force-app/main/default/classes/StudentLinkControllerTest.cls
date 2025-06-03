@@ -105,7 +105,7 @@ public class StudentLinkControllerTest {
     public static void test(){
         
         Contact con = [select id from contact where Currently_Studying_In__c = 'Grade 11' limit 1];
-        batch__c bat = [select id from batch__c limit 1];
+        batch__c bat = [select id from batch__c where Name ='test batch 10' limit 1];
         Test.startTest();
         
         StudentLinkController.getUnLinkedStudents('Grade 12', bat.Id);

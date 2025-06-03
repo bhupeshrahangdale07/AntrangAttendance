@@ -115,7 +115,7 @@ public class SendPayOutInvoiceDetailsController {
                     }
                     
                     if(sessionToUpdate.size()>0){
-                       // update sessionToUpdate;
+                        update sessionToUpdate;
                         showSuccessMsg=true;
                     }
                     

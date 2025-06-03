@@ -301,7 +301,8 @@ export default class CareerDecisionMaking_02_Endline_V2 extends NavigationMixin(
     getApexRecordCDM2(){
         getRecordCDM2({
             studentId : this.rxStudentId,
-            grade : this.grd
+            grade : this.grd,
+            batchId : this.bid
         }).then(result => {
             //console.log('result : ' + JSON.stringify(result));
             //===========================================================//
@@ -2913,6 +2914,7 @@ export default class CareerDecisionMaking_02_Endline_V2 extends NavigationMixin(
             //this.rxRecordIdCMD2 = null; //For temperary purpose delete afterwards
 
             saveAllQA({
+                batchId : this.bid,
                 recordIdCMD2 : this.rxRecordIdCMD2,
                 studentId : this.rxStudentId,
                 barCode : this.rxStudentBarcode,

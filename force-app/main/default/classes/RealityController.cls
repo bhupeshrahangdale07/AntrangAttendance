@@ -10,12 +10,36 @@ public without sharing class RealityController {
             SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
             FROM Batch__c
             WHERE Id = :batchId LIMIT 1];
-        list<contact> contact= [select id,Bar_Code__c from contact where id =:studentId];	
+        String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }	
             list<Self_Awareness_Realities__c> assesRec = [SELECT Created_from_Form__c, Barcode__c, Form_Submitted__c 
                             FROM Self_Awareness_Realities__c 
                             WHERE Created_from_Form__c = true AND 
                             RecordType.Name='Baseline'  AND  
-                            Barcode__c = : contact[0].Bar_Code__c AND 
+                            Barcode__c = : studentBarcode AND 
                             Grade__c = :grade AND
                             Student__c = : studentId AND 
                             Academic_Year__c = : batches[0].Academic_Year__c AND
@@ -166,10 +190,45 @@ public without sharing class RealityController {
         }
     }
     @AuraEnabled
-    public static Self_Awareness_Realities__c getRecordApt(String studentId) {
+    public static Self_Awareness_Realities__c getRecordApt(String studentId, string grade, string batchId) {
         try{
-            List<Self_Awareness_Realities__c> sf =  new List<Self_Awareness_Realities__c>([select id,Created_from_Form__c, Student__c,Reality1_Self_1__c,Reality_2_Self_2__c,Reality_3_Self_3__c,Reality_4_Self_4__c,Reality_5_Family_1__c,Reality_6_Family_2__c,Reality_7_Family_3__c,Reality_8_Family_4__c, student__r.name from Self_Awareness_Realities__c
-                                                            where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' limit 1]);
+            List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c
+                    WHERE Id = :batchId LIMIT 1]);
+                String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+            List<Self_Awareness_Realities__c> sf =  new List<Self_Awareness_Realities__c>([select id,Created_from_Form__c, Student__c,
+                                                                                           Reality1_Self_1__c,Reality_2_Self_2__c,
+                                                                                           Reality_3_Self_3__c,Reality_4_Self_4__c,
+                                                                                           Reality_5_Family_1__c,Reality_6_Family_2__c,
+                                                                                           Reality_7_Family_3__c,Reality_8_Family_4__c, 
+                                                                                           student__r.name from Self_Awareness_Realities__c
+                                                            where Student__c =: studentId and Created_from_Form__c = true and 
+                                                                                           RecordType.Name='Baseline' limit 1]);
                 if(!sf.isEmpty()){
                     return sf[0];
                 }
@@ -248,12 +307,43 @@ public without sharing class RealityController {
         }
     }
     @AuraEnabled
-    public static string saveData(String studentId, string self1, string self2, string self3,string self4,string family1,string family2,string family3,string family4, boolean saveFlag, string grade,string typ, string lng) {
+    public static string saveData(String batchId, String studentId, string self1, string self2, string self3,string self4,string family1,string family2,string family3,string family4, boolean saveFlag, string grade,string typ, string lng) {
         system.debug(':::studentId = '+studentId);
 		String returnStr = '';
         try{
+            
+            List<Batch__c> batches = [
+            SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+            FROM Batch__c
+            WHERE Id = :batchId LIMIT 1];
+                        String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+            
 			List<Self_Awareness_Realities__c> sf =  new List<Self_Awareness_Realities__c>([select id,Created_from_Form__c,Reality1_Self_1__c,Reality_2_Self_2__c,Reality_3_Self_3__c,Reality_4_Self_4__c,Reality_5_Family_1__c,Reality_6_Family_2__c,Reality_7_Family_3__c,Reality_8_Family_4__c, Student__c from Self_Awareness_Realities__c
-                                                            where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' and Error_Status__c = 'No Error' limit 1]); //V1.0
+                                                            where Barcode__c = : studentBarcode AND Grade__c = :batches[0].Grade__c AND Student__c = : studentId AND Academic_Year__c = : batches[0].Academic_Year__c and Created_from_Form__c = true and RecordType.Name='Baseline' and Error_Status__c = 'No Error' limit 1]); //V1.0
             if(!sf.isEmpty()){
                 sf[0].Form_Language__c = lng;
                 sf[0].Form_Name__c = typ;

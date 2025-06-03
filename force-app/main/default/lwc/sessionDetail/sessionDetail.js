@@ -44,8 +44,8 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
     showLoadingModal = true;
     @track sessionList = [];
     @track editedStudent = false;
+    @track optionsSessionLead;
     showPendingSession;
-    ampm;
 
     batchOption = [];
     gradeOption = [];
@@ -77,13 +77,33 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
         const selectedValue = event.detail.value;
 
         // Update the corresponding student's attendance in the array
-        this.indStudentData = this.indStudentData.map(student => {
+        /*this.indStudentData = this.indStudentData.map(student => {
             if (student.studentId === studentId) {
                 return { ...student, stdLead: selectedValue };
             }
             return student;
+        });*/
+        const isFilled = val => val !== null && val !== undefined && val !== '';
+        this.indStudentData = this.indStudentData.map(student => {
+            if (student.studentId === studentId) {
+                student.stdLead = selectedValue;
+
+                const lead = student.stdLead;
+                const att = student.stdAttendance;
+                const par = student.parentAttendance;
+
+                /*const anySelected = (lead && lead !== '') || (att && att !== '') || (par && par !== '');
+                if(anySelected === ''){
+                    anySelected = false;
+                }*/
+                const anySelected = isFilled(lead && lead !== '') || isFilled(att && att !== '') || isFilled(par && par !== '');
+
+                student.leadRequired = anySelected;
+                student.stdAttendRequired = anySelected;
+                student.parAttRequired = anySelected;
+            }
+            return student;
         });
-        console.log('this.indStudentData = ', this.indStudentData);
     }
     handleParentAttendanceChange(event) {
         this.editedStudent = true;
@@ -91,9 +111,30 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
         const selectedValue = event.detail.value;
 
         // Update the corresponding student's attendance in the array
-        this.indStudentData = this.indStudentData.map(student => {
+        /*this.indStudentData = this.indStudentData.map(student => {
             if (student.studentId === studentId) {
                 return { ...student, parentAttendance: selectedValue };
+            }
+            return student;
+        });*/
+        const isFilled = val => val !== null && val !== undefined && val !== '';
+        this.indStudentData = this.indStudentData.map(student => {
+            if (student.studentId === studentId) {
+                student.parentAttendance = selectedValue;
+
+                const lead = student.stdLead;
+                const att = student.stdAttendance;
+                const par = student.parentAttendance;
+
+                /*const anySelected = (lead && lead !== '') || (att && att !== '') || (par && par !== '');
+                if(anySelected === ''){
+                    anySelected = false;
+                }*/
+                const anySelected = isFilled(lead && lead !== '') || isFilled(att && att !== '') || isFilled(par && par !== '');
+
+                student.leadRequired = anySelected;
+                student.stdAttendRequired = anySelected;
+                student.parAttRequired = anySelected;
             }
             return student;
         });
@@ -105,9 +146,43 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
         const selectedValue = event.detail.value;
 
         // Update the corresponding student's attendance in the array
-        this.indStudentData = this.indStudentData.map(student => {
+        /*this.indStudentData = this.indStudentData.map(student => {
             if (student.studentId === studentId) {
                 return { ...student, stdAttendance: selectedValue };
+            }
+            return student;
+        });*/
+
+        this.counselingSessions.forEach((sess) => {
+            let pastTime = this.isExactMatch(sess.sessionDate, sess.startTime);
+                    if (pastTime) {
+                        this.indStudentData = this.indStudentData.map(student => {
+                            if (student.studentId == studentId && student.sessionId == sess.id) {
+                                return { ...student, stdCounselingDate: sess.sessionDate ,stdCounselingTime: sess.startTime};
+                            }
+                            return student;
+                        });
+                    }
+        });
+        
+
+        const isFilled = val => val !== null && val !== undefined && val !== '';
+        this.indStudentData = this.indStudentData.map(student => {
+            if (student.studentId === studentId) {
+                student.stdAttendance = selectedValue;
+
+                const lead = student.stdLead;
+                const att = student.stdAttendance;
+                const par = student.parentAttendance;
+
+                /*const anySelected = (lead && lead !== '') || (att && att !== '') || (par && par !== '');
+                if(anySelected === ''){
+                    anySelected = false;
+                }*/
+                const anySelected = isFilled(lead && lead !== '') || isFilled(att && att !== '') || isFilled(par && par !== '');
+                student.leadRequired = anySelected;
+                student.stdAttendRequired = anySelected;
+                student.parAttRequired = anySelected;
             }
             return student;
         });
@@ -117,15 +192,26 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
         this.editedStudent = true;
         this.isWrongBatchChecked = event.target.checked;
         const studentIdValue = event.target.dataset.studentId;
-        console.log('studentIdValue - ', studentIdValue);
+
+         this.counselingSessions.forEach((sess) => {
+            let pastTime = this.isExactMatch(sess.sessionDate, sess.startTime);
+                    if (pastTime) {
+                        this.indStudentData = this.indStudentData.map(student => {
+                            if (student.studentId == studentIdValue && student.sessionId == sess.id) {
+                                return { ...student, stdCounselingDate: sess.sessionDate ,stdCounselingTime: sess.startTime};
+                            }
+                            return student;
+                        });
+                    }
+        });
+
         this.indStudentData = this.indStudentData.map(student => {
             if (student.studentId == studentIdValue) {
                 return { ...student, stdWrongBatch: event.target.checked, stdAttendance: "", stdLead: "", parentAttendance: "" };
             }
             return student;
         });
-        console.log(' this.indStudentData  =', this.indStudentData
-        )
+        
 
     }
 
@@ -135,9 +221,11 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
             session.reasonForLateSchedule = '';
             session.scheduleLate = false;
             session.editedDateTime = true;
+            session.sessionDate = null;
+            session.startTimeFormatted = null;
+            session.startTime = null;
         });
         const lateScheduleSessionsIds = new Set(this.lateScheduleSessions.map(fs => fs.id));
-        console.log('lateScheduleSessionsIds = ', lateScheduleSessionsIds);
 
 
         const updateLateScheduleReason = (sessions) => {
@@ -146,6 +234,9 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
                     session.reasonForLateSchedule = '';
                     session.scheduleLate = false;
                     session.editedDateTime = true;
+                    session.sessionDate = null;
+                    session.startTimeFormatted = null;
+                    session.startTime = null;
                 }
             });
         };
@@ -161,7 +252,6 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
         // let reasonValue = this.template.querySelector('lightning-combobox[data-id = '+sessionIdVal+']').value;
         // console.log('reasonValue= '+reasonValue);
         const hasMissingReason = this.lateScheduleSessions.some(session => !session.reasonForLateSchedule);
-        console.log('hasMissingReason = ', this.lateScheduleSessions)
         if (hasMissingReason) {
             this.showToastMessage('Please select a reason for all late scheduled sessions.', 'error');
         } else {
@@ -193,10 +283,10 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
                 Rescheduled_Counter__c : scheduleCounter
             };
         });*/
+        //let emptyField = [];
         const buildUpdatedSessions = (sessions) => {
             return sessions.map(sess => {
                 if (!sess.isCounselingSession) {
-                    console.log('sess- ' + JSON.stringify(sess));
                     let isReady = false;
 
                     if (sess.isStudentSession) {
@@ -209,10 +299,23 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
 
                     sess.paymentStatus = isReady ? 'Ready For Payment' : '';
 
+                    // if (sess.isStudentSession) {
+                    //     const filledCount = [sess.hmAttended, sess.sessionLead, sess.studentAttendance].filter(val =>  String(val).trim() !== '').length;
+
+                    //     if (filledCount > 0 && filledCount < 3) {
+                    //         emptyField.push(sess);
+                    //     }
+                    // } else if (sess.isParentSession) {
+                    //    const filledCount = [sess.hmAttended, sess.sessionLead, sess.studentAttendance, sess.parentAttendance].filter(val =>  String(val).trim() !== '').length;
+
+                    //     if (filledCount > 0 && filledCount < 4) {
+                    //         emptyField.push(sess);
+                    //     }
+                    // }
+
                     let scheduleCounter = sess.editedDateTime === true ? (sess.scheduleCounter + 1) : sess.scheduleCounter;
-                    console.log('scheduleCounter = ', scheduleCounter);
-                    console.log('sess = ', sess);
-                    if (sess.startTime == null || sess.sessionDate == null) {
+                   
+                    if ((sess.startTime == '' || sess.sessionDate == '') || (sess.startTime == null || sess.sessionDate == null)) {
                         return {
                             Id: sess.id,
                             Late_Schedule__c: sess.reasonForLateSchedule,
@@ -247,9 +350,33 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
                         sess.sessionDate = '';
                         sess.startTime = '';
                         sess.status = 'Incomplete';
+                    } else {
+                        sess.status = 'Incomplete';
                     }
+                    // let pastTime = this.isExactMatch(sess.sessionDate, sess.startTime);
+                    // console.log('pastTime con- ' + pastTime);
+                    // if (pastTime) {
+                    //     this.indStudentData = this.indStudentData.map(student => {
+                    //         if (student.studentId == sess.id) {
+                    //             return { ...student, stdCounselingDate: sess.sessionDate ,stdCounselingTime: sess.startTime};
+                    //         }
+                    //         return student;
+                    //     });
+                    // }
+
 
                     let scheduleCounter = sess.editedDateTime === true ? (sess.scheduleCounter + 1) : sess.scheduleCounter;
+                    if (sess.startTime == '' || sess.sessionDate == '') {
+                        return {
+                            Id: sess.id,
+                            Late_Schedule__c: sess.reasonForLateSchedule,
+                            Scheduling_Type__c: '',
+                            Session_Start_Time__c: sess.startTime,
+                            SessionDate__c: sess.sessionDate,
+                            Session_Status__c: 'Incomplete',
+                            Rescheduled_Counter__c: scheduleCounter
+                        };
+                    } else {
                     return {
                         Id: sess.id,
                         Late_Schedule__c: sess.reasonForLateSchedule,
@@ -264,33 +391,38 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
                         Total_Parent_Present__c: sess.parentAttendance,
                         Payment_Status__c: sess.paymentStatus
                     };
+                    }
                 }
 
             });
         };
+
         const sessionsToUpdate = [
             ...buildUpdatedSessions(this.flexibleSessions),
             ...buildUpdatedSessions(this.counselingSessions),
             ...buildUpdatedSessions(this.parentSessions),
             ...buildUpdatedSessions(this.studentSessions)
         ];
+        
+        // if (emptyField.length > 0) {
+        //     this.showToastMessage('Please fill all required fields', 'error');
+        // } else {
+            saveLateSchedule({ sessionList: sessionsToUpdate })
+                .then((result) => {
+                    if (result == true) {
+                        this.saveStudentAttendanceFunc()
 
-        saveLateSchedule({ sessionList: sessionsToUpdate })
-            .then((result) => {
-                console.log('saveLateSchedule Result = ', result);
-                if (result == true) {
-                    this.saveStudentAttendanceFunc()
-
-                }
-                //this.showLoading = false;
+                    }
+                    //this.showLoading = false;
 
 
-            })
-            .catch((Error) => {
-                this.showToastMessage(JSON.stringify(Error), 'error');
-                console.log('Error =' + Error);
-                console.log('Error= ' + JSON.stringify(Error));
-            })
+                })
+                .catch((Error) => {
+                    this.showToastMessage(JSON.stringify(Error), 'error');
+                    console.log('Error =' + Error);
+                    console.log('Error= ' + JSON.stringify(Error));
+                })
+        //}
     }
     handleLateScheduleChange(event) {
         const sessionId = event.target.dataset.id; // Get the session ID
@@ -377,7 +509,16 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
                 }
             }
         });*/
+        this.showLoading = true;
+        const isValid = this.validate();
+        if (!isValid) {
+            this.showToastMessage('Please fill all required fields','error');
+            this.showLoading = false; // Hide loader if validation fails
+            return;
+        }
+        this.showLoading = false; 
         let lateSchedule = [];
+        let lessThanOneHr = [];
         const markLateScheduledSessions = (sessions) => {
             const now = new Date();
             sessions.forEach(session => {
@@ -405,12 +546,15 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
                     // if (session.pastTime) {
                     //     session.status = 'Ready for Attendance';
                     // }
+                    const diffHours = this.calTimeDiff(session.oldDatevalue, session.oldTime);
+                    if (diffHours < 1 && diffHours > 0) {
+                        lessThanOneHr.push(session);
+                    }
                     // Calculate the difference in milliseconds
                     const diffInMs = inputDateTime - now;
 
                     // Convert milliseconds to hours
                     const diffInHours = diffInMs / (1000 * 60 * 60);
-                    console.log('diffInHours- ' + diffInHours);
                     if ((sessionDate == '' && startTime == '') || (sessionDate == null && startTime == '00:00:00')) {
                         session.lateSchedule = false;
                     } else {
@@ -427,10 +571,13 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
                             session.lateSchedule = false;
                         }
                     }
-                    if (session.oldDatevalue == '' && session.oldTime == '') {
+                    if (session.oldDatevalue == '' && session.oldTime == '' && session.scheduleCounter == 0) {
                         session.editedDateTime = false;
                     }
-                    session.status = 'Scheduled';
+                    if (!session.isCounselingSession) {
+                        session.status = 'Scheduled';
+                    }
+                    
 
                 } else if (session.flexiRFA) {
                     session.status = 'Ready for Attendance';
@@ -462,7 +609,8 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
 
         let stdValidTime;
         let prtValidTime;
-        let preSessionError = false;
+        let preStdSessionError = false;
+        let preParntSessionError = false;
         /*this.studentSessions.forEach((sess, index) => {
             if (index != 0 && sess.startTime != "") {
                 const prevSession = this.studentSessions[index - 1];
@@ -496,17 +644,16 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
         );*/
 
         for (let i = 0; i < this.studentSessions.length; i++) {
-  if (i != 0 && this.studentSessions[i].startTime != "") {
+            if (i != 0 && this.studentSessions[i].startTime != "") {
                 const prevSession = this.studentSessions[i - 1];
                 const isSameDay = this.studentSessions[i].sessionDate === prevSession.sessionDate;
                 if (isSameDay) {
                     const seessStartTime = this.convertTimeToMinutes(this.studentSessions[i].startTime);
                     const prevSessionTime = this.convertTimeToMinutes(prevSession.startTime);
                     const timeDiffMinutes = seessStartTime - prevSessionTime;
-                    console.log('timeDiffMinutes- ' + timeDiffMinutes);
                     if (timeDiffMinutes < 40) {
                         stdValidTime = false;
-                        this.showToastMessage('Time must be greater than 40 min of previous session', 'error');
+                        this.showToastMessage('Minimum gap of 40 minutes is required between sessions’ Start Times', 'error');
                         break;
                     } else {
                         stdValidTime = true;
@@ -516,31 +663,49 @@ export default class SessionDetail extends NavigationMixin(LightningElement) {
                 }
                 if (prevSession.startTime == "" || prevSession.startTime == undefined) {
                     this.studentSessions[i].status = 'Unscheduled';
-                    preSessionError = true;
+                    preStdSessionError = true;
                     this.showToastMessage('Please schedule the previous session first.', 'error');
                     break;
 
                 } else {
-                    preSessionError = false;
+                    preStdSessionError = false;
                 }
+
             } else {
                 stdValidTime = true;
             }
-}
+            if(i != this.studentSessions.length-1 && this.studentSessions[i].startTime != ""){
+                const nextSession = this.studentSessions[i + 1];
+
+                const currentDateTime = this.parseDateTime(this.studentSessions[i].sessionDate, this.studentSessions[i].startTime);
+                const nextDateTime = this.parseDateTime(nextSession.sessionDate, nextSession.startTime);
+                 if (currentDateTime > nextDateTime) {
+                    this.showToastMessage('Current session Date Time cannot be later than the next session’ Date Time', 'error');
+                    return;
+                }
+                const diffMinutes = (nextDateTime - currentDateTime) / (1000 * 60);
+
+                // 4. Check 40-minute gap
+                if (diffMinutes < 40) {
+                    this.showToastMessage('Minimum gap of 40 minutes is required between sessions’ Start Times', 'error');
+                    return;
+                }
+                
+            }
+        }
 
 
-for (let i = 0; i < this.parentSessions.length; i++) {
-  if (i != 0 && this.parentSessions[i].startTime != "") {
+        for (let i = 0; i < this.parentSessions.length; i++) {
+            if (i != 0 && this.parentSessions[i].startTime != "") {
                 const prevSession = this.parentSessions[i - 1];
                 const isSameDay = this.parentSessions[i].sessionDate === prevSession.sessionDate;
                 if (isSameDay) {
                     const seessStartTime = this.convertTimeToMinutes(this.parentSessions[i].startTime);
                     const prevSessionTime = this.convertTimeToMinutes(prevSession.startTime);
                     const timeDiffMinutes = seessStartTime - prevSessionTime;
-                    console.log('timeDiffMinutes- ' + timeDiffMinutes);
                     if (timeDiffMinutes < 40) {
                         prtValidTime = false;
-                        this.showToastMessage('Time must be greater than 40 min of previous session', 'error');
+                        this.showToastMessage('Minimum gap of 40 minutes is required between sessions’ Start Times', 'error');
                         break;
                     } else {
                         prtValidTime = true;
@@ -550,71 +715,70 @@ for (let i = 0; i < this.parentSessions.length; i++) {
                 }
                 if (prevSession.startTime == "" || prevSession.startTime == undefined) {
                     this.parentSessions[i].status = 'Unscheduled';
-                    preSessionError = true;
+                    preParntSessionError = true;
                     this.showToastMessage('Please schedule the previous session first.', 'error');
                     break;
 
                 } else {
-                    preSessionError = false;
-                }
-            } else {
-                prtValidTime = true;
-            }
-}
-    /*    this.parentSessions.forEach((sess, index) => {
-            if (index != 0 && sess.startTime != "") {
-                const prevSession = this.parentSessions[index - 1];
-                const isSameDay = sess.sessionDate === prevSession.sessionDate;
-                if (isSameDay) {
-                    const seessStartTime = this.convertTimeToMinutes(sess.startTime);
-                    const prevSessionTime = this.convertTimeToMinutes(prevSession.startTime);
-                    const timeDiffMinutes = seessStartTime - prevSessionTime;
-                    console.log('timeDiffMinutes- ' + timeDiffMinutes);
-                    if (timeDiffMinutes < 40) {
-                        prtValidTime = false;
-                        //this.showToastMessage('Time must be greater than 40 min of previous session', 'error');
-                    } else {
-                        prtValidTime = true;
-                    }
-                } else {
-                    prtValidTime = true;
-                }
-                if (prevSession.status == 'Unscheduled') {
-                    preSessionError = true;
-                    return;
-
-                } else {
-                    preSessionError = false;
+                    preParntSessionError = false;
                 }
             } else {
                 prtValidTime = true;
             }
         }
-        );*/
-
-        console.log('handleSave = ', lateSchedule)
-        if(!preSessionError){
-            console.log('SUcess');
-            if (stdValidTime == true && prtValidTime == true) {
-                console.log('SUcess true');
-                //this.lateScheduleSessions = this.flexibleSessions.filter(session => session.lateSchedule === true);
-                this.lateScheduleSessions = lateSchedule;
-                console.log('lateScheduleSessions = ', this.lateScheduleSessions)
-                if (this.lateScheduleSessions.length > 0) {
-                    this.getdynamicpicklistvalFunc('Session__c', 'Late_Schedule__c');
-                    this.isShowModalForLateSchedule = true;
+        /*    this.parentSessions.forEach((sess, index) => {
+                if (index != 0 && sess.startTime != "") {
+                    const prevSession = this.parentSessions[index - 1];
+                    const isSameDay = sess.sessionDate === prevSession.sessionDate;
+                    if (isSameDay) {
+                        const seessStartTime = this.convertTimeToMinutes(sess.startTime);
+                        const prevSessionTime = this.convertTimeToMinutes(prevSession.startTime);
+                        const timeDiffMinutes = seessStartTime - prevSessionTime;
+                        console.log('timeDiffMinutes- ' + timeDiffMinutes);
+                        if (timeDiffMinutes < 40) {
+                            prtValidTime = false;
+                            //this.showToastMessage('Time must be greater than 40 min of previous session', 'error');
+                        } else {
+                            prtValidTime = true;
+                        }
+                    } else {
+                        prtValidTime = true;
+                    }
+                    if (prevSession.status == 'Unscheduled') {
+                        preSessionError = true;
+                        return;
+    
+                    } else {
+                        preSessionError = false;
+                    }
                 } else {
-                    this.saveLateScheduleFunc();
+                    prtValidTime = true;
                 }
-            } else {
-                this.showToastMessage('Time must be greater than 40 min of previous session', 'error');
             }
+            );*/
+
+        if (lessThanOneHr.length > 0) {
+            this.showToastMessage('Sorry, it is too late to change session schedule. Please see rules in Form Instructions.', 'error');
+        } else {
+            if (!preStdSessionError && !preParntSessionError) {
+                if (stdValidTime == true && prtValidTime == true) {
+                    //this.lateScheduleSessions = this.flexibleSessions.filter(session => session.lateSchedule === true);
+                    this.lateScheduleSessions = lateSchedule;
+                    if (this.lateScheduleSessions.length > 0) {
+                        this.getdynamicpicklistvalFunc('Session__c', 'Late_Schedule__c');
+                        this.isShowModalForLateSchedule = true;
+                    } else {
+                        this.saveLateScheduleFunc();
+                    }
+                } else {
+                    this.showToastMessage('Minimum gap of 40 minutes is required between sessions’ Start Times', 'error');
+                }
             }
-        
+        }
+
     }
     saveStudentAttendanceFunc(sessionId) {
         const dataToSend = this.indStudentData;
-        console.log('dataToSend- ' + JSON.stringify(dataToSend));
 
         saveStudentAttendance({
             studentAttendanceList: JSON.stringify(dataToSend),
@@ -623,7 +787,6 @@ for (let i = 0; i < this.parentSessions.length; i++) {
             reason: ''
         })
             .then(result => {
-                console.log('result saveStudentAttendance = ', result);
                 if (result) {
                     this.showToastMessage('Record updated successfully!', 'success');
                     location.reload();
@@ -666,44 +829,98 @@ for (let i = 0; i < this.parentSessions.length; i++) {
 
         return new Date(`${dateString}T${timeValue}`);
     }
+    validate() {
+        let isValid = true;
+
+        this.template.querySelectorAll('lightning-input,lightning-combobox').forEach(input => {
+            if (!input.checkValidity()) {
+                input.reportValidity();
+                isValid = false;
+            }
+        });
+
+        return isValid;
+    }
     changeDateTime(event) {
+
         const sessionId = event.target.dataset.sessionId;
         const selectedValue = event.detail.value;
         let selectedTimeValue = '';
-        console.log('event.detail.label =', event.detail.label)
-        console.log('selectedValue = ', selectedValue);
+            /*this.studentSessions = this.studentSessions.map(stdSession => {
+                if (stdSession.id === sessionId) {
+                    if(event.target.label === 'Start Time'){
+                        if(selectedValue){
+                            stdSession.dateRequired = true;
+                        }else{
+                            stdSession.dateRequired = false;
+                            stdSession.startTimeRequired = false;
+                        }
+                    }else if(event.target.label === 'Date'){
+                       if(selectedValue){
+                            stdSession.startTimeRequired = true;
+                        }else{
+                            stdSession.dateRequired = false;
+                            stdSession.startTimeRequired = false;
+                        }
+                    }
+                }
+                return stdSession;
+            });*/
+            /*const updateSessionFields = (sessions) => {
+                return sessions.map(session => {
+                    if (session.id === sessionId) {
+                        if(event.target.label === 'Start Time'){
+                            if(selectedValue){
+                                session.dateRequired = true;
+                            }else{
+                                session.dateRequired = false;
+                                session.startTimeRequired = false;
+                            }
+                        }else if(event.target.label === 'Date'){
+                        if(selectedValue){
+                                session.startTimeRequired = true;
+                            }else{
+                                session.dateRequired = false;
+                                session.startTimeRequired = false;
+                            }
+                        }
+                    }
+                    return session;
+                });
+            };*/
+            const isFilled = val => val !== null && val !== undefined && val !== '';
+
+            const updateSessionFields = (sessions) => {
+                return sessions.map(session => {
+                    if (session.id === sessionId) {
+                        const fieldLabel = event.target.label;
+                        const selectedValue = event.detail.value;
+
+                        if (fieldLabel === 'Start Time') {
+                            session.startTime = selectedValue;
+                        } else if (fieldLabel === 'Date') {
+                            session.date = selectedValue;
+                        }
+
+                        const anySelected = isFilled(session.startTime) || isFilled(session.date);
+
+                        session.startTimeRequired = anySelected;
+                        session.dateRequired = anySelected;
+                    }
+                    return session;
+                });
+            };
+
+            this.studentSessions = updateSessionFields(this.studentSessions);
+            this.flexibleSessions = updateSessionFields(this.flexibleSessions);
+            this.parentSessions = updateSessionFields(this.parentSessions);
+            this.counselingSessions = updateSessionFields(this.counselingSessions);
+            
         if (event.target.label === 'Start Time') {
             selectedTimeValue = event.detail.value;
         }
-        /*if(event.target.label === 'Date' || event.target.label === 'Start Time'){
-            this.flexibleSessions = this.flexibleSessions.map(flxSession => {
-                if (flxSession.id === sessionId) {
-                    return { ...flxSession, sessionDate: selectedValue, editedDateTime:true };
-                }
-                return flxSession;
-            });
-            this.studentSessions = this.studentSessions.map(stuSession => {
-                if (stuSession.id === sessionId) {
-                    return { ...stuSession, sessionDate: selectedValue, editedDateTime:true };
-                }
-                return stuSession;
-            });
-            this.parentSessions = this.parentSessions.map(parSession => {
-                if (parSession.id === sessionId) {
-                    return { ...parSession, sessionDate: selectedValue, editedDateTime:true };
-                }
-                return parSession;
-            });
-            this.counselingSessions = this.counselingSessions.map(counSession => {
-                if (counSession.id === sessionId) {
-                    return { ...counSession, sessionDate: selectedValue, editedDateTime:true };
-                }
-                return counSession;
-            });
-        }*/
         if (event.target.label === 'Date' || event.target.label === 'Start Time') {
             const updateSessions = (sessions) => {
-                console.log('session datetime- ' + JSON.stringify(sessions));
                 return sessions.map(session => {
                     if (session.oldDatevalue === undefined) {
                         session.oldDatevalue = '';
@@ -711,7 +928,9 @@ for (let i = 0; i < this.parentSessions.length; i++) {
                     if (session.oldTime === undefined) {
                         session.oldTime = '';
                     }
+
                     if (session.id == sessionId) {
+
                         if ((session.oldDatevalue !== selectedValue || session.oldTime !== selectedTimeValue)) {
                             if (event.target.label === 'Date') return { ...session, sessionDate: selectedValue, editedDateTime: true, scheduleLate: false, scheduleOnTime: false };
                             if (event.target.label === 'Start Time') return { ...session, startTime: selectedValue, editedDateTime: true, scheduleLate: false, scheduleOnTime: false };
@@ -720,7 +939,6 @@ for (let i = 0; i < this.parentSessions.length; i++) {
                             if (event.target.label === 'Start Time') return { ...session, startTime: selectedValue, editedDateTime: false, scheduleLate: false, scheduleOnTime: false };
                         }
                     }
-                    console.log('ses1- ' + JSON.stringify(session));
                     return session;
                 });
             };
@@ -730,7 +948,6 @@ for (let i = 0; i < this.parentSessions.length; i++) {
             this.parentSessions = updateSessions(this.parentSessions);
             this.counselingSessions = updateSessions(this.counselingSessions);
         }
-        console.log('counselingSessions = ', this.counselingSessions);
 
     }
 
@@ -738,6 +955,41 @@ for (let i = 0; i < this.parentSessions.length; i++) {
     changeHmAttended(event) {
         const sessionId = event.target.dataset.sessionId;
         const selectedValue = event.detail.value;
+        /*this.studentSessions = this.studentSessions.map(stdSession => {
+            if (stdSession.id === sessionId) {
+                if(selectedValue){
+                    stdSession.leadRequired = true;
+                    stdSession.stdAttendRequired = true;
+                }else{
+                    stdSession.hmRequired = false;
+                    stdSession.leadRequired = false;
+                    stdSession.stdAttendRequired = false;
+                }
+                 
+            }
+            return stdSession;
+        });*/
+        const isFilled = val => val !== null && val !== undefined && val !== '';
+        const updateSessionFields = (sessions) => {
+                return sessions.map(session => {
+                    if (session.id === sessionId) {
+                        const hm = selectedValue;
+                        const lead = session.sessionLead;
+                        const par = session.parentAttendance;
+                        const att = session.studentAttendance;
+                        const anySelected = isFilled(hm && hm !== '') || isFilled(lead && lead !== '') || isFilled(att && att !== '') || isFilled(par && par !== '');
+                        session.hmRequired = anySelected;
+                        session.leadRequired = anySelected;
+                        session.stdAttendRequired = anySelected;
+                        session.parAttendRequired = anySelected;
+                        
+                    }
+                    return session;
+                });
+            };
+
+            this.studentSessions = updateSessionFields(this.studentSessions);
+            this.parentSessions = updateSessionFields(this.parentSessions);
         const updateSessions = (sessions) => {
             return sessions.map(session => {
                 if (session.id == sessionId) {
@@ -756,6 +1008,27 @@ for (let i = 0; i < this.parentSessions.length; i++) {
     changeSessionLead(event) {
         const sessionId = event.target.dataset.sessionId;
         const selectedValue = event.detail.value;
+        const isFilled = val => val !== null && val !== undefined && val !== '';
+        const updateSessionFields = (sessions) => {
+                return sessions.map(session => {
+                    
+                    if (session.id === sessionId) {
+                        const hm = session.hmAttended;
+                        const lead = selectedValue;
+                        const par = session.parentAttendance;
+                        const att = session.studentAttendance;
+                        const anySelected = isFilled(hm && hm !== '') || isFilled(lead && lead !== '') || isFilled(att && att !== '') || isFilled(par && par !== '');
+                        session.hmRequired = anySelected;
+                        session.leadRequired = anySelected;
+                        session.stdAttendRequired = anySelected;
+                        session.parAttendRequired = anySelected;
+                    }
+                    return session;
+                });
+            };
+
+            this.studentSessions = updateSessionFields(this.studentSessions);
+            this.parentSessions = updateSessionFields(this.parentSessions);
         const updateSessions = (sessions) => {
             return sessions.map(session => {
                 if (session.id == sessionId) {
@@ -773,6 +1046,28 @@ for (let i = 0; i < this.parentSessions.length; i++) {
     handleClassAttend(event) {
         const sessionId = event.target.dataset.sessionId;
         const selectedValue = event.detail.value;
+        const isFilled = val => val !== null && val !== undefined && val !== '';
+        const updateSessionFields = (sessions) => {
+                return sessions.map(session => {
+                    
+                    if (session.id === sessionId) {
+                        const hm = session.hmAttended;
+                        const lead = session.sessionLead;
+                        const par = session.parentAttendance;
+                        const att = selectedValue;
+                        const anySelected = isFilled(hm && hm !== '') || isFilled(lead && lead !== '') || isFilled(att && att !== '') || isFilled(par && par !== '');
+                        session.hmRequired = anySelected;
+                        session.leadRequired = anySelected;
+                        session.stdAttendRequired = anySelected;
+                        session.parAttendRequired = anySelected;
+                        
+                    }
+                    return session;
+                });
+            };
+
+            this.studentSessions = updateSessionFields(this.studentSessions);
+            this.parentSessions = updateSessionFields(this.parentSessions);
         const updateSessions = (sessions) => {
             return sessions.map(session => {
                 if (session.id == sessionId) {
@@ -790,6 +1085,28 @@ for (let i = 0; i < this.parentSessions.length; i++) {
     handleParentAttend(event) {
         const sessionId = event.target.dataset.sessionId;
         const selectedValue = event.detail.value;
+        const isFilled = val => val !== null && val !== undefined && val !== '';
+        const updateSessionFields = (sessions) => {
+                return sessions.map(session => {
+                    
+                    if (session.id === sessionId) {
+                        const hm = session.hmAttended;
+                        const lead = session.sessionLead;
+                        const par = selectedValue;
+                        const att = session.studentAttendance;
+                        const anySelected = isFilled(hm && hm !== '') || isFilled(lead && lead !== '') || isFilled(att && att !== '') || isFilled(par && par !== '');
+                        session.hmRequired = anySelected;
+                        session.leadRequired = anySelected;
+                        session.stdAttendRequired = anySelected;
+                        session.parAttendRequired = anySelected;
+                        
+                    }
+                    return session;
+                });
+            };
+
+            this.studentSessions = updateSessionFields(this.studentSessions);
+            this.parentSessions = updateSessionFields(this.parentSessions);
         const updateSessions = (sessions) => {
             return sessions.map(session => {
                 if (session.id == sessionId) {
@@ -827,7 +1144,10 @@ for (let i = 0; i < this.parentSessions.length; i++) {
         });
     }
     get attendanceOptions() {
-        return this.attendancePicklist || [];
+        //const noneOption = [{ label: '--None--', value: '' }];
+        //return noneOption.concat(
+          return  this.attendancePicklist || [];
+           // );
     }
     @track attendancePicklist;
 
@@ -840,11 +1160,9 @@ for (let i = 0; i < this.parentSessions.length; i++) {
             selectedGrade: this.grade
         })
             .then((result) => {
-                console.log('Ind Std Data- ' + JSON.stringify(result));
                 this.attendancePicklist = result.attendancepicklist;
                 this.indStudentData = result.studentdata;
 
-                console.log('this.indStudentData.length =', this.indStudentData.length);
                 if (this.indStudentData.length > 0) {
                     this.counselingSessions.forEach((sess) => {
                         this.indStudentData.forEach((student) => {
@@ -878,7 +1196,16 @@ for (let i = 0; i < this.parentSessions.length; i++) {
 
     handleAttendanceClick(event) {
         event.preventDefault();
+        let showError = false;
         const sessionId = event.currentTarget.dataset.sessionId;
+
+        const session = this.studentSessions.find(item => item.id === sessionId);
+        if (session) {
+            showError = session.preSessIncomplete;
+        } else {
+            showError = false;
+        }
+
         let pageReference = {
             type: 'comm__namedPage',
             attributes: {
@@ -890,7 +1217,8 @@ for (let i = 0; i < this.parentSessions.length; i++) {
                 schoolId: encodeURI(this.schoolId),
                 batch: encodeURI(this.batch),
                 grade: encodeURI(this.grade),
-                sessionId: encodeURI(sessionId)
+                sessionId: encodeURI(sessionId),
+                showError: encodeURI(showError)
             }
         };
         this[NavigationMixin.Navigate](pageReference);
@@ -898,7 +1226,15 @@ for (let i = 0; i < this.parentSessions.length; i++) {
     }
     handleParentAttendanceClick(event) {
         event.preventDefault();
+        let showError = false;
         const sessionId = event.currentTarget.dataset.sessionId;
+        const session = this.parentSessions.find(item => item.id === sessionId);
+        if (session) {
+            showError = session.preSessIncomplete;
+        } else {
+            showError = false;
+        }
+
         let pageReference = {
             type: 'comm__namedPage',
             attributes: {
@@ -910,7 +1246,8 @@ for (let i = 0; i < this.parentSessions.length; i++) {
                 schoolId: encodeURI(this.schoolId),
                 batch: encodeURI(this.batch),
                 grade: encodeURI(this.grade),
-                sessionId: encodeURI(sessionId)
+                sessionId: encodeURI(sessionId),
+                showError: encodeURI(showError)
             }
         };
         this[NavigationMixin.Navigate](pageReference);
@@ -923,7 +1260,6 @@ for (let i = 0; i < this.parentSessions.length; i++) {
         const openSections = event.detail.openSections;
         this.showParentSessionStatus = !openSections.includes('parentSession');
         this.showCounsellingSessionStatus = !openSections.includes('individualCounsellingSession');
-        console.log('openSections = ', openSections);
         if (openSections.length === 0) {
             this.activeSectionsMessage = 'All sections are closed';
         } else {
@@ -932,6 +1268,7 @@ for (let i = 0; i < this.parentSessions.length; i++) {
         }
     }
     back;
+    showError;
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference) {
@@ -943,6 +1280,7 @@ for (let i = 0; i < this.parentSessions.length; i++) {
             this.batch = rxCurrentPageReference.state.batch ? decodeURI(rxCurrentPageReference.state.batch) : null;
             this.grade = rxCurrentPageReference.state.grade ? decodeURI(rxCurrentPageReference.state.grade) : null;
             this.back = rxCurrentPageReference.state.back ? decodeURI(rxCurrentPageReference.state.back) : null;
+            this.showError = rxCurrentPageReference.state.showError ? decodeURI(rxCurrentPageReference.state.showError) : null;
 
         }
     }
@@ -964,7 +1302,6 @@ for (let i = 0; i < this.parentSessions.length; i++) {
             strEmail: this.facEmailId
         })
             .then(result => {
-                console.log('result sessionSignOut = ', result);
                 if (result) {
                     this.showToastMessage('Sign Out Successfully', 'success');
                     window.name = '';
@@ -985,7 +1322,6 @@ for (let i = 0; i < this.parentSessions.length; i++) {
         const decodedHref = hrefValue.replace(/&amp;/g, '&');
         const params = new URLSearchParams(decodedHref);
         this.schoolId = params.get('sId');
-        console.log(' this.schoolId = ', this.schoolId);
         this.getSchoolListFunc();
         this.batch = params.get('bId');
         this.getSessionListFunc();
@@ -997,16 +1333,16 @@ for (let i = 0; i < this.parentSessions.length; i++) {
     getSchoolListFunc() {
         getSchoolList({ facilitorId: this.facEmailId }).
             then((data) => {
-                console.log('data = ' + data);
+
                 if (data) {
                     var optionsLabel = data.map(acc => ({
                         label: acc.Name,
                         value: acc.Id
                     }));
-                    console.log('optionsLabel = ', optionsLabel);
+
                     this.options = [...optionsLabel];
                     this.flagIndicatingDataHasBeenLoadedInVariables = true;
-                    console.log('this.options = ', this.options);
+
                 } else if (error) {
                     console.error('Error fetching accounts', error);
                 }
@@ -1024,7 +1360,7 @@ for (let i = 0; i < this.parentSessions.length; i++) {
         this.schoolId = event.detail.recordId;
         this.grade = '';
         this.batch = '';
-        console.log('schoolId  =' + this.schoolId);
+
     }
     showModalBox() {
         this.isShowModal = true;
@@ -1064,26 +1400,20 @@ for (let i = 0; i < this.parentSessions.length; i++) {
         window.addEventListener("beforeunload", this.handleTabClose);
         if (this.code == window.name) {
             if (!this.code || !this.facEmailId) {
-                console.log('a');
+
                 this.showToastMessage('Error While Login', 'error');
                 this.backToLogin();
             } else {
                 this.showLoading = false;
                 this.getPendingSessionFunc();
                 this.getdynamicpicklistvalFunc('Batch__c', 'Grade__c');
-
+                const url = new URL(window.location.href);
+                url.searchParams.delete('showError');
                 if (this.back === 'true') {
-
-                    const url = new URL(window.location.href);
-
                     url.searchParams.delete('back');
-
                     window.history.replaceState({}, document.title, url.toString());
-
                     this.getBatchFunc();
-
                     this.hideModalBox();
-
                     this.getSessionListFunc();
 
                 }
@@ -1091,7 +1421,7 @@ for (let i = 0; i < this.parentSessions.length; i++) {
             }
 
         } else {
-            console.log('b');
+
             this.showToastMessage('This form is already open in another tab!', 'error');
             this.backToLogin();
         }
@@ -1111,7 +1441,6 @@ for (let i = 0; i < this.parentSessions.length; i++) {
         window.removeEventListener('touchstart', this.resetTimer);
     }
     startInactivityTimer = () => {
-        console.log('inactivityTimeout');
         this.inactivityTimeout = setTimeout(() => {
             LightningAlert.open({
                 message: 'It has been half an hour since the last update. Please refresh the form to continue, or log out.',
@@ -1133,7 +1462,7 @@ for (let i = 0; i < this.parentSessions.length; i++) {
     clearInactivityTimer = () => {
         clearTimeout(this.inactivityTimeout);
     };
-    
+
     handleTabClose = (event) => {
         this.sessionSignOutFunc();
         /*const nextUrl = event.target?.document?.activeElement?.baseURI || document.activeElement?.baseURI;
@@ -1154,7 +1483,7 @@ for (let i = 0; i < this.parentSessions.length; i++) {
             trainerId: this.facEmailId
         })
             .then(result => {
-                console.log('getBatch = ', JSON.stringify(result));
+
                 if (result) {
                     this.batchOption = result;
                 }
@@ -1180,14 +1509,18 @@ for (let i = 0; i < this.parentSessions.length; i++) {
             .then(result => {
                 debugger
                 const response = [...result]
-                console.log(JSON.stringify(response));
+
                 if (response) {
                     //this.checkPreviousSessionComplete();
-                    console.log(JSON.stringify(response));
+
                     response.forEach(session => {
                         session.startTimeFormatted = this.formatTimeToInput(session.startTime);
                         session.reasonForLateSchedule = '';
                         if (session.sessionDate == undefined) {
+                            if(!session.isCounselingSession){
+                                session.status = 'Unscheduled';
+                                session.statusClassName = 'UnscheduledCls';
+                            }
                             session.sessionDate = '';
                             session.oldDatevalue = '';
                         } else {
@@ -1208,10 +1541,11 @@ for (let i = 0; i < this.parentSessions.length; i++) {
 
 
 
-                        console.log('session.startTime- ' + session.startTimeFormatted);
+
                         let greaterThanOneHr;
                         let pastTime = this.isExactMatch(session.oldDatevalue, session.startTimeFormatted);
                         const diffHours = this.calTimeDiff(session.oldDatevalue, session.startTimeFormatted);
+
                         if (diffHours > 1) {
                             greaterThanOneHr = true;
                         }
@@ -1331,10 +1665,10 @@ for (let i = 0; i < this.parentSessions.length; i++) {
                         if (index != 0) {
                             const prevSession = this.studentSessions[index - 1];
                             if (prevSession.status == 'Complete' && sess.studRFA == false && sess.status != 'Complete') {
-                                sess.indAttentLink = true;
+                                sess.preSessIncomplete = false;
                             }
                             else {
-                                sess.indAttentLink = false;
+                                sess.preSessIncomplete = true;
                             }
 
                         }
@@ -1343,11 +1677,12 @@ for (let i = 0; i < this.parentSessions.length; i++) {
                     this.parentSessions.forEach((sess, index) => {
                         if (index != 0) {
                             const prevSession = this.parentSessions[index - 1];
+
                             if (prevSession.status == 'Complete' && sess.parentRFA == false && sess.status != 'Complete') {
-                                sess.indAttentLink = true;
+                                sess.preSessIncomplete = false;
                             }
                             else {
-                                sess.indAttentLink = false;
+                                sess.preSessIncomplete = true;
                             }
                         }
                     }
@@ -1355,14 +1690,16 @@ for (let i = 0; i < this.parentSessions.length; i++) {
 
 
                 }
-                this.CounsellingSessionStatusValue = this.counselingSessions[0].status;
-                this.CounsellingSessionStatusClass = this.counselingSessions[0].statusClassName;
+                if(this.counselingSessions[0]){
+                    this.CounsellingSessionStatusValue = this.counselingSessions[0].status;
+                    this.CounsellingSessionStatusClass = this.counselingSessions[0].statusClassName;
 
-                this.ParentSessionStatusValue = this.parentSessions[0].status;
-                this.ParentSessionStatusClass = this.parentSessions[0].statusClassName;
+                    this.ParentSessionStatusValue = this.parentSessions[0].status;
+                    this.ParentSessionStatusClass = this.parentSessions[0].statusClassName;
 
-                this.indSessionId = this.counselingSessions[0].id;
-                this.indSessionLead = this.counselingSessions[0].sessionLead;
+                    this.indSessionId = this.counselingSessions[0].id;
+                    this.indSessionLead = this.counselingSessions[0].sessionLead;
+                }
                 this.getdynamicpicklistvalFunc('Session_Attendance__c', 'Session_Lead__c');
                 //this.sessionStudentDataFunc();
 
@@ -1379,11 +1716,7 @@ for (let i = 0; i < this.parentSessions.length; i++) {
 
                 //     });
 
-                console.log('Parent Sessions:', this.parentSessions);
-                console.log('Student Sessions:', this.studentSessions);
-                console.log('Counseling Sessions:', this.counselingSessions);
-                console.log('Flexible Sessions:', this.flexibleSessions);
-                console.log('activeChildSession:', this.activeChildSession);
+
                 this.activeChildSession1 = [...this.activeChildSession];
 
             }).catch(error => {
@@ -1411,6 +1744,7 @@ for (let i = 0; i < this.parentSessions.length; i++) {
 
             // 3. Calculate difference in milliseconds
             const diffMs = inputDateTime - now;
+
             const diffHours = Math.abs(diffMs) / (1000 * 60 * 60);
 
             // 4. returning the diff value
@@ -1472,7 +1806,7 @@ for (let i = 0; i < this.parentSessions.length; i++) {
             fieldName: fldName
         })
             .then(result => {
-                console.log(JSON.stringify(result));
+
                 if (result) {
                     if (fldName === 'Grade__c')
                         this.gradeOption = result;
@@ -1481,7 +1815,9 @@ for (let i = 0; i < this.parentSessions.length; i++) {
                     }
                     if (fldName === 'Session_Lead__c') {
                         this.optionsSessionLead = result;
-                        this.sessionStudentDataFunc();
+                        if(this.indSessionId){
+                            this.sessionStudentDataFunc();
+                        }
                     }
                 }
 
@@ -1495,7 +1831,6 @@ for (let i = 0; i < this.parentSessions.length; i++) {
             stremail: this.facEmailId
         })
             .then(result => {
-                console.log('result = ' + result);
                 this.showLoadingModal = false;
                 if (result) {
                     this.sessionList = Object.keys(result).map((key, index) => {
@@ -1513,10 +1848,7 @@ for (let i = 0; i < this.parentSessions.length; i++) {
                             displayIndex: index + 1
                         };
                     });
-                    console.log('this.sessionList =' + JSON.stringify(this.sessionList));
-                    console.log('a');
                     this.showPendingSession = this.sessionList.length > 0;
-                    console.log('b');
                     //this.sessionStudentDataFunc();
                 }
 
@@ -1627,15 +1959,15 @@ for (let i = 0; i < this.parentSessions.length; i++) {
         let time = new Date(s);
         let hours = time.getUTCHours();
         let minutes = time.getUTCMinutes();
-        let ampm = hours >= 12 ? 'PM' : 'AM';
+        //let ampm = hours >= 12 ? 'PM' : 'AM';
 
         if (FORM_FACTOR === "Small") {
             // Mobile - 12-hour format with AM/PM
-            this.ampm = hours >= 12 ? 'PM' : 'AM';
+            //this.ampm = hours >= 12 ? 'PM' : 'AM';
             hours = hours % 12;
             hours = hours || 12; // Convert 0 to 12
             minutes = minutes < 10 ? '0' + minutes : minutes;
-            return `${hours}:${minutes}`;
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
         } else {
             // Desktop - 24-hour format
             hours = hours < 10 ? '0' + hours : hours;
@@ -1646,7 +1978,6 @@ for (let i = 0; i < this.parentSessions.length; i++) {
     }
 
     handleSelectOption(event) {
-        console.log('event.detail =' + event.detail);
         this.schoolId = event.detail;
         this.grade = '';
         this.batch = '';
@@ -1656,27 +1987,12 @@ for (let i = 0; i < this.parentSessions.length; i++) {
 
     get optionsHmAttended() {
         return [
+            { label: '--None--', value: '' },
             { label: 'Yes', value: 'Yes' },
             { label: 'No', value: 'No' },
         ];
     }
 
-    /*@wire(getSchoolList)
-    wiredAccounts({ error, data }) {
-        console.log('data = ',data);
-        if (data) {
-            var optionsLabel = data.map(acc => ({
-                label: acc.Name,
-                value: acc.Id
-            }));
-            console.log('optionsLabel = ',optionsLabel);
-            this.options = [...optionsLabel];
-            this.flagIndicatingDataHasBeenLoadedInVariables = true;
-            console.log('this.options = ',this.options);
-        } else if (error) {
-            console.error('Error fetching accounts', error);
-        }
-    }*/
 
 
 }

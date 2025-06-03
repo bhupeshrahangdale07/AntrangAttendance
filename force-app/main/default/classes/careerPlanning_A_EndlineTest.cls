@@ -4,7 +4,7 @@ public class careerPlanning_A_EndlineTest {
     public static void testData(){
         Account account=new Account();
         account.Name='Shreeram School';
-        Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId();
+        Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId() ;
         account.RecordTypeId=RecordTypeIdAccount;
         insert account;
 
@@ -55,9 +55,9 @@ public class careerPlanning_A_EndlineTest {
         List<Contact> conList = [SELECT Id FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
 
         test.startTest();
-        careerPlanning_A_Endline.getApexRecord(conList[0].Id, 'Grade 9');
-        careerPlanning_A_Endline.getApexRecord(conList[0].Id, 'Grade 10');
-        careerPlanning_A_Endline.getApexRecord(conList[0].Id, 'Grade 11');
+        careerPlanning_A_Endline.getApexRecord(conList[0].Id, 'Grade 9','');
+        careerPlanning_A_Endline.getApexRecord(conList[0].Id, 'Grade 10','');
+        careerPlanning_A_Endline.getApexRecord(conList[0].Id, 'Grade 11','');
         test.stopTest();
     }
     
@@ -124,8 +124,8 @@ public class careerPlanning_A_EndlineTest {
         qAnsAll.q09.answer6 = 'A';
         
         test.startTest();
-        careerPlanning_A_Endline.saveAllQA(cpList[0].Id, conList[0].Id, 'Test009', qAnsAll, 'English', 'Form V2' );
-        careerPlanning_A_Endline.saveAllQA(null, conList[0].Id, 'Test009', qAnsAll, 'English', 'Form V2' );
+        careerPlanning_A_Endline.saveAllQA('',cpList[0].Id, conList[0].Id, 'Test009', qAnsAll, 'English', 'Form V2');
+        //careerPlanning_A_Endline.saveAllQA('',null, conList[0].Id, 'Test009', qAnsAll, 'English', 'Form V2');
         test.stopTest();
     }
     public class qAnswerAll{

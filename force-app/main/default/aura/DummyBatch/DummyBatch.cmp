@@ -1,38 +1,7 @@
-<aura:component controller="DummyBatchController" implements="force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global" >
-    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
-    <aura:attribute name = "showSpinner" type="Boolean" Default="false"/>
-    
-    <aura:html tag="style">
-        .cuf-content {
-            padding: 0 0rem !important;
-        }
-        .slds-p-around--medium {
-            padding: 0rem !important;
-        }       
-        .slds-modal__content{
-            overflow-y:hidden !important;
-            height:unset !important;
-            max-height:unset !important;
-        }
-    </aura:html>
-    
-    
+<aura:component controller="DummyBatchController" implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global" >
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name = "showSpinner" type="Boolean" Default="true"/>
     <aura:if isTrue="{! v.showSpinner }">
-        <lightning:spinner alternativeText="Loading" variant="brand" />
-    </aura:if>
-    
-    <div>
-        <div class="slds-modal__header">
-            <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Please Confirm</h1>
-        </div>
-        
-        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
-            <p>Do you want to Create a Dummy Batch</p>
-        </div>
-        
-        <div class="modal-footer slds-modal__footer">
-            <button type="button" class="slds-button slds-button_neutral" onclick="{!c.closeAction}" >Cancel</button>
-            <button type="button" class="slds-button slds-button_brand" onclick="{!c.processDummyBatch}">Create</button>
-        </div>
-    </div>
+                <lightning:spinner alternativeText="Loading" variant="brand" />
+        </aura:if>
 </aura:component>

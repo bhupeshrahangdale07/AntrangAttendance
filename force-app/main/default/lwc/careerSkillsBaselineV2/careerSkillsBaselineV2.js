@@ -583,7 +583,8 @@ export default class CareerSkillsBaselineV2 extends NavigationMixin(LightningEle
     getApexRecordCS(){
         getApexRecord({
             studentId : this.rxStudentId,
-            grade : this.grd
+            grade : this.grd,
+            batchId : this.bid
         }).then(result => {
             console.log('result : ' + JSON.stringify(result));
             //===========================================================//
@@ -859,7 +860,8 @@ export default class CareerSkillsBaselineV2 extends NavigationMixin(LightningEle
     reInitializeRecordCS(){
         getApexRecord({
             studentId : this.rxStudentId,
-            grade : this.grd
+            grade : this.grd,
+            batchId : this.bid
         }).then(result => {
             //console.log('result : ' + JSON.stringify(result));
             //===========================================================//
@@ -2449,7 +2451,8 @@ export default class CareerSkillsBaselineV2 extends NavigationMixin(LightningEle
                 barCode : this.studentBarcode,
                 ans : allQA,
                 lng : this.lng,
-                typ : (this.typ == 'v2' || this.typ == 'Form V2') ? 'Form V2' : 'Form V1'
+                typ : (this.typ == 'v2' || this.typ == 'Form V2') ? 'Form V2' : 'Form V1',
+                batchId : this.bid
             }).then(result => {
                 console.log('result : ' + JSON.stringify(result));
                 //===========================================================//

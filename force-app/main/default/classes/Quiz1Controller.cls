@@ -246,7 +246,8 @@ public without sharing class Quiz1Controller {
     }*/
     
     @AuraEnabled
-    public static string saveAllQA(String studentId, string q11, string q12, string q13, string q14, string q15, string grade, string lng, string typ) {
+    public static string saveAllQA(String studentId, string q11, string q12, string q13, string q14, string q15, string grade, string lng, 
+                                   string typ, string batchId) {
 
         Map<String, String> keyMap = new Map<String, String>{'1'=>'A', '2'=>'B', '3'=>'C', '4'=>'D', '5'=>'*', '6'=>''};
         if(String.isNotBlank(q11) && keyMap.containsKey(q11)){
@@ -274,11 +275,58 @@ public without sharing class Quiz1Controller {
 		String returnStr = '';
         string rspId = '';
         try{
-			List<Self_Awareness_and_Feedback__c> sf =  new List<Self_Awareness_and_Feedback__c>([ Select id,Created_from_Form__c, Quiz_1_1__c,Quiz_1_2__c,Quiz_1_3__c,Quiz_1_4__c,Quiz_1_5__c, 
+            String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+
+            List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c
+                    WHERE Id = :batchId LIMIT 1]);
+            List<Self_Awareness_and_Feedback__c> sf = new List<Self_Awareness_and_Feedback__c>();
+            if(String.isNotBlank(batchId) && !batches.isEmpty()){
+                 sf = [ Select id,Created_from_Form__c, Quiz_1_1__c,Quiz_1_2__c,Quiz_1_3__c,Quiz_1_4__c,Quiz_1_5__c, 
+                       Grade9_Quiz1_Submitted__c, Grade10_Quiz1_Submitted__c, Grade11_Quiz1_Submitted__c, Grade12_Quiz1_Submitted__c, Student__c 
+                       from Self_Awareness_and_Feedback__c
+                       where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' and Error_Status__c = 'No Error' 
+                        AND Academic_Year__c = :batches[0].Academic_Year__c
+                        AND Grade__c = :batches[0].Grade__c
+                       AND Barcode__c = :studentBarcode
+                       ORDER BY CreatedDate DESC limit 1];
+            }else{
+                 sf = [ Select id,Created_from_Form__c, Quiz_1_1__c,Quiz_1_2__c,Quiz_1_3__c,Quiz_1_4__c,Quiz_1_5__c, 
                                                                                                  	Grade9_Quiz1_Submitted__c, Grade10_Quiz1_Submitted__c, Grade11_Quiz1_Submitted__c, Grade12_Quiz1_Submitted__c, Student__c 
                                                                                                   from Self_Awareness_and_Feedback__c
                                                             									  where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' and Error_Status__c = 'No Error' 
-                                                                                                  limit 1]); //V1.0
+                                                                                                  limit 1];
+            }
+			/*List<Self_Awareness_and_Feedback__c> sf =  new List<Self_Awareness_and_Feedback__c>([ Select id,Created_from_Form__c, Quiz_1_1__c,Quiz_1_2__c,Quiz_1_3__c,Quiz_1_4__c,Quiz_1_5__c, 
+                                                                                                 	Grade9_Quiz1_Submitted__c, Grade10_Quiz1_Submitted__c, Grade11_Quiz1_Submitted__c, Grade12_Quiz1_Submitted__c, Student__c 
+                                                                                                  from Self_Awareness_and_Feedback__c
+                                                            									  where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' and Error_Status__c = 'No Error' 
+                                                                                                  limit 1]); //V1.0*/
             if(!sf.isEmpty()){
 				returnStr = 'Update';
                 sf[0].Form_Language__c = lng;

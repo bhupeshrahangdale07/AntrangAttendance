@@ -326,8 +326,7 @@ String dateOfFacilitation = String.valueOf(obj.Batch__r.Date_of_facilitation_com
                 }
             }
             
-            system.debug('facilitatorSessionMap = '+facilitatorSessionMap);
-            system.debug('facilitatorSessionMap.keyset() = '+facilitatorSessionMap.keyset());
+            
             for(Id facilitator : facilitatorSessionMap.keyset()){
                 
                 Integer count = ContentDocumentLnkMap.containsKey(facilitator)? ContentDocumentLnkMap.get(facilitator).size():0;

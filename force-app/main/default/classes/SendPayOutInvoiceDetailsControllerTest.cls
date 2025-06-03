@@ -86,7 +86,7 @@ public class SendPayOutInvoiceDetailsControllerTest {
         pageRef.getParameters().put('id', String.valueOf(contact.Id));
         Test.setCurrentPage(pageRef);
         
-        FacilitatorPayment sendemail = new FacilitatorPayment(new ApexPages.StandardController(contact));
+        SendPayOutInvoiceDetailsController sendemail = new SendPayOutInvoiceDetailsController(new ApexPages.StandardController(contact));
         sendemail.monthAndYear = '04-2020';
         List<SelectOption> lstoption = sendemail.getMonthAndYearOptions();
         sendemail.conIds.add(contact.Id);

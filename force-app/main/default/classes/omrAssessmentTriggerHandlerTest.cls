@@ -68,8 +68,6 @@ public class omrAssessmentTriggerHandlerTest {
         iarp.Is_Active__c = True;
         
         Insert iarp;
-        
-      
     }
 
     @isTest
@@ -85,7 +83,7 @@ public class omrAssessmentTriggerHandlerTest {
             New OMR_Assessment__c(Student__c = conList[4].Id, Barcode__c = '2103649840', Interest_1__c = 'Salesperson', Interest_2__c = 'Investigative', Aptitude_1__c = 'Numerical', Aptitude_2__c = 'Mechanical', Q_2_2__c = 'B', Q3_2__c = 'B', Q3_3__c = 'B', Q_2_3__c = 'B', Q4_53__c = '1', Career_Choice_1__c = 'Realist', Career_Choice_2__c = 'Investigative', Created_from_Form__c = false),
             New OMR_Assessment__c(Student__c = conList[5].Id, Barcode__c = '2103649841', Interest_1__c = 'Salesperson', Interest_2__c = 'Investigative', Aptitude_1__c = 'Numerical', Aptitude_2__c = 'Mechanical', Q_2_2__c = 'B', Q3_2__c = 'B', Q3_3__c = 'B', Q_2_3__c = 'B', Q4_53__c = '1', Career_Choice_1__c = 'Realist', Career_Choice_2__c = 'Investigative', Created_from_Form__c = false)
         };
-        insert omrList;
+        Insert omrList;
     }
 
     @isTest
@@ -114,7 +112,7 @@ public class omrAssessmentTriggerHandlerTest {
             Q_2_7__c = 'B', Q_2_3__c = 'B', Q3_7__c = 'A', Q3_3__c = 'A', Q4_3__c = '2', 
             Career_Choice_1__c = 'Realist', Career_Choice_2__c = 'Investigative', Created_from_Form__c = false)
         };
-        insert omrList;
+        Insert omrList;
         
         
          
@@ -145,7 +143,7 @@ public class omrAssessmentTriggerHandlerTest {
             Q3_2__c = 'B',
             Created_from_Form__c = true, RecordTypeId = EndlineRecordTypeId, Career_Choice_1__c = 'Realist', Career_Choice_2__c = 'Investigative')
         };
-        insert omrList;
+        Insert omrList;
         
         omrAssessmentTriggerHandler.populateStudentAspirations(omrList, null);
         Map<String, String> intFildWithAPIname = new Map<String, String>{'Q_2_1__c'=>'Realist','Q_2_2__c'=>'Investigative',

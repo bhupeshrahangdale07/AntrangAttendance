@@ -53,19 +53,20 @@ public without sharing class BaselineController {
                 List<AsyncApexJob> runningJobs = [
                     SELECT Id, Status, JobType, ApexClass.Name
                     FROM AsyncApexJob
-                    WHERE Status = 'Processing' 
+                    WHERE Status IN ('Processing', 'Preparing') 
                       AND JobType = 'Queueable'
                       AND ApexClass.Name = 'BarcodeGenerationQueueable'
                 ];
 				system.debug('runningJobs = '+runningJobs.size());
+                Map<Id, Integer> retryCountMap = new Map<Id, Integer>();
 				if (runningJobs.size() > 0) {
                     system.debug('After 1 min');
-                    Integer delayInMinutes = 1;
-					System.enqueueJob(new BarcodeGenerationQueueable(lstContact, grade, bt, dt.typ), delayInMinutes );
+                    Integer delayInMinutes = 2;
+					System.enqueueJob(new BarcodeGenerationQueueable(lstContact, grade, bt, dt.typ, retryCountMap), delayInMinutes );
 
                 }else{
                     system.debug('Scheduled');
-                     System.enqueueJob(new BarcodeGenerationQueueable(lstContact, grade, bt, dt.typ));
+                     System.enqueueJob(new BarcodeGenerationQueueable(lstContact, grade, bt, dt.typ, retryCountMap));
                 }
                 //System.enqueueJob(new BarcodeGenerationQueueable(con, grade, bt, dt.typ));
                 return 'saved';

@@ -1,5 +1,17 @@
 @isTest
 public class IARPRecommendationTestCase2 {
+    
+    @testSetup
+    public static void testdata(){
+        Session_Mapping__c sm = new Session_Mapping__c();
+        sm.District__c = 'Pune';
+        sm.Name = 'Pune Session';
+        sm.Session_Number__c = 0;
+        sm.Grade__c = 'Grade 9';
+        sm.Description__c = 'description';
+        insert sm;
+    }
+    
      public static testMethod void test37(){
         TriggerCheck triggerCheck=new TriggerCheck();
        

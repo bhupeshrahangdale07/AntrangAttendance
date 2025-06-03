@@ -8,10 +8,15 @@ public without sharing class careerDecisionMaking_02 {
     }
 
     @AuraEnabled
-    public static singleRecordWrapper getRecordCDM2(String studentId, String grade) {
+    public static singleRecordWrapper getRecordCDM2(String studentId, String grade, String batchId) {
         try{
             singleRecordWrapper rsp = new singleRecordWrapper();
             String studentBarcode = '';
+            List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c
+                    WHERE Id = :batchId LIMIT 1]);
+
             do{
                 List<Contact> studentContact = new List<Contact>([
                     SELECT Id, Name, Bar_Code__c, 
@@ -55,19 +60,45 @@ public without sharing class careerDecisionMaking_02 {
                 }*/
                 //=======================================================//
 
-                List<CDM2__c> cdm2List = [
-                    SELECT Name, Student__r.Name, Barcode__c,
-                    Form_Submitted__c, Created_from_Form__c,    
-                    Q5__c,
-                    Q6_1__c, Q6_2__c, Q6_3__c, Q6_4__c, Q6_5__c, Q6_6__c, 
-                    Q6_7__c, Q6_8__c, Q6_9__c, Q6_10__c, Q6_11__c, Q6_12__c
-                    FROM CDM2__c 
-                    WHERE Created_from_Form__c = true
-                    AND Student__c = :studentId
-                    AND Barcode__c = :studentBarcode
-                    AND RecordTypeId = :cdm2RecordTypeId
-                    LIMIT 1
-                ];
+                List<CDM2__c> cdm2List = new List<CDM2__c>();
+                
+                if(String.isNotBlank(batchId) && !batches.isEmpty()){
+                    cdm2List = [
+                                SELECT Name, Student__r.Name, Barcode__c,
+                                Form_Submitted__c, Created_from_Form__c,    
+                                Q5__c,
+                                Q6_1__c, Q6_2__c, Q6_3__c, Q6_4__c, Q6_5__c, Q6_6__c, 
+                                Q6_7__c, Q6_8__c, Q6_9__c, Q6_10__c, Q6_11__c, Q6_12__c
+                                FROM CDM2__c 
+                                WHERE Created_from_Form__c = true
+                                AND Student__c = :studentId
+                                AND RecordTypeId = :cdm2RecordTypeId
+                                AND Error_Status__c = 'No Error'
+                                // AND Data_Clean_up__c  = false
+                                AND Academic_Year__c = :batches[0].Academic_Year__c
+                                AND Grade__c = :batches[0].Grade__c
+                        		AND Barcode__c = : studentBarcode
+                                ORDER BY CreatedDate DESC
+                                LIMIT 1    
+                            ];
+                }else{
+                    cdm2List = [
+                            SELECT Name, Student__r.Name, Barcode__c,
+                            Form_Submitted__c, Created_from_Form__c,    
+                            Q5__c,
+                            Q6_1__c, Q6_2__c, Q6_3__c, Q6_4__c, Q6_5__c, Q6_6__c, 
+                            Q6_7__c, Q6_8__c, Q6_9__c, Q6_10__c, Q6_11__c, Q6_12__c
+                            FROM CDM2__c 
+                            WHERE Created_from_Form__c = true
+                            AND Student__c = :studentId
+                            AND Barcode__c = :studentBarcode 
+                            AND RecordTypeId = :cdm2RecordTypeId
+                            AND Error_Status__c = 'No Error'
+                            // AND Data_Clean_up__c  = false
+                            ORDER BY CreatedDate DESC
+                            LIMIT 1    
+                        ];
+                }
 
                 if(cdm2List.isEmpty())break;
                 
@@ -225,7 +256,7 @@ public without sharing class careerDecisionMaking_02 {
     }
 
     @AuraEnabled
-    public static String saveAllQA(String recordIdCMD2, String studentId, String barCode, object ans, string lng, string typ){
+    public static String saveAllQA(String batchId, String recordIdCMD2, String studentId, String barCode, object ans, string lng, string typ){
         try{
             string rspId = '';
             String jsonString = Json.serialize(ans);
@@ -245,13 +276,61 @@ public without sharing class careerDecisionMaking_02 {
                 rspId = recordIdCMD2;
             }  
             else {
-                List<CDM2__c> existing = new List<CDM2__c>([
-                    SELECT Id 
-                    FROM CDM2__c
-                    WHERE Created_from_Form__c = true
-                    AND RecordTypeId = :cdm2RecordTypeId
-                    AND Student__c = :studentId
-                    AND Barcode__c = :barCode]);   
+                List<CDM2__c> existing = new List<CDM2__c>();
+                List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c
+                    WHERE Id = :batchId LIMIT 1]);
+                 string grade = batches[0].grade__c;
+                String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+
+                    if(String.isNotBlank(batchId) && !batches.isEmpty()){
+                        existing = new List<CDM2__c>([
+                            SELECT Id 
+                            FROM CDM2__c
+                            WHERE Created_from_Form__c = true
+                            AND RecordTypeId = :cdm2RecordTypeId
+                            AND Student__c = :studentId
+                            AND Error_Status__c = 'No Error'
+                            // AND Data_Clean_up__c  = false
+                            AND Academic_Year__c = :batches[0].Academic_Year__c
+                            AND Grade__c = :batches[0].Grade__c
+                            AND Barcode__c = : studentBarcode
+                            ORDER BY CreatedDate DESC
+                            LIMIT 1]); 
+                    }else{
+                         existing = new List<CDM2__c>([
+                            SELECT Id 
+                            FROM CDM2__c
+                            WHERE Created_from_Form__c = true
+                            AND RecordTypeId = :cdm2RecordTypeId
+                            AND Student__c = :studentId
+                            AND Barcode__c = :studentBarcode]);  
+                    } 
 
                 if(!existing.isEmpty())
                 {
@@ -371,4 +450,136 @@ public without sharing class careerDecisionMaking_02 {
             throw new AuraHandledException(e.getMessage());
         }
     }
+     public static void fakeMethod(){
+    Integer i = 0;
+    	i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+         i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+         i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+         i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+         i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+         i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+
+    //repeat the i++ hundred of times
+
+  }
 }

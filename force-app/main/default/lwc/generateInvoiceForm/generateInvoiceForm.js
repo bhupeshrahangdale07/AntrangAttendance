@@ -6,9 +6,6 @@ import showFaciliatorOnEdit from '@salesforce/apex/GenerateInvoiceFormController
 import getPicklistValues from '@salesforce/apex/GenerateInvoiceFormController.getPicklistValues';
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-
-import LightningConfirm from "lightning/confirm";
-
 export default class GenerateInvoiceForm extends NavigationMixin(LightningElement) {
     selectedDistrict='';
     @track typeField='edit';
@@ -277,7 +274,6 @@ export default class GenerateInvoiceForm extends NavigationMixin(LightningElemen
             this.showToast('error',error.body.message);
         });
     }
-    
     getReadOnlyData(event){
         //debugger
         const data = showFaciliatorOnEdit({invoiceDate:this.selectedInvoiceDate, district:this.selectedDistrict}).then(async(result) => {
@@ -291,33 +287,6 @@ export default class GenerateInvoiceForm extends NavigationMixin(LightningElemen
         });
         return data;
     }
-
-
-
-    async handleConfirm() {
-        const result = await LightningConfirm.open({
-            message: "Are you sure you want generate salaries for the selected records?",
-            variant: "default",
-            label: "Generate Fixed Pay"
-        });
-
-        //Confirm has been closed
-
-        //result is true if OK was clicked
-        if (result) {
-            this.handlegenerateInvoice();
-        } else {
-            //and false if cancel was clicked
-            this.handleCancel();
-        }
-    }
-
-    handleCancel() {
-        this.navigationFunction('GenrateInvoiceForm__c');
-    }
-
-
-
     handlegenerateInvoice(event){
         //console.log('this.facilitatorData =',JSON.stringify(this.facilitatorData));
         debugger
@@ -425,8 +394,26 @@ export default class GenerateInvoiceForm extends NavigationMixin(LightningElemen
             this.showToast('error',error.body.message);
         });
     }
+    showToast(type,message){
+        const evt = new ShowToastEvent({
+            message: message,
+            variant: type,
+        });
+        this.dispatchEvent(evt);
+    }
+    navigationFunction(pageApi){
+        let pageReference = {
+            type: 'comm__namedPage',
+            attributes: {
+                name: pageApi
+            },
+            state:{
+                fem : encodeURI(this.fem)
+            }
+        };
+        this[NavigationMixin.Navigate](pageReference);
+    }
 
-   
     signOut(event){
         let name = 'AntarangPaymentLogin';
         let value = '';
@@ -453,26 +440,5 @@ export default class GenerateInvoiceForm extends NavigationMixin(LightningElemen
             this.fem = decodeURI(currentPageReference.state.fem);
             this.prf = decodeURI(currentPageReference.state.prf);
         }
-    }
-
-     showToast(type,message){
-        const evt = new ShowToastEvent({
-            message: message,
-            variant: type,
-        });
-        this.dispatchEvent(evt);
-    }
-    
-    navigationFunction(pageApi){
-        let pageReference = {
-            type: 'comm__namedPage',
-            attributes: {
-                name: pageApi
-            },
-            state:{
-                fem : encodeURI(this.fem)
-            }
-        };
-        this[NavigationMixin.Navigate](pageReference);
     }
 }

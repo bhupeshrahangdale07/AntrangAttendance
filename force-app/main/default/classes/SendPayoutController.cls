@@ -191,8 +191,8 @@ public class SendPayoutController {
             } else {
                     wrapSessionEmailBody wrap = wrapSessionEmailBodyMap.get(se.Batch__r.School_Name__r.Name+'_'+se.Session_Grade__c+'_'+se.Name);
                     if(se.Session_Type__c != 'Counseling'){
-                        wrap.NumberOfBatches    += 1;
-                        wrap.PaidAmt            += se.Total_Amount__c != null ? se.Total_Amount__c : 0;
+                        wrap.NumberOfBatches	+= 1;
+                        wrap.PaidAmt 			+= se.Total_Amount__c != null ? se.Total_Amount__c : 0;
                         wrapSessionEmailBodyMap.put(se.Batch__r.School_Name__r.Name+'_'+se.Session_Grade__c+'_'+se.Name , wrap);
                     }
                    }
@@ -218,7 +218,7 @@ public class SendPayoutController {
         
         Map<string,Map<String,List<Session__c>>> donorSessionMap = new Map<string,Map<String,List<Session__c>>> ();
         Map<string,Integer> CounselingMap = new Map<string,Integer> ();
-        
+		
         for(String str : sessInvoicePDFMap.keySet()){
             Map<String,List<Session__c>> tempMApSessionTypeGrade = new Map<String,List<Session__c>>();
             Map<String,Integer> tempCounseling = new  Map<String,Integer>();
@@ -271,7 +271,7 @@ public class SendPayoutController {
         
         integer count = 0;
         for(string str : erpdonor.keyset()){
-            count++;
+            
             PageReference word = Page.CATrainerInvoice;
             word.getParameters().put('Id',facilitator);
             word.getParameters().put('Map',JSON.serialize(erpdonor.get(str)));

@@ -1,0 +1,256 @@
+.buttonsOnAcc {
+    display: flex;
+}
+.facilitatorNameCls {
+    padding: 5px 20px 5px 10px;
+    background-color: #F09F4D;
+    text-align: center;
+    align-items: center;
+    border: 1px solid #49445C;
+    border-radius: 0.25rem;
+    color: #49445C;
+    display: block;
+}
+.sessionFormInstruction {
+    padding: 0px 30px 0px 30px;
+}
+table.pendingSessionTable {
+    border-collapse: collapse;
+    width: 100%;
+    color: #49445C;
+}
+
+.pendingSessionTable th,
+td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+
+.closeIcon {
+    --sds-c-icon-color-foreground: #49445C;
+}
+.pendingSessionModal button.slds-button.slds-button_icon.slds-modal__close.slds-button_icon-inverse {
+    top: 0px;
+    right: 2px;
+}
+
+.pendingSessionModal .slds-modal__header {
+    border: none;
+}
+
+.pendingSessionModal svg.slds-icon.slds-icon_small {
+    fill: black;
+    width: 20px;
+}
+.sessionDetail {
+    background-color: #fff;
+    margin: 20px;
+    padding: 15px;
+    margin-top: 3%;
+}
+.mainMenuDiv{
+    float: left;
+}
+.signOutDiv .signOutButton {
+    --sds-c-button-brand-color-background: #DB583F;
+}
+
+.signOutDiv {
+    float: right;
+}
+.sessionFields {
+    display: flex;
+    justify-content: space-between;
+    gap: 5rem;
+    width: 100%;
+    padding: 30px;
+}
+.childStatusAccordion {
+    margin-left: 45px;
+    margin-bottom: 15px;
+}
+.childStatusAccordion lightning-button {
+    pointer-events: none;
+}
+.childAccordionMain:has(.childAccordion .slds-is-open) .childStatusAccordion {
+    display: none;
+}
+.sessionFields div {
+    width: 33.33%;
+}
+.sessionAccordion {
+    border-top: 6px solid #E6E6E6;
+    margin: 0px -15px;
+    padding: 20px 30px;
+    border-bottom: 6px solid #E6E6E6;
+}
+.onTimeScheduleDiv {
+    width: fit-content;
+    padding: 5px 20px 5px 10px;
+    background-color: #C2DCCC;
+    text-align: left;
+    align-items: center;
+    border-radius: 6px;
+    color: #50A771;
+    font-weight: 600;
+    display: flex;
+    margin-left: 12px;
+}
+
+.onTimeScheduleDiv img {
+    width: 25px;
+    margin-right: 3px;
+}
+.lateScheduleDiv {
+    width: fit-content;
+    padding: 5px 20px 5px 10px;
+    background-color: #F6DCC3;
+    text-align: left;
+    align-items: center;
+    border-radius: 6px;
+    color: #FF6B4D;
+    font-weight: 600;
+    display: flex;
+    margin-left: 12px;
+}
+
+.lateScheduleDiv img { 
+    width: 25px;
+    margin-right: 3px;
+}
+.saveButton {
+    --slds-c-button-brand-color-background: #50A771 !important;
+    --sds-c-button-brand-color-border: #0e0e0d5c;
+    --slds-c-button-brand-text-color: #fff;
+}
+.saveDiv {
+    text-align: center;
+    margin: 50px 0px;
+}
+.rescheduleInnerDiv {
+    display: flex;
+    align-items: center;
+}
+.reScheduleDiv {
+    width: fit-content;
+    padding: 5px 20px 5px 10px;
+    background-color: #FAE58D;
+    text-align: left;
+    align-items: center;
+    border-radius: 6px;
+    color: #9B4A08;
+    font-weight: 600;
+    display: flex;
+    margin-left: 12px;
+}
+
+.reScheduleDiv img {
+    width: 25px;
+    margin-right: 3px;
+}
+
+.reScheduleDivCounter {
+    padding: 7px 10px 7px 10px;
+    background-color: #FAE58D;
+    text-align: left;
+    align-items: center;
+    border-radius: 6px;
+    color: #9B4A08;
+    font-weight: 600;
+    margin-left: 5px;
+}
+.lateSchedulePopup .headingText {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.lateSchedulePopup .btnGrp {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.lateSchedulePopup .btnGrp button.slds-button.slds-button_brand {
+    width: 20%;
+}
+.lateScheduleDetails .sessName {
+    width: 27%;
+    align-items: center;
+    display: grid;
+    background-color: #E6E6E6;
+    margin: 0px;
+    padding: 5px;
+    height: auto;
+    color: #49445C;
+    border-radius: 5px;
+    border: 1px solid #878787;
+    margin-right: 25px;
+    text-align: center;
+    margin-top: 18px;
+    word-break: break-all;
+}
+
+.lateScheduleDetails {
+    display: flex;
+}
+
+.lateScheduleDetails lightning-combobox.slds-form-element {
+    width: 60%;
+}
+@media (max-width: 767px) {
+    lightning-layout-item.slds-p-around_small.slds-size_2-of-12 {
+        width: 50%;
+    }
+    div.reScheduleDiv {
+        padding: 5px 28px 5px 10px;
+    }
+    div.lateScheduleDiv {
+        padding: 5px 25px 5px 10px;
+    }
+    div.textCls {
+        font-size: 12px;
+    }
+
+    .imgCls {
+        margin-left: -8px;
+    }
+    div.onTimeScheduleDiv {
+        padding: 5px 25px 5px 10px;
+    }
+    div.lateScheduleDiv,
+    div.onTimeScheduleDiv,
+    div.rescheduleInnerDiv {
+        margin-left: 4px;
+    }
+    div.sessionAccordion {
+        margin: 0px 0px;
+        padding: 20px 10px;
+    }
+
+    div.sessionFormInstruction {
+        padding: 0px 20px 0px 20px;
+    }
+	.sessionFields div {
+        width: 100%;
+    }
+
+    .sessionFields {
+        display: block;
+        padding: 60px 20px 60px 20px;
+    }
+	div.sessionDetail {
+        margin: 4px;
+        padding: 0px;
+    }
+	.mainMenuDiv {
+        margin-top: 10px;
+        margin-right: 10px;
+        margin-left: 10px;
+    }
+	.signOutDiv {
+        float: right;
+        margin-top: 10px;
+        margin-right: 10px;
+    }
+}

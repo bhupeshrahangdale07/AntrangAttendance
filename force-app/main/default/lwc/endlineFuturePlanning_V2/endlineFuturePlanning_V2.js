@@ -64,7 +64,8 @@ export default class EndlineFuturePlanning extends NavigationMixin(LightningElem
     getRecordAptFun(){
         console.log('$$$ this.studentId: ', this.studentId);
         getRecordApt({
-            studentId : this.studentId
+            studentId : this.studentId,
+            batchId : this.selectedBatchId
         }).then(result => {
             if(result){
                 console.log('$$$ Endline Future Plannning getRecordApt: ', result);
@@ -810,7 +811,8 @@ export default class EndlineFuturePlanning extends NavigationMixin(LightningElem
             F12 :  this.queF12Value,
             saveFlag : true, //this.saveFlag,
             grade : this.selectedGrade,
-            formType : JSON.stringify(formType)
+            formType : JSON.stringify(formType),
+            batchId : this.selectedBatchId
         }).then(result => {
             this.futuerPlanningRecordId = result;
             console.log('result = ',result)

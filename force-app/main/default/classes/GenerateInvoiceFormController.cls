@@ -145,7 +145,7 @@ public without sharing class GenerateInvoiceFormController {
             //system.debug('setOfSalaryId = '+setOfSalaryId);
             //system.debug('setOfContactId ='+setOfContactId);
             Map<Id,Integer> MapContentNContact = new Map<Id,Integer>();
-           	for (AggregateResult result : [select count(id) amt, Contact__c from salary__c where Status__c = 'Invoice generated' and Contact__c in :setOfContactId Group By Contact__c]) {
+            for (AggregateResult result : [select count(id) amt, Contact__c from salary__c where Status__c = 'Invoice generated' and Contact__c in :setOfContactId Group By Contact__c]) {
                 Id contactId = (Id)result.get('Contact__c');
                 Integer count = (Integer)result.get('amt');
                 MapContentNContact.put(contactId, count);
@@ -188,17 +188,17 @@ public without sharing class GenerateInvoiceFormController {
                                  Amount_Paid__c,Contact__r.Fixed_Amount__c,Contact__r.ownerId,Contact__r.Academic_Year__c,
                                  Contact__r.Name, Contact__r.npe01__WorkEmail__c,Invoice_Date__c,Reason__c,Previous_Amount_Paid__c,Amount_to_be_paid_this_month__c from 
                                  salary__c where id in :setOfSalaryId]){
-				if(status == ''){
+                if(status == ''){
                     sal.Status__c = 'Proposal Rejected';
                 }else{
                     if(!reasonSet.contains(sal.Reason__c) && sal.Active__c == true && sal.Amount_to_be_paid_this_month__c != 0 ){
                         sal.Status__c = 'Invoice Generated';
                     }else{
-                        sal.Status__c = 'proposal approved	';
+                        sal.Status__c = 'proposal approved';
                     }
                 }
                 lstOfSal.add(sal);
-     		}
+            }
             
             //Map<Id,contact> contactMap = new Map<Id,contact>([select id,name,MailingStreet,MailingCity,MailingState,MailingPostalCode,npe01__WorkEmail__c,MobilePhone,Bank_Account_No__c,IFSC_Code__c,PAN_Number__c from contact where id in:setOfContactId]);
             
@@ -311,7 +311,7 @@ public without sharing class GenerateInvoiceFormController {
                 return 'success';
             }if(lstOfSal.size() > 0){
                 update lstOfSal;
-                return 'success';	
+                return 'success';   
             }
             else return 'fail';
         }catch(exception e){
@@ -401,7 +401,7 @@ public without sharing class GenerateInvoiceFormController {
         string rtId = rt.id;
         string paymentType = 'Salary';
         set<Id> setConId = new set<Id>();
-        for(contact con : [select id, name, Fixed_Amount__c,Academic_Year__c,npe01__WorkEmail__c,ownerId,Payment_Start_Date__c, (select id,name, School_Name__r.District__r.name,School_Name__r.District__r.Payout_Supervisor_Username__c from Batches__r where School_Name__r.District__r.id = :district) from contact where Facilitator_Work_Status__c = 'Active' and Payment_Type__c = :paymentType and RecordTypeId = :rtId ORDER BY Name]){
+        for(contact con : [select id, name, Fixed_Amount__c,Academic_Year__c,npe01__WorkEmail__c,ownerId,Payment_Start_Date__c, (select id,name, School_Name__r.District__r.name,School_Name__r.District__r.Payout_Supervisor_Username__c from Batches__r where School_Name__r.District__r.id = :district) from contact where Payment_Type__c = :paymentType and RecordTypeId = :rtId ORDER BY Name]){
             //system.debug('con.Batches__r.size() ===' + con.Batches__r.size());
             //system.debug('con ===' +con);
             if(con.Batches__r.size() > 0){
@@ -464,7 +464,7 @@ public without sharing class GenerateInvoiceFormController {
             set<Decimal> setAcademicYear = new set<Decimal>();
             if(setting.Academic_Year__c != null){setAcademicYear.add(setting.Academic_Year__c);}
             if(setting.Next_Academic_Year__c != null){setAcademicYear.add(setting.Next_Academic_Year__c);}
-            for(contact con : [select id, name, Fixed_Amount__c,Academic_Year__c,npe01__WorkEmail__c,ownerId,Payment_Start_Date__c, (select id,name, School_Name__r.District__r.name,School_Name__r.District__r.Payout_Supervisor_Username__c from Batches__r where School_Name__r.District__r.id = :district) from contact where Facilitator_Work_Status__c = 'Active' and Payment_Type__c = :paymentType and RecordTypeId = :rtId and Payment_Start_Date__c <= : invoiceDate and Academic_Year__c in :setAcademicYear ORDER BY Name]){
+            for(contact con : [select id, name, Fixed_Amount__c,Academic_Year__c,npe01__WorkEmail__c,ownerId,Payment_Start_Date__c, (select id,name, School_Name__r.District__r.name,School_Name__r.District__r.Payout_Supervisor_Username__c from Batches__r where School_Name__r.District__r.id = :district) from contact where Payment_Type__c = :paymentType and RecordTypeId = :rtId and Payment_Start_Date__c <= : invoiceDate and Academic_Year__c in :setAcademicYear ORDER BY Name]){
                 if(con.Batches__r.size() > 0){
                     facilitatorWrapper facWrp = new facilitatorWrapper();
                     facWrp.FacilitatorId = con.Id;
@@ -494,10 +494,10 @@ public without sharing class GenerateInvoiceFormController {
         return facWrpList;
     }
     @AuraEnabled
-	public static List<String> getPicklistValues() {
+    public static List<String> getPicklistValues() {
         List<String> picklistValues = new List<String>();
-		String objectApiName = 'Salary__c'; // API name of the object
-    	String fieldApiName = 'Reason__c'; // API name of the picklist field
+        String objectApiName = 'Salary__c'; // API name of the object
+        String fieldApiName = 'Reason__c'; // API name of the picklist field
         try {
             Schema.DescribeFieldResult fieldResult = Schema.getGlobalDescribe().get(objectApiName).getDescribe().fields.getMap().get(fieldApiName).getDescribe();
             if (fieldResult.isAccessible() && fieldResult.getType() == Schema.DisplayType.PICKLIST) {

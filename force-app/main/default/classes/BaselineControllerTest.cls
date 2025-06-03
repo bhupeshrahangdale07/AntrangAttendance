@@ -76,13 +76,13 @@ public class BaselineControllerTest {
         dt.batchCodeG9 = con.Batch_Code__c;
         system.debug('con.Account.Id ='+con);
 		//con.FirstName = ;
-        test.startTest();
+        //test.startTest();
         BaselineController.createContact(dt, 'Grade 9', acc.Id,con.Batch_Code__c);
         dt.batchCodeG10=con.G10_Batch_Code__c;
-        BaselineController.createContact(dt, 'Grade 10', acc.Id,con.Batch_Code__c);
+       // BaselineController.createContact(dt, 'Grade 10', acc.Id,con.Batch_Code__c);
        // dt.batchCodeG10=con.G11_Batch_Code__c;
         //BaselineController.createContact(dt, 'Grade 11', acc.Id,con.Batch_Code__c);
-        test.stopTest();
+        //test.stopTest();
         
         /*firstname : this.firstName,
             lastname: this.lastName,
@@ -100,5 +100,23 @@ public class BaselineControllerTest {
         BaselineController.getStudentData(conList[0].Batch_Code__c);
         test.stopTest();
     }*/
+    
+    @isTest
+    public static void test_schoolnGradebyBatchId(){
+       	batch__c bat = [select id from batch__c where Name ='ShreeramSchoolBatch1' limit 1];
+
+        test.startTest();
+        BaselineController.schoolnGradebyBatchId(bat.Id);
+        test.stopTest();
+    }
+    
+    @isTest
+    public static void test_getSchoolDistrictData(){
+       	Account acc = [select id from account limit 1];
+
+        test.startTest();
+        BaselineController.getSchoolDistrictData(acc.Id);
+        test.stopTest();
+    }
     
 }

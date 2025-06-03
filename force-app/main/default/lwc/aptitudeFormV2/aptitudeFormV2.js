@@ -250,6 +250,7 @@ export default class AptitudeFormV2 extends NavigationMixin(LightningElement) {
     getRecordAptFun(){
         console.log('this.rxStudentId =',this.rxStudentId);
         getRecordApt({
+            batchId : this.selectedBatchId,
             studentId : this.rxStudentId
         }).then(result => {
             console.log('result = '+JSON.stringify(result));
@@ -399,7 +400,8 @@ export default class AptitudeFormV2 extends NavigationMixin(LightningElement) {
             saveFlag : this.saveFlag,
             grade: this.selectedGrade,
             typ : (this.typ == 'v2' || this.typ == 'Form V2') ? 'Form V2' : 'Form V1',
-            lng : this.lng
+            lng : this.lng,
+            batchId : this.selectedBatchId
         }).then(result => {
             console.log('enter')
            console.log('res = ',result);

@@ -64,10 +64,10 @@ public class RealityControllerTest {
     
     @isTest
     public static void test_getRecordApt(){
-        List<Contact> conList = [SELECT Id FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
+        List<Contact> conList = [SELECT Id, Batch_Code__c FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
 
         test.startTest();
-        Self_Awareness_Realities__c resSAR = RealityController.getRecordApt(conList[0].Id);
+        Self_Awareness_Realities__c resSAR = RealityController.getRecordApt(conList[0].id, 'Grade 9',conList[0].Batch_Code__c);
         test.stopTest();
         
         System.assertEquals(true,resSAR.Created_from_Form__c,'resSAR.Created_from_Form__c is false');
@@ -95,12 +95,12 @@ public class RealityControllerTest {
     
     @isTest
     public static void test_saveData(){
-        List<Contact> conList = [SELECT Id FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
+        List<Contact> conList = [SELECT Id, Batch_Code__c FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
     	Contact con1 = [SELECT Id, Batch_Code__c FROM Contact WHERE LastName = 'Last2' AND Bar_Code__c = 'Test0009'];
         
         test.startTest();
-        String response1 = RealityController.saveData(conList[0].Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9', '', 'English');
-        String response2 = RealityController.saveData(con1.Id , 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9', '', 'Hindi');
+        String response1 = RealityController.saveData(conList[0].Batch_Code__c, conList[0].Id, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9', '', 'English');
+        String response2 = RealityController.saveData(conList[0].Batch_Code__c, con1.Id , 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', true, 'Grade 9', '', 'Hindi');
         test.stopTest();
         
         //System.assertEquals('Update', response1);

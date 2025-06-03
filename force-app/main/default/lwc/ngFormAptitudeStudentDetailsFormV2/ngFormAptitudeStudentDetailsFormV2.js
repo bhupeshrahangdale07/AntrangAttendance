@@ -135,9 +135,10 @@ export default class NgFormAptitudeStudentDetailsFormV2 extends NavigationMixin(
     getRecordAptFun(){
         console.log('this.rxStudentId =',this.rxStudentId);
         getRecordApt({
+            batchId:this.selectedBatchId,
             studentId : this.rxStudentId
         }).then(result => {
-            console.log('result = '+result);
+            console.log('result = '+ JSON.stringify(result));
             if(result){
                 this.showForm = true;
                 this.showLoading = false;
@@ -200,6 +201,7 @@ export default class NgFormAptitudeStudentDetailsFormV2 extends NavigationMixin(
         }
 
         saveData({
+            batchId : this.selectedBatchId,
             studentId : this.rxStudentId,
             apt1 : this.aptitude1Value,
             apt2 : this.aptitude2Value,

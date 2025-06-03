@@ -1,54 +1,65 @@
+/**
+* @File Name : SessionLoginController.cls
+* @Description : This class is used for Student Attendance Login
+* @Author : Bhupesh Rahangdale
+* @Modification Log :
+*==============================================================================
+* Ver | Date | Author | Modification
+*==============================================================================
+* 1.0 | 06/05/2025 |  Bhupesh Rahangdale | Initial Version
+**/
 public without sharing class SessionLoginController {
-
+    
+    /**@Description : This method will validate the provided email id for login and will return the falicitotor data **/
     @AuraEnabled
     public static object checkEmail(String strEmail){
         try {
             Boolean formLogin = false;
             Map<String, Object> result = new Map<String, Object>();
-        Id recordTypeId = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName()
-            .get('CA_Trainer')
-            .getRecordTypeId();
-        AntarangSetting__c antarangSett = AntarangSetting__c.getOrgDefaults(); // updated: 23.03.2023
-        
-        result.put('grade', getdynamicpicklistval('Batch__c', 'Grade__c'));
-        List<Contact> con = new List<Contact>();
-        string labelForDomain = System.Label.Antarang_Domain;
+            Id recordTypeId = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName()
+                .get('CA_Trainer')
+                .getRecordTypeId();
+            AntarangSetting__c antarangSett = AntarangSetting__c.getOrgDefaults(); // updated: 23.03.2023
+            
+            result.put('grade', getdynamicpicklistval('Batch__c', 'Grade__c'));
+            List<Contact> con = new List<Contact>();
+            string labelForDomain = System.Label.Antarang_Domain;
             system.debug('labelForDomain- '+antarangSett.Academic_Year__c);
-        if((String.isNotBlank(strEmail) && strEmail.contains('@') && labelForDomain.contains(strEmail.split('@').get(1)))) {
-            for (Contact objcon : [
-            SELECT id, npe01__WorkEmail__c, Form_Login__c
-            FROM contact
-            WHERE npe01__WorkEmail__c = :strEmail AND RecordTypeId = :recordTypeId
-                AND (Academic_Year__c =: antarangSett.Academic_Year__c OR Academic_Year__c =: antarangSett.Next_Academic_Year__c)
-                AND Facilitator_Work_Status__c = 'Active'
-                ORDER BY CreatedDate DESC
-            LIMIT 1
-        ]) {
-            System.debug('objcon- '+objcon);
-            if(objcon != null){
-            formLogin = objcon.Form_Login__c;
-            con.add(objcon);
+            if((String.isNotBlank(strEmail) && strEmail.contains('@') && labelForDomain.contains(strEmail.split('@').get(1)))) {
+                for (Contact objcon : [
+                    SELECT id, npe01__WorkEmail__c, Form_Login__c
+                    FROM contact
+                    WHERE npe01__WorkEmail__c = :strEmail AND RecordTypeId = :recordTypeId
+                    AND (Academic_Year__c =: antarangSett.Academic_Year__c OR Academic_Year__c =: antarangSett.Next_Academic_Year__c)
+                    AND Facilitator_Work_Status__c = 'Active'
+                    ORDER BY CreatedDate DESC
+                    LIMIT 1
+                ]) {
+                    System.debug('objcon- '+objcon);
+                    if(objcon != null){
+                        formLogin = objcon.Form_Login__c;
+                        con.add(objcon);
+                    }
+                }
+                if(formLogin){
+                    system.debug('Already Logged In');
+                    result.put('Already Logged In', new Contact());
+                } else if(con.size() > 0){
+                    system.debug('Contact-- '+ con[0]);
+                    Contact updateCon = [Select Id, Form_Login__c from Contact Where Id =: con[0].Id];
+                    system.debug('Contact- '+updateCon);
+                    updateCon.Form_Login__c = true;
+                    update updateCon;
+                    result.put('contact', con[0]);
+                } else {
+                    result.put('error', 'No matching contact found.');
+                }
+                
+                return result;
+            }else{
+                result.put('contact', new contact());
+                return result;
             }
-        }
-        if(formLogin){
-            system.debug('Already Logged In');
-            result.put('Already Logged In', new Contact());
-        } else if(con.size() > 0){
-            system.debug('Contact-- '+ con[0]);
-            Contact updateCon = [Select Id, Form_Login__c from Contact Where Id =: con[0].Id];
-            system.debug('Contact- '+updateCon);
-            updateCon.Form_Login__c = true;
-            update updateCon;
-            result.put('contact', con[0]);
-        } else {
-            result.put('error', 'No matching contact found.');
-        }
-        
-        return result;
-        }else{
-            result.put('contact', new contact());
-        return result;
-        }
         } catch (Exception e) {
             system.debug('Error at line no- '+e.getLineNumber());
             throw new AuraHandledException(e.getMessage());
@@ -72,7 +83,7 @@ public without sharing class SessionLoginController {
         }
         return options;
     }
-
+    
     public class picklistwrapper {
         @AuraEnabled
         public String label { get; set; }

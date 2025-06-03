@@ -49,7 +49,7 @@ export default class BaselineForm_01 extends NavigationMixin(LightningElement) {
         'currentlyStudyingIn' : 'Currently Studying In :',
         'studying' : 'What are you currently studying ?',
         'gender' : 'Gender :',
-        'whatsAppNumber' : 'WhatsApp Number :',
+        'whatsAppNumber' : 'WHATSAPP NUMBER/ Contact Number :',
         'alternateWhatsAppNumber' : 'Alternate WhatsApp Number :',
     }
     @track validations = {

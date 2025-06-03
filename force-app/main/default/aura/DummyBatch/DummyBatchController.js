@@ -1,17 +1,5 @@
 ({
-    processDummyBatch: function(component, event, helper) {
-        component.set("v.showSpinner", 'true');
-        helper.processDummyBatch(component, event);
-    },
-    
-    closeAction: function(component, event, helper) {
-        $A.get("e.force:closeQuickAction").fire();
-    },
-    
-    doInit : function(component, event, helper) {
-        //helper.processDummyBatch(component, event);
-        /*
-        
+	doInit : function(component, event, helper) {
         var action = component.get("c.cloneRecord");
         action.setParams({ recordId : component.get("v.recordId") });
         action.setCallback(this, function(response){
@@ -19,7 +7,7 @@
             if (state === "SUCCESS") {
                 //alert(response.getReturnValue().substr(0,7));
                 if(response.getReturnValue().substr(0,7) =="SUCCESS" ){
-                    var updatedRecordId = response.getReturnValue().substr(7);
+                   var updatedRecordId = response.getReturnValue().substr(7);
                     
                     console.log("response.getReturnValue(): ",response.getReturnValue());
                     console.log("updatedRecordId : ",updatedRecordId);
@@ -62,10 +50,8 @@
                 });
             }
             component.set("v.showSpinner",false);
-            $A.get("e.force:closeQuickAction").fire();
+             $A.get("e.force:closeQuickAction").fire();
         });
-        $A.enqueueAction(action);
-        */
-    }
-    
+		$A.enqueueAction(action);
+	}
 })

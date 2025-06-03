@@ -51,6 +51,7 @@ public class DataEntryLoginFormControllerTest {
         bat.School_Name__c = acc.Id;
         bat.Date_of_facilitation_starting__c = system.today();
         bat.Grade__c = 'Grade 9';
+        bat.Academic_Year__c = 2024;
         Insert bat;
         
         Session__c sess = new Session__c();

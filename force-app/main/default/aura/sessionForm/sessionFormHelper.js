@@ -185,7 +185,6 @@ if(res){
 }
             //component.set("v.sessioneditRecTemp",res);
  			component.set("v.sessioneditRec",res);
-console.log('res = '+JSON.stringify(res));
             component.set("v.sessionfound",true);
             
         },

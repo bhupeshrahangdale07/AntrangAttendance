@@ -6,7 +6,12 @@
                     description="Message type, can be error/warning/info/success"                    
                     type="String" default="info"/>
     
-
+    
+    
+    
+    
+    
+    
     <aura:if isTrue="{!and(v.message != '' , v.message != null)}">
         
         <div class="{!'slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_'+v.type }" role="alert">

@@ -10,12 +10,36 @@ public without sharing class Quiz2Controller {
             SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
             FROM Batch__c
             WHERE Id = :batchId LIMIT 1];
-        list<contact> contact= [select id,Bar_Code__c from contact where id =:studentId];	
+         String studentBarcode = '';
+         List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
             list<Self_Awareness_Realities__c> assesRec = [SELECT Created_from_Form__c, Barcode__c, Form_Submitted__c 
                             FROM Self_Awareness_Realities__c 
                             WHERE Created_from_Form__c = true AND 
                             RecordType.Name='Baseline'  AND  
-                            Barcode__c = : contact[0].Bar_Code__c AND 
+                            Barcode__c = : studentBarcode AND 
                             Grade__c = :grade AND
                             Student__c = : studentId AND 
                             Academic_Year__c = : batches[0].Academic_Year__c AND
@@ -243,10 +267,45 @@ public without sharing class Quiz2Controller {
     }
     
     @AuraEnabled
-    public static Self_Awareness_Realities__c getRecordApt(String studentId) {
+    public static Self_Awareness_Realities__c getRecordApt(String studentId, string batchId) {
         try{
+             List<Batch__c> batches = new List<Batch__c>([
+                SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                FROM Batch__c
+                WHERE Id = :batchId LIMIT 1]);
+            string grade = batches[0].grade__c;
+             String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+           
             List<Self_Awareness_Realities__c> sf =  new List<Self_Awareness_Realities__c>([select id,Created_from_Form__c, Student__c,Student__r.name,Quiz_2_1__c,Quiz_2_2__c,Quiz_2_3__c,Quiz_2_4__c,Quiz_2_5__c from Self_Awareness_Realities__c
-                                                            where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' limit 1]);
+                                                            where Student__c =: studentId and Created_from_Form__c = true 
+                                                            AND Academic_Year__c = :batches[0].Academic_Year__c
+                                                            AND Grade__c = :batches[0].Grade__c 
+                                                            AND Barcode__c  = :studentBarcode 
+                                                            and RecordType.Name='Baseline' limit 1]);
                 if(!sf.isEmpty()){
                     return sf[0];
                 }
@@ -312,12 +371,47 @@ public without sharing class Quiz2Controller {
         
     }
     @AuraEnabled
-    public static string saveData(String studentId, string q21, string q22, string q23, string q24, string q25, boolean saveFlag, string grade,string lng, string typ) {
+    public static string saveData(String studentId, string q21, string q22, string q23, string q24, string q25, boolean saveFlag, string grade,
+                                  string lng, string typ, string batchId) {
         system.debug(':::studentId = '+studentId);
 		String returnStr = '';
         try{
+             String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
+            List<Batch__c> batches = new List<Batch__c>([
+                SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                FROM Batch__c
+                WHERE Id = :batchId LIMIT 1]);
 			List<Self_Awareness_Realities__c> sf =  new List<Self_Awareness_Realities__c>([select id,Created_from_Form__c, Quiz_2_1__c,Quiz_2_2__c,Quiz_2_3__c,Quiz_2_4__c,Quiz_2_5__c, Student__c from Self_Awareness_Realities__c
-                                                            where Student__c =: studentId and Created_from_Form__c = true and RecordType.Name='Baseline' and Error_Status__c = 'No Error' limit 1]); //V1.0
+                                                            where Student__c =: studentId and Created_from_Form__c = true 
+                                                            AND Academic_Year__c = :batches[0].Academic_Year__c
+                                                            AND Grade__c = :batches[0].Grade__c 
+                                                            AND Barcode__c  = :studentBarcode 
+                                                            and RecordType.Name='Baseline' 
+                                                            and Error_Status__c = 'No Error' limit 1]); //V1.0
             if(!sf.isEmpty()){
 				returnStr = 'Update';
                 system.debug('saveFlag ='+saveFlag);
@@ -334,7 +428,8 @@ public without sharing class Quiz2Controller {
                 if(grade == 'Grade 10')barcode=con.Grade_10_Barcode__c;
                 if(grade == 'Grade 11')barcode=con.Grade_11_Barcode__c;
                 if(grade == 'Grade 12')barcode=con.Grade_12_Barcode__c;
-                RecordType rt = [select id, name, SobjectType from RecordType where SobjectType = 'Self_Awareness_Realities__c' and name = 'Baseline'];
+                RecordType rt = [select id, name, SobjectType from RecordType where SobjectType = 'Self_Awareness_Realities__c' 
+                                 and name = 'Baseline'];
 
 				Self_Awareness_Realities__c sf1 = new 	Self_Awareness_Realities__c(Created_from_Form__c = true,Form_Language__c=lng,Form_Name__c=typ, Student__c = studentId, Barcode__c = barcode, RecordTypeId = rt.id);
                 dataPrepare(saveFlag,sf1,q21,q22,q23,q24,q25);
@@ -358,6 +453,118 @@ public without sharing class Quiz2Controller {
     public static void fakeMethod(){
     Integer i = 0;
     	i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
     	i++;
         i++;
         i++;

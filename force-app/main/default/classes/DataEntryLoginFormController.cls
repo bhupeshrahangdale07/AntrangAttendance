@@ -1,11 +1,5 @@
 public without sharing class DataEntryLoginFormController{
     @AuraEnabled
-    public static void logUserExit(){
-        contact con = [select id from contact where id = '0031m00000ZJjLdAAL'];
-        con.FirstName = 'yuga';
-        update con;
-    }
-    @AuraEnabled
     public static decimal getAntarangNextAcadamicYear(){
         AntarangSetting__c antarangSett = AntarangSetting__c.getOrgDefaults();
 		return antarangSett.Next_Academic_Year__c;
@@ -375,7 +369,8 @@ public without sharing class DataEntryLoginFormController{
         District_Master__c districtDetails = [SELECT Show_Student_Details_for_G9__c, Select_Forms_to_Show_in_Baseline_for_G9__c, Select_Forms_to_Show_in_Endline_for_G9__c, Show_Aptitude_for_G9__c, Show_Baseline_for_G9__c, Show_Endline_for_G9__c, Show_Interest_for_G9__c, Show_Mid_Program_for_G9__c, Show_Quiz_1_for_G9__c, Show_Quiz_2_for_G9__c, Show_Reality_for_G9__c,
                                                      Show_Student_Details_for_G10__c, Select_Forms_to_Show_in_Baseline_for_G10__c, Select_Forms_to_Show_in_Endline_for_G10__c, Show_Aptitude_for_G10__c, Show_Baseline_for_G10__c, Show_Endline_for_G10__c, Show_Interest_for_G10__c, Show_Mid_Program_for_G10__c, Show_Quiz_1_for_G10__c, Show_Quiz_2_for_G10__c, Show_Reality_for_G10__c,
                                                      Show_Student_Details_for_G11__c, Select_Forms_to_Show_in_Baseline_for_G11__c, Select_Forms_to_Show_in_Endline_for_G11__c, Show_Aptitude_for_G11__c, Show_Baseline_for_G11__c, Show_Endline_for_G11__c, Show_Interest_for_G11__c, Show_Mid_Program_for_G11__c, Show_Quiz_1_for_G11__c, Show_Quiz_2_for_G11__c, Show_Reality_for_G11__c,
-                                                     Show_Student_Details_for_G12__c, Select_Forms_to_Show_in_Baseline_for_G12__c, Select_Forms_to_Show_in_Endline_for_G12__c, Show_Aptitude_for_G12__c, Show_Baseline_for_G12__c, Show_Endline_for_G12__c, Show_Interest_for_G12__c, Show_Mid_Program_for_G12__c, Show_Quiz_1_for_G12__c, Show_Quiz_2_for_G12__c, Show_Reality_for_G12__c 
+                                                     Show_Student_Details_for_G12__c, Select_Forms_to_Show_in_Baseline_for_G12__c, Select_Forms_to_Show_in_Endline_for_G12__c, Show_Aptitude_for_G12__c, Show_Baseline_for_G12__c, Show_Endline_for_G12__c, Show_Interest_for_G12__c, Show_Mid_Program_for_G12__c, Show_Quiz_1_for_G12__c, Show_Quiz_2_for_G12__c, Show_Reality_for_G12__c,
+                                              		Show_Baseline_2_for_G9__c,Show_Baseline_2_for_G10__c,Show_Baseline_2_for_G11__c,Show_Baseline_2_for_G12__c
                                               FROM District_Master__c 
                                               WHERE Id = :schoolDetails.District__c];
         return districtDetails;

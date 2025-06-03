@@ -110,7 +110,7 @@
     
     Save: function(component, event, helper) {
         //debugger;
-        
+        try{
         
       //  if(component.get("v.isValidAll")){
             let proccrec = component.get("v.sessioneditRec");
@@ -119,40 +119,29 @@
         let sessionLST = [];
         
         let lst = component.find("sessionEdit");
-        //console.log('lst: ' + lst);
         var validity = true;
         for(let i = 0 ; i<lst.length ; i++){
             if(!lst[i].find("SessionDate").checkValidity()){
                 validity = false;
             }  
         }
-        //console.log('validity0: ' + validity);
-        //console.log('proccrec: ' + proccrec);
+     
         for(let i = 0 ; i<proccrec.length ; i++){
-            //console.log('----index0: ' + i);
+
             if(!proccrec[i].isParentSession){
-                //console.log('index1+1: ' + i+1);
-                //console.log('proccrec.length: ' + proccrec.length);
-                //console.log('proccrec[i+1].sessionDate: ' + proccrec[i+1].sessionDate);
-                //console.log('proccrec[i].sessionDate: ' + proccrec[i].sessionDate);
-                if(i+1< proccrec.length && proccrec[i+1].sessionDate && !proccrec[i].sessionDate ){
-                    console.log('index1: ' + i);
-                    if(proccrec[i+1].isFlexibleSession === false){ // for bypass error message for Flexible sessions
+                console.log('i = ',i);
+                    if(i+1< proccrec.length && proccrec[i+1].sessionDate && !proccrec[i].sessionDate ){
+                        if(proccrec[i+1].isFlexibleSession === false){ // for bypass error message for Flexible sessions
                             validity = false;
                         }
-                    //console.log('Id: ' + proccrec[i+1].id);
-                    //console.log('validity1: ' + validity);
-                }
-                if(i != 0 && proccrec[i].sessionDate < proccrec[i-1].sessionDate && !proccrec[i].sessionDate){
-                    console.log('index2: ' + i);
-                    validity = false;
-                    //console.log('***Id: ' + proccrec[i+1].id);
-                    //console.log('validity2: ' + validity);
-                }
+                    }
+                    if(i != 0 && proccrec[i].sessionDate < proccrec[i-1].sessionDate && !proccrec[i].sessionDate){
+                        validity = false;
+                    }
                 
             }
         }
-        //console.log('validity3: ' + validity);
+        console.log('validity2 =',validity);
         proccrec.forEach(function(o,index){
                          if(!o.isParentSession && o.sessionDate && (!o.facilitatorId || !o.startTime | !o.mode)){
             validity = false;
@@ -162,7 +151,6 @@
         }
                          });
         
-        console.log('validity4: ' + validity);
         
         
         
@@ -197,6 +185,9 @@
    // helper.showMessageToast(component,event,helper,"Please update the invalid form entries and try again!","error");
     	
 	//}
+}catch(error){
+    console.log('error',error);
+}
         
     },
  
@@ -237,9 +228,10 @@
             console.log(index); 
             //debugger;
             let lst = component.find("sessionEdit");
-            let sessioneditRecs = component.get("v.sessioneditRec");
-            let followingTrue = false;
             
+            let sessioneditRecs = component.get("v.sessioneditRec");
+            console.log('sessioneditRecs = ',JSON.stringify(sessioneditRecs));
+            let followingTrue = false;
             //let currentSessionDateRemoved = false;
             //if(sessioneditRecs[index].sessionDate == null){
             //       currentSessionDateRemoved = true; 
@@ -250,58 +242,46 @@
            //             }
            //  }
            //  
-           if(index != 0 && (sessioneditRecs[index].sessionDate < sessioneditRecs[index-1].sessionDate ||
-                            sessioneditRecs[index].sessionDate > sessioneditRecs[index+1].sessionDate)){
-                    lst[index].find("SessionDate").setCustomValidity("Session Date cannot be less then above OR greater then below Session Date");
-                    lst[index].find("SessionDate").reportValidity();
-           }else{
-               lst[index].find("SessionDate").setCustomValidity("");
-                    lst[index].find("SessionDate").reportValidity();
-           }
-           
+           //if(!isParentSession[index]){
+            let studentSessions = sessioneditRecs.filter(session => !session.isParentSession && !session.isFlexibleSession);
+            console.log('enter on index ='+index);
+            console.log('id of session edit = ',sessioneditRecs[index].id);
+            let foundIndex = studentSessions.findIndex(session => session.id === sessioneditRecs[index].id);
+            console.log('foundIndex = ',foundIndex);
+            if(!sessioneditRecs[index].isParentSession){
+                try{
+                    if(index != 0 && (sessioneditRecs[index].sessionDate < sessioneditRecs[index-1].sessionDate ||
+                        sessioneditRecs[index].sessionDate > sessioneditRecs[index+1].sessionDate)){
+                        if(sessioneditRecs[index+1].isParentSession === false && sessioneditRecs[index-1].isParentSession === false){
+                            console.log('if');
+                            lst[foundIndex].find("SessionDate").setCustomValidity("Session Date cannot be less then above OR greater then below Session Date");
+                            lst[foundIndex].find("SessionDate").reportValidity();
+                        }
+                    }else{
+                        console.log('else');
+                        lst[foundIndex].find("SessionDate").setCustomValidity("");
+                        lst[foundIndex].find("SessionDate").reportValidity();
+                    }
+                }catch(error){
+                    console.log('error = '+error.body.message);
+                }
+                
+            }
             
+           //}
+           
+           
+            let foundIndex1 = studentSessions.findIndex(session => session.id === sessioneditRecs[index-1].id);
             for(let i = 0 ; i<lst.length; i++){
-                /*if(i != 0 && sessioneditRecs[i].sessionDate < sessioneditRecs[i-1].sessionDate){
-                    lst[i].find("SessionDate").setCustomValidity("Session Date cannot be less then above Session Date");
-                    lst[i].find("SessionDate").reportValidity();
-                }
-                else if(i+1 < lst.length && sessioneditRecs[i].sessionDate > sessioneditRecs[i+1].sessionDate){
-                    lst[i].find("SessionDate").setCustomValidity("Session Date cannot be greater then below Session Date");
-                    lst[i].find("SessionDate").reportValidity();
-                }
-                else{
-                    lst[i].find("SessionDate").setCustomValidity("");
-                    lst[i].find("SessionDate").reportValidity();
-                }*/
                 if(i != 0 && i+1 < lst.length && sessioneditRecs[i].sessionDate > sessioneditRecs[i-1].sessionDate
                    && (sessioneditRecs[i].sessionDate < sessioneditRecs[i+1].sessionDate ||
                        sessioneditRecs[i+1].sessionDate == undefined)){
-                    lst[index-1].find("SessionDate").setCustomValidity("");
-                    lst[index-1].find("SessionDate").reportValidity();
+                    console.log('next if ',i)
+                    lst[foundIndex1-1].find("SessionDate").setCustomValidity("");
+                    lst[foundIndex1-1].find("SessionDate").reportValidity();
                 }
 
-                /*if(index == i  && index < lst.length && sessioneditRecs[index].sessionDate != null ){
-                    let row = lst[index+1];
-                    $A.util.removeClass(row, "disabled");
-                    followingTrue = true;
-                }else if(i == index && i > 0 && sessioneditRecs[index].sessionDate == null && sessioneditRecs[i-1].sessionDate != null){
-                    let row = lst[index+1];
-                    $A.util.removeClass(row, "disabled");
-                    followingTrue = true;
-
-                    if(index != 0 && lst.length != (i+1) && sessioneditRecs[i+1].sessionDate ==null ){
-                        let row1 = lst[i+1];
-                        $A.util.addClass(row1, "disabled");
-                    }                    
-
-                }else if(index != 0 &&  index < (i+1) && sessioneditRecs[i].sessionDate == null && !followingTrue && index < lst.length){
-                    let row = lst[i];
-                    $A.util.addClass(row, "disabled");
-                    //debugger;
-                }*/
-
-                
-                
+               
             }
             component.set("v.sessioneditRec" , sessioneditRecs);
             

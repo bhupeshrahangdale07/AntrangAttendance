@@ -15,8 +15,6 @@ import searchStudentRecords from '@salesforce/apex/careerDecisionMaking_01.searc
 import getBatchInfo from '@salesforce/apex/careerDecisionMaking_01.getBatchInfo';
 
 export default class CareerDecisionMaking_01 extends NavigationMixin(LightningElement) {
-    lng;
-    typ;
     //=========================================================//
     tempVar = true;
     //=========================================================//
@@ -1870,16 +1868,14 @@ export default class CareerDecisionMaking_01 extends NavigationMixin(LightningEl
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
-                name: 'cdm1form5V2__c'
+                name: 'cdm1form5__c'
             },
             state: {
                 fem : encodeURI(this.fem),
                 sch : encodeURI(this.sch),
                 grd : encodeURI(this.grd),
                 bid : encodeURI(this.bid),
-                acid : encodeURI(this.acid),
-                typ : encodeURI(this.typ),
-                lng : encodeURI(this.lng)
+                acid : encodeURI(this.acid)
             }
         });
     }

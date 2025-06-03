@@ -1331,7 +1331,8 @@ export default class CareerSkillsEndlineV2 extends NavigationMixin(LightningElem
     getApexRecordCS(){
         getApexRecord({
             studentId : this.rxStudentId,
-            grade : this.grd
+            grade : this.grd,
+            batchId : this.bid
         }).then(result => {
             //console.log('result : ' + JSON.stringify(result));
             //===========================================================//
@@ -3290,7 +3291,8 @@ export default class CareerSkillsEndlineV2 extends NavigationMixin(LightningElem
                 barCode : this.studentBarcode,
                 ans : allQA,
                 lng : this.lng,
-                typ : (this.typ == 'v2' || this.typ == 'Form V2') ? 'Form V2' : 'Form V1'
+                typ : (this.typ == 'v2' || this.typ == 'Form V2') ? 'Form V2' : 'Form V1',
+                batchId : this.bid
             }).then(result => {
                 //console.log('result : ' + JSON.stringify(result));
                 //===========================================================//

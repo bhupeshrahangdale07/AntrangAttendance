@@ -92,7 +92,7 @@ public with sharing class StudentReportComponentController {
             switch on PreferredLanguage {
                 when 'Hindi' {
                     ex.Particulars__c = ex.Particulars_Hindi__c;
-                }   
+                }	
                 when 'Marathi' {
                     ex.Particulars__c = ex.Particulars_Marathi__c;
                 }
@@ -106,7 +106,7 @@ public with sharing class StudentReportComponentController {
             switch on PreferredLanguage {
                 when 'Hindi' {
                     ex.Particulars__c = ex.Particulars_Hindi__c;
-                }   
+                }	
                 when 'Marathi' {
                     ex.Particulars__c = ex.Particulars_Marathi__c;
                 }

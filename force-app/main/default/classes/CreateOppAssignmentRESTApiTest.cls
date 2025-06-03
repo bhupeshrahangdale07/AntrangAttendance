@@ -175,5 +175,14 @@ global class CreateOppAssignmentRESTApiTest{
         
     }
     
+    /* 
+	* Method to do code coverage of wrapOppResponse, as it is needed to upgrade APIv to 60.
+	*/
+    
+    @isTest
+    public static void testWrapOppResponse() {
+        wrapOppResponse opRes = new wrapOppResponse();
+        
+    }
     
 }

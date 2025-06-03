@@ -34,27 +34,15 @@ global class SessionCreationBatch implements Database.Batchable<SObject>, Databa
         this.query = query;
     }
     */
-    
     global SessionCreationBatch(String query) {
         fetchSessionTemplates();
         this.query = query;
     }
-    
-    
-    global Boolean EnableToCreateAttendence = false;
-    global Boolean EnableToCreateOMRT = false;
-    
-    global SessionCreationBatch(String query, Boolean createAttendence, Boolean createOMRT) {
-        fetchSessionTemplates();
-        this.query = query;
-        this.EnableToCreateAttendence = createAttendence;
-        this.EnableToCreateOMRT = createOMRT;
-    }    
 
     global Database.QueryLocator start(Database.BatchableContext context) {
         
         if(String.isBlank(query)){
-            query = 'SELECT Id, Session_Count__c, Grade__c, Facilitation_Start_Date__c, Trainer_Name__c FROM Batch__c WHERE Session_Count__c < 1 AND Grade__c != null AND Academic_Year__c < 2021 AND Manual_Session_Att_creation__c = FALSE';
+            query = 'SELECT Id, Session_Count__c, Grade__c, Facilitation_Start_Date__c, Trainer_Name__c FROM Batch__c WHERE Session_Count__c = 0 AND Grade__c != null AND Academic_Year__c < 2021 AND Manual_Session_Att_creation__c = FALSE AND Trainer_Name__c != NULL AND Facilitation_Start_Date__c != NULL';
             
             /*
             if(this.isSessionsCreated){
@@ -108,32 +96,25 @@ global class SessionCreationBatch implements Database.Batchable<SObject>, Databa
             
 
             if (!sessionsToInsert.isEmpty()) {
+                Savepoint sp = Database.setSavepoint();
                 try {
                     insert sessionsToInsert;
                     System.debug('Inserted ' + sessionsToInsert.size() + ' Session__c records.');
                     
-                    if(EnableToCreateAttendence){
-                        createAttendance(sessionsToInsert);
-                    }
-                    
-                    if(EnableToCreateAttendence){
-                        createOMRT(sessionsToInsert);
-                    }
+                    createAttendance(sessionsToInsert);
                     
 					update processedBatches;                    
                 } catch (DmlException e) {
                     System.debug('Error inserting sessions: ' + e.getMessage());
+                    Database.rollback(sp);
+                    throw e;
                 }
             }
         //}else{
           //  createAttendance((List<Session__c>) scope);
         //}
     }
-	
-	public static void createOMRT(List<Session__c> sessions){
-        
-    }
-        
+    
     public static void createAttendance(List<Session__c> sessions){
             
         Map<Id, List<Session__c>> BatchToSessionsMap = new Map<Id, List<Session__c>>();

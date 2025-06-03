@@ -3,7 +3,7 @@ public class careerDecisionMaking_01_EndlineTest {
 	@testsetup
     public static void testData()
     {
-        Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId();
+        Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId() ;
         Account account = new Account();
         account.Name = 'Shreeram School';  
         account.RecordTypeId = RecordTypeIdAccount;
@@ -55,7 +55,7 @@ public class careerDecisionMaking_01_EndlineTest {
         ]);
 
         test.startTest();
-        careerDecisionMaking_01_Endline.getRecordCDM1(conList[0].Id, 'Grade 9');
+        careerDecisionMaking_01_Endline.getRecordCDM1(conList[0].Id, 'Grade 9','');
         test.stopTest();
     }
 
@@ -256,8 +256,8 @@ public class careerDecisionMaking_01_EndlineTest {
         qAll.q04.answer_4_50 = 'B';
 
         test.startTest();
-        careerDecisionMaking_01_Endline.saveAllQA(cdm1List[0].Id, conList[0].Id, 'Test009', qAll, 'English', 'Form V2' );
-        careerDecisionMaking_01_Endline.saveAllQA(null, conList[0].Id, 'Test009', qAll, 'English', 'Form V2' );
+        careerDecisionMaking_01_Endline.saveAllQA(cdm1List[0].Id, conList[0].Id, 'Test009', qAll, 'English', 'Form V2','' );
+        //careerDecisionMaking_01_Endline.saveAllQA(null, conList[0].Id, 'Test009', qAll, 'English', 'Form V2','' );
         test.stopTest();
     } 
 

@@ -84,7 +84,9 @@ export default class FuturePlanningBaselineV2 extends NavigationMixin(LightningE
         debugger;
 
         getRecordApt({
-            studentId: this.studentId
+            studentId: this.studentId,
+            batchId : this.selectedBatchId,
+            grade : this.selectedGrade
         }).then(result => {
             console.log('this.studentId getRecordAptFun = ', this.studentId);
             console.log('getRecordApt result = ', result);
@@ -454,7 +456,8 @@ export default class FuturePlanningBaselineV2 extends NavigationMixin(LightningE
             saveFlag : true,
             grade : this.selectedGrade,
             typ : (this.typ == 'v2' || this.typ == 'Form V2') ? 'Form V2' : 'Form V1',
-            lng : this.lng
+            lng : this.lng,
+            batchId : this.selectedBatchId
         }).then(result => {
             console.log('res = ',result);
              if(this.isEnglish){

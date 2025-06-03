@@ -1,67 +1,69 @@
-<apex:page standardController="Contact" extensions="StudentReportController" showHeader="false" sidebar="false" standardStylesheets="false" 
+<apex:page renderAs="PDF" standardController="Contact" extensions="StudentReportController" showHeader="false" sidebar="false" standardStylesheets="false" 
         applyBodyTag="false" applyHtmlTag="false" contentType="application/vnd.msword#Student_{!Contact.Bar_Code__c}.doc"><!--contentType="application/vnd.msword#Student_{!Contact.Bar_Code__c}.doc"-->
     <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
         <style>
             body {
-                    width:100%;
-                    font-family: Arial Unicode MS; 
-                    font-size: 10pt;
-                }
-                @page {
-                    size: A4;
-                    margin: 0;
-                }
-                .header {
-                    text-transform:uppercase;
-                    text-align: center;
-                    font-size:22pt;
-                    font-weight:bold;
-                }
-                .row {
-                    text-align: left;
-                }
-                .row lable {
-                    font-weight:bold;
-                }
-                .breakrow {
-                    margin-top:5pt;
-                    border-bottom: 1px solid black;
-                    width:100%;
-                    margin-bottom:10pt;
-                }
-                
-                .divtable {
-                    display: table;
-                    width:100%;
-                }
-                
-                .divtable .tablerow {
-                    display: table-row;
-                    width:100%;
-                }
-                
-                .divtable .tablerow .tablecell {
-                    display: table-cell;
-                    width:33.33%;
-                }
-                
-                .rowheader {
-                    font-size:15pt;
-                    font-weight:bold;
-                }
-                
-                .blacktd {
-                    background-color:black;
-                    color:white;
-                    padding:5px;
-                    width:50%;
-                }
-                table {table-layout:fixed;page-break-after:auto}
-                table td {
-                    word-wrap:break-word;
-                }
+                width:100%;
+                font-family: Arial Unicode MS; 
+                font-size: 10pt;
+            }
+            .header {
+                text-transform:uppercase;
+                text-align: center;
+                font-size:22pt;
+                font-weight:bold;
+            }
+            .row {
+                text-align: left;
+            }
+            .row lable {
+                font-weight:bold;
+            }
+            .breakrow {
+                margin-top:5pt;
+                border-bottom: 1px solid black;
+                width:100%;
+                margin-bottom:10pt;
+            }
+            
+            .divtable {
+                display: table;
+                width:100%;
+                border-collapse:collapse;
+            }
+            
+            .divtable .tablerow {
+                display: table-row;
+                width:100%;
+            }
+            
+            .divtable .tablerow .tablecell {
+                display: table-cell;
+                width:33.33%;
+            }
+            
+            .rowheader {
+                font-size:14pt;
+                font-weight:bold;
+            }
+            
+            .blacktd {
+                background-color:black;
+                color:white;
+                padding:3px;
+                width:50%;
+            }
+            table {
+                table-layout:fixed;
+            }
+            table td {
+                word-wrap:break-word;
+            }
+            @page {
+                margin:10;
+            }
         </style>
     </head>
     <body>

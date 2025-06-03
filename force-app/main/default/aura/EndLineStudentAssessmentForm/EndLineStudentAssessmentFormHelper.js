@@ -184,7 +184,6 @@
                 var result = response.getReturnValue();
                 if(result != null && result != undefined){
                     if(!result.isSubmitted){
-                        
                         helper.convertListToMapQuestions(component, event, helper, result.lstWrpStudentQuestion);
                         helper.goNext(component, event, helper);
                     }else{
@@ -214,9 +213,6 @@
     },
     convertListToMapQuestions : function(component, event, helper, lstQuestions) {
 		let allQuestions = lstQuestions;
-        
-        console.log(allQuestions);
-        
         var questionsMap = [];
         var sectionNumberArray = [];
         for(var key in allQuestions){
@@ -226,9 +222,6 @@
                 sectionNumberArray.push(allQuestions[key].sectionNumber);
             }
         }
-        
-        console.log(questionsMap);
-        
         component.set("v.StudentQuestions",questionsMap);
         
         if(sectionNumberArray != undefined && sectionNumberArray != null){

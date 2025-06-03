@@ -183,7 +183,7 @@ export default class RealityFormV2 extends NavigationMixin(LightningElement)  {
 
             // console.log('removedItem =',removedItem)
             // this.instructions = (this.isEnglish === true) ? removedItem.Question_Label_English__c : removedItem.Question_Label_Hindi__c;
-            
+            this.getRecordAptFun();
         }).catch(error => {
             console.log('getAssesmentQuestion Error = ',error);
         });
@@ -365,8 +365,11 @@ export default class RealityFormV2 extends NavigationMixin(LightningElement)  {
     }
     getRecordAptFun(){
         getRecordApt({
-            studentId : this.rxStudentId
+            studentId : this.rxStudentId,
+            grade : this.selectedGrade,
+            batchId : this.selectedBatchId
         }).then(result => {
+            console.log('result = ',result)
             if(result){
                 this.showForm = true;
                 if(this.saveFlag == false) this.showLoading = false;
@@ -516,6 +519,7 @@ export default class RealityFormV2 extends NavigationMixin(LightningElement)  {
 
     saveData(){
         saveData({
+            batchId : this.selectedBatchId,
             studentId : this.rxStudentId,
             self1 : this.selfQue1Value,
             self2 : this.selfQue2Value,

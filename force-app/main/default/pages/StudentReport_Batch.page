@@ -1,7 +1,7 @@
-<apex:page renderAs="PDF" standardController="Batch__c" extensions="StudentReportBatchController" showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false"
+<apex:page standardController="Batch__c" extensions="StudentReportBatchController" showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false"
             contentType="application/msword#Batch_{!Batch__c.Batch_Number__c}.doc"><!---->
     <html>
-        <head>
+        <head>    
             <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
             <style>
                 body {

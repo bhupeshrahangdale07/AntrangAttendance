@@ -1,0 +1,82 @@
+<template>
+    <lightning-card title="Form Instructions:" class="customCard">
+        <div>
+            <ul class="instruction-list">
+                <li>Keep the tab open or minimised to stay logged in. Closing the tab will log you out automatically</li>
+                <li>Click on Save to save the changes made</li>
+                <li>All sessions have to be taken in order</li>
+                <li>Multiple sessions cannot be scheduled at the same time (gap should be of at least <span class="highlight">1 month</span>)</li>
+                <li>For On-time Scheduling, session’s Date and Start Time should be more than 24 hours from time of submitting the form, otherwise it will be marked as Late Scheduling</li>
+                <li>Once session schedule is saved, if Date or Start Time is modified, session will be flagged as Rescheduled, along with a counter</li>
+                <li>1hr before session’s Start Time - Date and Start Time will get locked, and to edit this, a query will need to be raised on Helpdesk</li>
+                <li>At scheduled Start Time - attendance for the session will open for entry</li>
+                <li>Once you Save the attendance for a session, that session’s data entry will be complete, and all details will get locked. You will not be able to make any further changes</li>
+                <li>If all conditions are met and you are still getting an error, please reload the page and try again</li>
+            </ul>
+        </div>
+    </lightning-card>
+
+    <div class="slds-p-around_medium status-container btnGroup">
+
+        <!-- First Row -->
+        <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium ">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 addTopClass">
+                <div class="status-item">
+                    <div class="statusBtn"><lightning-button variant="brand" label="Complete" class="status-button1">
+                    </lightning-button></div>
+                    <div class="status-description" style="padding-top: 8px;">Attendance is saved</div>
+                </div>
+                <div class="status-item" style="padding-top: 17px">
+                     <div class="statusBtn"><lightning-button variant="brand" label="Ready For Attendance" class="status-button3">
+                    </lightning-button></div>
+                    <div class="status-description" style="padding-top: 8px;">Scheduled session's date and time is in the past but attendance is not saved yet</div>
+                </div>
+                
+            </div>
+
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 addTopClass">
+                <div class="status-item">
+                     <div class="statusBtn"><lightning-button variant="brand" label="Scheduled" class="status-button5">
+                    </lightning-button></div>
+                    <div class="status-description">Session is scheduled, but there is more than 1hr left for the session, so details can still be edited</div>
+                </div>
+                <div class="status-item" style="    padding-top: 10px;">
+                     <div class="statusBtn"><lightning-button variant="brand" label="Unscheduled" class="status-button2">
+                    </lightning-button></div>
+                    <div class="status-description" style="padding-top: 8px;">No date or time has been saved</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row -->
+        <!-- <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 addTopClass">
+                 <div class="status-item">
+                     <div class="statusBtn"><lightning-button variant="brand" label="Ready For Attendance" class="status-button3">
+                    </lightning-button></div>
+                    <div class="status-description" style="padding-top: 8px;">Scheduled Student/Parent/Flexible Session's date and time is in the past but attendance is not saved yet</div>
+                </div> 
+            </div>
+
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 addTopClass">
+                <div class="status-item">
+                     <div class="statusBtn"><lightning-button variant="brand" label="Incomplete" class="status-button4">
+                    </lightning-button></div>
+                    <div class="status-description">Counselling is pending for 1 or more students in the batch, or session data is pending for a Student/Parent/Flexible Session</div>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- Third Row -->
+        <!-- <div class="slds-grid slds-wrap slds-gutters">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 addTopClass">
+                <div class="status-item">
+                     <div class="statusBtn"><lightning-button variant="brand" label="Scheduled" class="status-button5">
+                    </lightning-button></div>
+                    <div class="status-description">Student/Parent/Flexible Session is scheduled, but there is more than 1hr left for the session, so details can still be edited</div>
+                </div>
+            </div>
+
+        </div> -->
+    </div>
+</template>

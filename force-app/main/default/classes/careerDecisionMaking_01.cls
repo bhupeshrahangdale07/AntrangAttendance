@@ -8,10 +8,16 @@ public without sharing class careerDecisionMaking_01 {
     }
 
     @AuraEnabled
-    public static singleRecordWrapper getRecordCDM1(String studentId, String grade) {
+    public static singleRecordWrapper getRecordCDM1(String studentId, String grade, String batchId) {
         try{
             singleRecordWrapper rsp = new singleRecordWrapper();
             String studentBarcode = '';
+            List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c
+                    WHERE Id = :batchId LIMIT 1]);
+                    
+
             do{
                 List<Contact> studentContact = new List<Contact>([
                     SELECT Id, Name, Bar_Code__c, 
@@ -59,25 +65,58 @@ public without sharing class careerDecisionMaking_01 {
                 }*/
                 //=======================================================//
 
-                List<OMR_Assessment__c> cdm1List = [
-                    SELECT Name, Student__r.Name, Barcode__c,
-                    Form_Submitted__c, Created_from_Form__c,
-                    Q_1__c,
-                    Q_2_1__c, Q_2_2__c, Q_2_3__c, Q_2_4__c, Q_2_5__c, Q_2_6__c, Q_2_7__c,
-                    Q3_1__c, Q3_2__c, Q3_3__c, Q3_4__c, Q3_5__c, Q3_6__c, Q3_7__c,
-                    Q4_1__c, Q4_2__c, Q4_3__c , Q4_4__c, Q4_5__c, Q4_6__c, Q4_7__c , Q4_8__c, Q4_9__c, Q4_10__c,
-                    Q4_11__c, Q4_12__c, Q4_13__c , Q4_14__c, Q4_15__c, Q4_16__c, Q4_17__c , Q4_18__c, Q4_19__c, Q4_20__c,
-                    Q4_21__c, Q4_22__c, Q4_23__c , Q4_24__c, Q4_25__c, Q4_26__c, Q4_27__c , Q4_28__c, Q4_29__c, Q4_30__c,
-                    Q4_31__c, Q4_32__c, Q4_33__c , Q4_34__c, Q4_35__c, Q4_36__c, Q4_37__c , Q4_38__c, Q4_39__c, Q4_40__c,
-                    Q4_41__c, Q4_42__c, Q4_43__c , Q4_44__c, Q4_45__c, Q4_46__c, Q4_47__c , Q4_48__c, Q4_49__c, Q4_50__c,
-                    Q4_51__c, Q4_52__c, Q4_53__c
-                    FROM OMR_Assessment__c 
-                    WHERE Created_from_Form__c = true
-                    AND Student__c = :studentId
-                    AND Barcode__c = :studentBarcode
-                    AND RecordTypeId = :cdm1RecordTypeId
-                    LIMIT 1
-                ];
+                
+                List<OMR_Assessment__c> cdm1List = new List<OMR_Assessment__c>();
+                
+                if(String.isNotBlank(batchId) && !batches.isEmpty()){
+                    cdm1List = [
+                                SELECT Name, Student__r.Name, Barcode__c,
+                                Form_Submitted__c, Created_from_Form__c,
+                                Q_1__c,
+                                Q_2_1__c, Q_2_2__c, Q_2_3__c, Q_2_4__c, Q_2_5__c, Q_2_6__c, Q_2_7__c,
+                                Q3_1__c, Q3_2__c, Q3_3__c, Q3_4__c, Q3_5__c, Q3_6__c, Q3_7__c,
+                                Q4_1__c, Q4_2__c, Q4_3__c , Q4_4__c, Q4_5__c, Q4_6__c, Q4_7__c , Q4_8__c, Q4_9__c, Q4_10__c,
+                                Q4_11__c, Q4_12__c, Q4_13__c , Q4_14__c, Q4_15__c, Q4_16__c, Q4_17__c , Q4_18__c, Q4_19__c, Q4_20__c,
+                                Q4_21__c, Q4_22__c, Q4_23__c , Q4_24__c, Q4_25__c, Q4_26__c, Q4_27__c , Q4_28__c, Q4_29__c, Q4_30__c,
+                                Q4_31__c, Q4_32__c, Q4_33__c , Q4_34__c, Q4_35__c, Q4_36__c, Q4_37__c , Q4_38__c, Q4_39__c, Q4_40__c,
+                                Q4_41__c, Q4_42__c, Q4_43__c , Q4_44__c, Q4_45__c, Q4_46__c, Q4_47__c , Q4_48__c, Q4_49__c, Q4_50__c,
+                                Q4_51__c, Q4_52__c, Q4_53__c
+                                FROM OMR_Assessment__c 
+                                WHERE Created_from_Form__c = true
+                                AND Student__c = :studentId
+                                AND Error_Status__c = 'No Error'
+                                // AND Data_Clean_up__c  = false
+                                AND Academic_Year__c = :batches[0].Academic_Year__c
+                                AND Grade__c = :batches[0].Grade__c
+                        		AND Barcode__c = : studentBarcode
+                                AND RecordTypeId = :cdm1RecordTypeId
+                                ORDER BY CreatedDate DESC
+                                LIMIT 1
+                            ];
+                }else{
+                    cdm1List = [
+                                SELECT Name, Student__r.Name, Barcode__c,
+                                Form_Submitted__c, Created_from_Form__c,
+                                Q_1__c,
+                                Q_2_1__c, Q_2_2__c, Q_2_3__c, Q_2_4__c, Q_2_5__c, Q_2_6__c, Q_2_7__c,
+                                Q3_1__c, Q3_2__c, Q3_3__c, Q3_4__c, Q3_5__c, Q3_6__c, Q3_7__c,
+                                Q4_1__c, Q4_2__c, Q4_3__c , Q4_4__c, Q4_5__c, Q4_6__c, Q4_7__c , Q4_8__c, Q4_9__c, Q4_10__c,
+                                Q4_11__c, Q4_12__c, Q4_13__c , Q4_14__c, Q4_15__c, Q4_16__c, Q4_17__c , Q4_18__c, Q4_19__c, Q4_20__c,
+                                Q4_21__c, Q4_22__c, Q4_23__c , Q4_24__c, Q4_25__c, Q4_26__c, Q4_27__c , Q4_28__c, Q4_29__c, Q4_30__c,
+                                Q4_31__c, Q4_32__c, Q4_33__c , Q4_34__c, Q4_35__c, Q4_36__c, Q4_37__c , Q4_38__c, Q4_39__c, Q4_40__c,
+                                Q4_41__c, Q4_42__c, Q4_43__c , Q4_44__c, Q4_45__c, Q4_46__c, Q4_47__c , Q4_48__c, Q4_49__c, Q4_50__c,
+                                Q4_51__c, Q4_52__c, Q4_53__c
+                                FROM OMR_Assessment__c 
+                                WHERE Created_from_Form__c = true
+                                AND Student__c = :studentId
+                                AND Barcode__c = :studentBarcode 
+                                AND RecordTypeId = :cdm1RecordTypeId
+                                AND Error_Status__c = 'No Error'
+                                // AND Data_Clean_up__c  = false
+                                ORDER BY CreatedDate DESC
+                                LIMIT 1
+                            ];
+                }
 
                 if(cdm1List.isEmpty())break;
                 
@@ -482,7 +521,7 @@ public without sharing class careerDecisionMaking_01 {
     }
 
     @AuraEnabled
-    public static String saveAllQA(String recordIdCMD1, String studentId, String barCode, object ans, string lng, string typ){
+    public static String saveAllQA(String batchId, String recordIdCMD1, String studentId, String barCode, object ans, string lng, string typ){
         try{
             string rspId = '';
             String jsonString = Json.serialize(ans);
@@ -505,14 +544,61 @@ public without sharing class careerDecisionMaking_01 {
             }  
             else 
             {
-                List<OMR_Assessment__c> existing = new List<OMR_Assessment__c>([
-                    SELECT Id 
-                    FROM OMR_Assessment__c
-                    WHERE Created_from_Form__c = true
-                    AND RecordTypeId = :cdm1RecordTypeId
-                    AND Student__c = :studentId
-                    AND Barcode__c = :barCode]);   
+                List<OMR_Assessment__c> existing = new List<OMR_Assessment__c>();
+                List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c
+                    WHERE Id = :batchId LIMIT 1]);
+                 string grade = batches[0].grade__c;
+                String studentBarcode = '';
+                List<Contact> studentContact = new List<Contact>([
+                    SELECT Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c
+                    FROM Contact 
+                    WHERE Id = :studentId
+                    LIMIT 1
+                ]);
+                if(grade == 'Grade 9')
+                {
+                    studentBarcode = studentContact[0].Grade_9_Barcode__c;
+                }
+                else if(grade == 'Grade 10')
+                {
+                    studentBarcode = studentContact[0].Grade_10_Barcode__c;
+                }
+                else if(grade == 'Grade 11')
+                {
+                    studentBarcode = studentContact[0].Grade_11_Barcode__c;
+                }
+                else if(grade == 'Grade 12')
+                {
+                    studentBarcode = studentContact[0].Grade_12_Barcode__c;
+                }
 
+                    if(String.isNotBlank(batchId) && !batches.isEmpty()){
+                        existing = new List<OMR_Assessment__c>([
+                            SELECT Id 
+                            FROM OMR_Assessment__c
+                            WHERE Created_from_Form__c = true
+                            AND RecordTypeId = :cdm1RecordTypeId
+                            AND Student__c = :studentId
+                            AND Error_Status__c = 'No Error'
+                            // AND Data_Clean_up__c  = false
+                            AND Academic_Year__c = :batches[0].Academic_Year__c
+                            AND Grade__c = :batches[0].Grade__c
+                            AND Barcode__c = : studentBarcode
+                            ORDER BY CreatedDate DESC
+                            LIMIT 1]); 
+                    }else{
+                        existing = new List<OMR_Assessment__c>([
+                            SELECT Id 
+                            FROM OMR_Assessment__c
+                            WHERE Created_from_Form__c = true
+                            AND RecordTypeId = :cdm1RecordTypeId
+                            AND Student__c = :studentId
+                            AND Barcode__c = :barCode]);   
+                    }
                 if(!existing.isEmpty())
                 {
                     upsertObj.Id = existing[0].Id;

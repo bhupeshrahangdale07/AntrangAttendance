@@ -2,17 +2,36 @@ public without sharing class EndlineAssessmentController{
 	// Common method for Endline Forms
 	@AuraEnabled
     public static string getEndlineRecord(String studentId, string grade,string type, String batchId) {
+        String studentBarcode = '';
         List<Batch__c> batches = [
             SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
             FROM Batch__c
             WHERE Id = :batchId LIMIT 1];
-        list<contact> contact= [select id,Bar_Code__c from contact where id =:studentId];	
+        list<contact> studentContact= [select Id, Name, Bar_Code__c, 
+                    Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, Grade_12_Barcode__c, 
+                    Batch_Code__c, G10_Batch_Code__c, G11_Batch_Code__c, G12_Batch_Code__c from contact where id =:studentId];	
+        if(grade == 'Grade 9')
+        {
+            studentBarcode = studentContact[0].Grade_9_Barcode__c;
+        }
+        else if(grade == 'Grade 10')
+        {
+            studentBarcode = studentContact[0].Grade_10_Barcode__c;
+        }
+        else if(grade == 'Grade 11')
+        {
+            studentBarcode = studentContact[0].Grade_11_Barcode__c;
+        }
+        else if(grade == 'Grade 12')
+        {
+            studentBarcode = studentContact[0].Grade_12_Barcode__c;
+        }
         if(type=='CDM1'){
             list<OMR_Assessment__c> assesRec = [SELECT Created_from_Form__c, Barcode__c, Form_Submitted__c 
                             FROM OMR_Assessment__c 
                             WHERE Created_from_Form__c = true AND 
                             RecordType.Name='Endline'  AND  
-                            Barcode__c = : contact[0].Bar_Code__c AND 
+                            Barcode__c = : studentBarcode AND 
                             Grade__c = :grade AND
                             Student__c = : studentId AND 
                             Academic_Year__c = : batches[0].Academic_Year__c AND
@@ -24,7 +43,7 @@ public without sharing class EndlineAssessmentController{
                             FROM CDM2__c
                             WHERE Created_from_Form__c = true AND 
                             RecordType.Name='Endline'  AND  
-                            Barcode__c = : contact[0].Bar_Code__c AND 
+                            Barcode__c = : studentBarcode AND 
                             Grade__c = :grade AND
                             Student__c = : studentId AND 
                             Academic_Year__c = : batches[0].Academic_Year__c AND
@@ -37,7 +56,7 @@ public without sharing class EndlineAssessmentController{
                             FROM Career_Planning__c
                             WHERE Created_from_Form__c = true AND 
                             RecordType.Name='Endline'  AND  
-                            Barcode__c = : contact[0].Bar_Code__c AND 
+                            Barcode__c = : studentBarcode AND 
                             Grade__c = :grade AND
                             Student__c = : studentId AND 
                             Academic_Year__c = : batches[0].Academic_Year__c AND
@@ -50,7 +69,7 @@ public without sharing class EndlineAssessmentController{
                             FROM Career_Skill__c
                             WHERE Created_from_Form__c = true AND 
                             RecordType.Name='Endline'  AND  
-                            Barcode__c = : contact[0].Bar_Code__c AND 
+                            Barcode__c = : studentBarcode AND 
                             Grade__c = :grade AND
                             Student__c = : studentId AND 
                             Academic_Year__c = : batches[0].Academic_Year__c AND
@@ -63,7 +82,7 @@ public without sharing class EndlineAssessmentController{
                             FROM Future_Planning__c
                             WHERE Created_from_Form__c = true AND 
                             RecordType.Name='Endline'  AND  
-                            Barcode__c = : contact[0].Bar_Code__c AND 
+                            Barcode__c = : studentBarcode AND 
                             Grade__c = :grade AND
                             Student__c = : studentId AND 
                             Academic_Year__c = : batches[0].Academic_Year__c AND
@@ -76,7 +95,7 @@ public without sharing class EndlineAssessmentController{
                             FROM Future_Planning__c
                             WHERE Created_from_Form__c = true AND 
                             RecordType.Name='Endline'  AND  
-                            Barcode__c = : contact[0].Bar_Code__c AND 
+                            Barcode__c = : studentBarcode AND 
                             Grade__c = :grade AND
                             Student__c = : studentId AND 
                             Academic_Year__c = : batches[0].Academic_Year__c AND

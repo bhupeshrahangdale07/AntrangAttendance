@@ -12,11 +12,16 @@ public without sharing class quiz1Grade10 {
     }
 
     @AuraEnabled
-    public static singleRecordWrapper getApexRecord(String studentId, String grade) {
+    public static singleRecordWrapper getApexRecord(String studentId, String grade,string batchId) {
         try{
             singleRecordWrapper rsp = new singleRecordWrapper();
             String studentBarcode = '';
             do{
+                List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c
+                    WHERE Id = :batchId LIMIT 1]);
+                
                 List<Contact> studentContact = new List<Contact>([
                     SELECT Id, Name, Bar_Code__c, 
                     Grade_9_Barcode__c, Grade_10_Barcode__c, Grade_11_Barcode__c, 
@@ -57,8 +62,25 @@ public without sharing class quiz1Grade10 {
                     rsp.studentGrade = 'Grade 9';
                 }*/
                 //=======================================================//
-
-                List<Self_Awareness_and_Feedback__c> safList = [
+                List<Self_Awareness_and_Feedback__c> safList =  new List<Self_Awareness_and_Feedback__c>();
+				if(String.isNotBlank(batchId) && !batches.isEmpty()){
+                    safList = [
+                    SELECT Name, Student__r.Name, Barcode__c,
+                    Created_from_Form__c, Grade9_Quiz1_Submitted__c, Grade10_Quiz1_Submitted__c,  
+                    Quiz_1_1__c, Quiz_1_2__c, Quiz_1_3__c, Quiz_1_4__c, Quiz_1_5__c,
+                    Quiz_1_6__c, Quiz_1_7__c, Quiz_1_8__c, Quiz_1_9__c, Quiz_1_10__c
+                    FROM Self_Awareness_and_Feedback__c 
+                    WHERE Created_from_Form__c = true
+                    AND Student__c = :studentId
+                    AND Error_Status__c = 'No Error'
+                    AND Academic_Year__c = :batches[0].Academic_Year__c
+                    AND Grade__c = :batches[0].Grade__c
+                    AND RecordTypeId = :safRecordTypeId
+                    AND Barcode__c = :studentBarcode
+                    ORDER BY CreatedDate DESC limit 1
+                ];
+                }else{
+                    safList = [
                     SELECT Name, Student__r.Name, Barcode__c,
                     Created_from_Form__c, Grade9_Quiz1_Submitted__c, Grade10_Quiz1_Submitted__c,  
                     Quiz_1_1__c, Quiz_1_2__c, Quiz_1_3__c, Quiz_1_4__c, Quiz_1_5__c,
@@ -70,7 +92,21 @@ public without sharing class quiz1Grade10 {
                     AND RecordTypeId = :safRecordTypeId
                     AND Error_Status__c = 'No Error'
                     LIMIT 1
-                ]; //V1.0
+                ];
+                }
+                /*List<Self_Awareness_and_Feedback__c> safList = [
+                    SELECT Name, Student__r.Name, Barcode__c,
+                    Created_from_Form__c, Grade9_Quiz1_Submitted__c, Grade10_Quiz1_Submitted__c,  
+                    Quiz_1_1__c, Quiz_1_2__c, Quiz_1_3__c, Quiz_1_4__c, Quiz_1_5__c,
+                    Quiz_1_6__c, Quiz_1_7__c, Quiz_1_8__c, Quiz_1_9__c, Quiz_1_10__c
+                    FROM Self_Awareness_and_Feedback__c 
+                    WHERE Created_from_Form__c = true
+                    AND Student__c = :studentId
+                    AND Barcode__c = :studentBarcode
+                    AND RecordTypeId = :safRecordTypeId
+                    AND Error_Status__c = 'No Error'
+                    LIMIT 1
+                ]; //V1.0*/
 
                 if(safList.isEmpty())break;
                 
@@ -158,7 +194,7 @@ public without sharing class quiz1Grade10 {
     }
 
     @AuraEnabled
-    public static String saveAllQA(String recordIdSAF, String studentId, String barCode, string grade, object ans){
+    public static String saveAllQA(String recordIdSAF, String studentId, String barCode, object ans){
         try{
             string rspId = '';
             String jsonString = Json.serialize(ans);
@@ -213,10 +249,7 @@ public without sharing class quiz1Grade10 {
             //=======================================================//
             upsert upsertObj;
 
-            if(String.isBlank(rspId)){
-                rspId = upsertObj.Id;
-            }
-            string submitted = submitAndCalculate(rspId, grade);
+            if(String.isBlank(rspId))rspId = upsertObj.Id;
             return rspId;
         } catch (Exception e) {
             System.debug('quiz1Grade10.saveAllQA, e.getMessage() : ' + e.getMessage());
@@ -241,7 +274,7 @@ public without sharing class quiz1Grade10 {
     }
 
     @AuraEnabled
-    public static String submitAndCalculate(String recordIdSAF, string grade){   
+    public static String submitAndCalculate(String recordIdSAF){   
         Savepoint sp = Database.setSavepoint();
         try{
             List<Self_Awareness_and_Feedback__c> safList = new List<Self_Awareness_and_Feedback__c>([
@@ -253,15 +286,7 @@ public without sharing class quiz1Grade10 {
                 ]);
 
             Self_Awareness_and_Feedback__c recSubmitStatus = new Self_Awareness_and_Feedback__c(Id = recordIdSAF);
-            if(grade == 'Grade 9'){
-                recSubmitStatus.Grade9_Quiz1_Submitted__c = true;
-            }else if(grade == 'Grade 10'){
-                recSubmitStatus.Grade10_Quiz1_Submitted__c = true;
-            }else if(grade == 'Grade 11'){
-                recSubmitStatus.Grade11_Quiz1_Submitted__c = true;
-            }else if(grade == 'Grade 12'){
-                recSubmitStatus.Grade12_Quiz1_Submitted__c = true;
-            }
+            recSubmitStatus.Grade10_Quiz1_Submitted__c = true;
             update recSubmitStatus;
 
             SelfAwarenessandFeedbackTriggerHandler.populateStudentAndMarksCalculation(safList);
@@ -272,14 +297,5 @@ public without sharing class quiz1Grade10 {
             System.debug('quiz1Grade10.submitAndCalculate, e.getMessage() : ' + e.getMessage());
             throw new AuraHandledException(e.getMessage());
         }
-    }
-
-    @AuraEnabled
-    public static Contact getStudentName(String studId) {
-        list<Contact> studList = [select id, name, Bar_Code__c from contact where id = :studId];
-        if(studList.size() > 0){
-            return studList[0];
-        }
-        return null;
     }
 }

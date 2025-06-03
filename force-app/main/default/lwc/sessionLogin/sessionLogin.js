@@ -7,24 +7,19 @@ export default class SessionLogin extends NavigationMixin(LightningElement) {
 
     antarangLogo = Antarang_logo;
     enteredEmail = '';
+    //userEmail = '';
     conRecordId;
     showLoading = false;
     handleInputChange(event) {
-        this.enteredEmail = event.detail.value;
+        this.enteredEmail = event.detail.value.trim();
     }
 
     loginHandler() {
         this.showLoading = true;
-        console.log('Value- ' + this.enteredEmail);
+        console.log('Value2- ' + this.enteredEmail);
         if (this.enteredEmail == undefined || this.enteredEmail == null || this.enteredEmail == "") {
             debugger;
-            const evt = new ShowToastEvent({
-                title: 'Please enter Email address!',
-                message: 'Enter trainer\'s email address!',
-                variant: 'error',
-                mode: 'dismissable'
-            });
-            this.dispatchEvent(evt);
+            this.showToastMessage('Please enter Email address', 'error');
             this.showLoading = false;
         } else {
             checkEmail({ strEmail: this.enteredEmail })
@@ -32,13 +27,8 @@ export default class SessionLogin extends NavigationMixin(LightningElement) {
                     console.log('Result1- ' + JSON.stringify(result));
                     if (result.hasOwnProperty('contact')) {
                         if (Object.keys(result.contact).length == 0) {
-                            console.log('Not found');
-                            const evt = new ShowToastEvent({
-                                title: 'Error',
-                                message: 'Entered wrong email Id!',
-                                variant: 'error'
-                            });
-                            this.dispatchEvent(evt);
+                            this.showToastMessage('Entered wrong Email ID!', 'error');
+                            
                             this.showLoading = false;
                         } else {
                             
@@ -53,7 +43,7 @@ export default class SessionLogin extends NavigationMixin(LightningElement) {
                              let pageReference = {
                                  type: 'comm__namedPage',
                                 attributes: {
-                                    name: 'SessionDetail__c'
+                                    name: 'SessionMainMenu__c'
                                  },
                                  state: {
                                      code: encodeURI(secretCode),
@@ -61,31 +51,15 @@ export default class SessionLogin extends NavigationMixin(LightningElement) {
                                  }
                              };
                              this[NavigationMixin.Navigate](pageReference);
-                            const evt = new ShowToastEvent({
-                                title: 'Success',
-                                message: 'Logged In Successfully!',
-                                variant: 'success'
-                            });
-                            this.dispatchEvent(evt);
+                            this.showToastMessage('Logged In successfully!', 'success');
                         console.log('Redirect Page');
                         this.showLoading = false;
                         }
                     } else if (result.hasOwnProperty('Already Logged In')) {
-                        console.log('Already Logged In');
-                        const evt = new ShowToastEvent({
-                                title: 'Error!',
-                                message: 'User is already logged in.',
-                                variant: 'warning'
-                            });
-                            this.dispatchEvent(evt);
+                       this.showToastMessage('User is already Logged In!', 'error');
                             this.showLoading = false;
                     } else if('error'){
-                        const evt = new ShowToastEvent({
-                                title: 'Not Found',
-                                message: 'Matching trainer not found!',
-                                variant: 'error'
-                            });
-                            this.dispatchEvent(evt);
+                        this.showToastMessage('Matching trainer not found!', 'error');
                             this.showLoading = false;
                     }
                 })
@@ -93,6 +67,15 @@ export default class SessionLogin extends NavigationMixin(LightningElement) {
                     console.log('Error- ' + JSON.stringify(error));
                 });
         }
+    }
+
+    showToastMessage(message,variant){
+        const event = new ShowToastEvent({
+                title : 'Session Login',
+                message : message,
+                variant : variant
+            });
+            this.dispatchEvent(event);
     }
 
 }

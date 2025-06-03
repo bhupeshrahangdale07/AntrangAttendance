@@ -249,7 +249,8 @@ export default class FeedbackEndlineV2 extends NavigationMixin(LightningElement)
 
     getStudentRecordFun(){
         getStudentRecord({
-            studentId : this.studentId
+            studentId : this.studentId,
+            batchId : this.selectedBatchId
         }).then(result => {
             if(result){
                 this.showForm = true;
@@ -512,7 +513,8 @@ export default class FeedbackEndlineV2 extends NavigationMixin(LightningElement)
             F12 :  this.queF12Value,
             saveFlag : true, //this.saveFlag,
             grade : this.selectedGrade,
-            formType : JSON.stringify(formType)
+            formType : JSON.stringify(formType),
+            batchId : this.selectedBatchId
         }).then(result => {
             this.futuerPlanningRecordId = result;
             const event = new ShowToastEvent({

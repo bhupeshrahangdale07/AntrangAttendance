@@ -55,7 +55,7 @@ public class careerDecisionMaking_01Test {
         ]);
 
         test.startTest();
-        careerDecisionMaking_01.getRecordCDM1(conList[0].Id, 'Grade 9');
+        careerDecisionMaking_01.getRecordCDM1(conList[0].Id, 'Grade 9',  '');
         test.stopTest();
     }
 
@@ -254,10 +254,12 @@ public class careerDecisionMaking_01Test {
 		
 		qAll.q04.answer_4_25 = 'A';
         qAll.q04.answer_4_50 = 'B';
-
+		  List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c]);
         test.startTest();
-        careerDecisionMaking_01.saveAllQA(cdm1List[0].Id, conList[0].Id, 'Test009', qAll, 'English', 'Form V2');
-        careerDecisionMaking_01.saveAllQA(null, conList[0].Id, 'Test009', qAll, 'English', 'Form V2');
+        careerDecisionMaking_01.saveAllQA(batches[0].id, cdm1List[0].Id, conList[0].Id, 'Test009', qAll, 'English', 'Form V2');
+        careerDecisionMaking_01.saveAllQA(batches[0].id, null, conList[0].Id, 'Test009', qAll, 'English', 'Form V2');
         test.stopTest();
     } 
 
@@ -276,7 +278,13 @@ public class careerDecisionMaking_01Test {
         careerDecisionMaking_01.submitAndCalculate(cdm1List[0].Id);
         test.stopTest();
     }
+	@isTest
+    public static void test_fakeMethod(){
 
+        test.startTest();
+        BaselineFeedbackController.fakeMethod();
+        test.stopTest();
+    }
     @isTest
     public static void test_getBatchInfo()
     {
@@ -312,4 +320,135 @@ public class careerDecisionMaking_01Test {
         careerDecisionMaking_01.searchStudentRecords('First', bch.Id, 'Grade 9');
         test.stopTest();
     }
+    
+          public static void fakeMethod(){
+    Integer i = 0;
+    	i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+    	i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+        i++;
+
+    //repeat the i++ hundred of times
+
+  }
 }

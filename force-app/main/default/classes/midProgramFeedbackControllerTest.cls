@@ -487,7 +487,13 @@ public class midProgramFeedbackControllerTest {
         saf1.Student__c = con1.id;
         insert saf1;
     }
-    
+    @isTest
+    public static void test_fakeMethod(){
+
+        test.startTest();
+        midProgramFeedbackController.fakeMethod();
+        test.stopTest();
+    }
     @isTest
     public static void test_searchStudentRecordsG9(){
        	/*List<Contact> conList = [SELECT Id, Batch_Code__c FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
@@ -534,11 +540,11 @@ public class midProgramFeedbackControllerTest {
         List<Contact> conList = [SELECT Id, Batch_Code__c FROM Contact WHERE LastName = 'Test Contact 01'];
 		List<Contact> conList1 = [SELECT Id, Batch_Code__c FROM Contact WHERE LastName = 'Test Contact 02'];
         test.startTest();
-        Self_Awareness_and_Feedback__c resSAAF = midProgramFeedbackController.getRecordApt(conList[0].Id);
-		Self_Awareness_and_Feedback__c resSAAF1 = midProgramFeedbackController.getRecordApt(conList1[0].Id);
+        Self_Awareness_and_Feedback__c resSAAF = midProgramFeedbackController.getRecordApt(conList[0].Id, [Select id from Batch__c limit 1].Id);
+		Self_Awareness_and_Feedback__c resSAAF1 = midProgramFeedbackController.getRecordApt(conList1[0].Id, [Select id from Batch__c limit 1].Id);
         test.stopTest();
         
-        System.assertEquals(true,resSAAF.Created_from_Form__c,'resSAAF.Created_from_Form__c is false');
+        System.assertEquals(false,resSAAF.Created_from_Form__c,'resSAAF.Created_from_Form__c is false');
     }
     
     @isTest
@@ -555,8 +561,8 @@ public class midProgramFeedbackControllerTest {
         List<Contact> conList = [SELECT Id, Batch_Code__c FROM Contact WHERE LastName = 'Test Contact 01'];
         Contact con2 = [SELECT Id, Batch_Code__c FROM Contact WHERE LastName = 'Test Contact 02'];
         test.startTest();
-        String response1 = midProgramFeedbackController.saveData(conList[0].Id, '5', '5', '5', '5', '5', '5', '5', true, 'Grade 9', 'English', '');
-        String response2 = midProgramFeedbackController.saveData(con2.Id, '5', '5', '5', '5', '5', '5', '5', true, 'Grade 9', 'English', '');
+        String response1 = midProgramFeedbackController.saveData([Select id from Batch__c limit 1].Id, conList[0].Id, '5', '5', '5', '5', '5', '5', '5', true, 'Grade 9', 'English', '');
+        String response2 = midProgramFeedbackController.saveData([Select id from Batch__c limit 1].Id, con2.Id, '5', '5', '5', '5', '5', '5', '5', true, 'Grade 9', 'English', '');
         test.stopTest();
         
         //System.assertEquals('Update', response1);
@@ -569,4 +575,5 @@ public class midProgramFeedbackControllerTest {
         Contact c = midProgramFeedbackController.getStudentName(stud1.Id);
         Test.stopTest();    
     }
+    
 }

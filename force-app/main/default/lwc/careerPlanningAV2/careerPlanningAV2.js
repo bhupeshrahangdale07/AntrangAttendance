@@ -245,7 +245,8 @@ export default class CareerPlanningAV2 extends NavigationMixin(LightningElement)
     getApexRecordCP(){
         getApexRecord({
             studentId : this.rxStudentId,
-            grade : this.grd
+            grade : this.grd,
+            batchId : this.bid
         }).then(result => {
             //console.log('result : ' + JSON.stringify(result));
             //===========================================================//
@@ -1144,6 +1145,7 @@ export default class CareerPlanningAV2 extends NavigationMixin(LightningElement)
             console.log('$$$ this.rxStudentId: ', this.rxStudentId);
             console.log('$$$ this.studentBarcode: ', this.studentBarcode);
             saveAllQA({
+                batchId : this.bid,
                 recordIdCP : this.cpRecordId,
                 studentId : this.rxStudentId,
                 barCode : this.studentBarcode,

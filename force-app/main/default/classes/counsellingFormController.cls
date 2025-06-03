@@ -164,7 +164,7 @@ public without sharing class counsellingFormController {
                 }if(sessGrade == 'Grade 11') {
                     for(Contact c: [Select Id,Name,Batch_Code__c,G11_Batch_Code__c,MobilePhone,Phone,OtherPhone 
                                     From Contact 
-                                    where Batch_Code__c IN : bidS Order by Name]) {
+                                    where G11_Batch_Code__c IN : bidS Order by Name]) {
                         conList.add(c);
                     }                        
                 } else if(sessGrade == 'Grade 12'){

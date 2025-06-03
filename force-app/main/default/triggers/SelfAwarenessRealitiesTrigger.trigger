@@ -11,7 +11,6 @@ trigger SelfAwarenessRealitiesTrigger on Self_Awareness_Realities__c (after inse
     if(Trigger.isBefore) {
         if(Trigger.isInsert) {
             SelfAwarenessRealitiesTriggerHandler.populateStudentAndMarksCalculationNew(Trigger.New);
-            
         }
         SelfAwarenessRealitiesTriggerHandler.updateBatchId(Trigger.New, Trigger.oldMap);
     }    

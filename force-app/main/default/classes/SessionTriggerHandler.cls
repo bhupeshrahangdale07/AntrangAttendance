@@ -5,6 +5,7 @@
 * History
 * Version	Date			Description
 * v1.0 	    24th Apr 24	    Added method to populate Total_Student_Present__c from Present_Count__c
+* v1.1 	    7th  Jun 24 	Added logic to populate Total_Parent_Present__c from Guardian_Parent_Count__c
 */ 
 public class SessionTriggerHandler {
     //count total Session__c on contact
@@ -269,9 +270,9 @@ public class SessionTriggerHandler {
         if(sessionIds.size() > 0){
             for(Session__c objSession: [Select Id,Present_Count__c,Total_Student_Present__c,Guardian_Parent_Count__c,Total_Parent_Present__c from Session__c where ID IN: sessionIds]) {
                 integer presentCount = integer.valueOf(objSession.Present_Count__c);
-                integer parentPresentCount = integer.valueOf(objSession.Guardian_Parent_Count__c); 
+                integer parentPresentCount = integer.valueOf(objSession.Guardian_Parent_Count__c); //v1.1 
                 objSession.Total_Student_Present__c = presentCount;
-                objSession.Total_Parent_Present__c = parentPresentCount;
+                objSession.Total_Parent_Present__c = parentPresentCount; //v1.1 
                 sessionToUpdate.add(objSession);
             }
             

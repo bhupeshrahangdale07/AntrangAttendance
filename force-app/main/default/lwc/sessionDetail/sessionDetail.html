@@ -134,19 +134,22 @@
                                                 <lightning-layout-item size="2" padding="around-small">
                                                     <lightning-input type="date" label="Date" value={session.sessionDate}
                                                         disabled={session.disableStartTimeNDate} data-session-id={session.id} 
-                                                        onchange={changeDateTime}></lightning-input>
+                                                        onchange={changeDateTime} message-when-value-missing="Date is required"
+                                                        required={session.dateRequired}></lightning-input>
                                                 </lightning-layout-item>
 
                                                 <lightning-layout-item size="2" padding="around-small">
                                                     <lightning-input type="time" label="Start Time"
                                                         value={session.startTimeFormatted}
                                                         disabled={session.disableStartTimeNDate} data-session-id={session.id} 
-                                                        onchange={changeDateTime}></lightning-input> 
+                                                        onchange={changeDateTime}
+                                                        message-when-value-missing="Start Time is required"
+                                                        required={session.startTimeRequired}></lightning-input> 
                                                 </lightning-layout-item>
 
                                                 <lightning-layout-item size="2" padding="around-small">
                                                     <div class={classAtten}>
-                                                    <lightning-input label="Class Attendance" class="classAttendanceLabel" type="number" data-session-id={session.id}
+                                                    <lightning-input label="Class Attendance" class="classAttendanceLabel" type="number" data-session-id={session.id} min="0"
                                                         value={session.studentAttendance} disabled={session.disableAttendance} onchange={handleClassAttend}></lightning-input>
                                                         </div>
                                                 </lightning-layout-item>
@@ -157,7 +160,7 @@
                                                         <div class="slds-form-element__control">
                                                         <template if:true={session.indAttentLink}>
                                                         <a href="javascript:void(0);" class="slds-text-link"
-                                                            onclick={handleAttendanceClick} data-session-id={session.id}>
+                                                            onclick={handleAttendanceClick} data-session-id={session.id} >
                                                             Open student-wise attendance
                                                         </a>
                                                         </template>
@@ -219,31 +222,41 @@
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-input type="date" label="Date" value={session.sessionDate} data-session-id={session.id} 
-                                                    disabled={session.disableStartTimeNDate} onchange={changeDateTime}></lightning-input>
+                                                    disabled={session.disableStartTimeNDate} 
+                                                    message-when-value-missing="Date is required" onchange={changeDateTime}
+                                                    required={session.dateRequired}></lightning-input>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-input type="time" label="Start Time"
+                                                    message-when-value-missing="Start Time is required"
                                                     value={session.startTimeFormatted} data-session-id={session.id} 
-                                                    disabled={session.disableStartTimeNDate} onchange={changeDateTime}></lightning-input>
+                                                    disabled={session.disableStartTimeNDate} 
+                                                    onchange={changeDateTime} required={session.startTimeRequired}></lightning-input>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-combobox name="hmAttended" label="HM Attended" data-session-id={session.id}
                                                     value={session.hmAttended}
-                                                    options={optionsHmAttended} disabled={session.disableAttendance} onchange={changeHmAttended}></lightning-combobox>
+                                                    options={optionsHmAttended} disabled={session.disableAttendance} 
+                                                    onchange={changeHmAttended} required={session.hmRequired}
+                                                 message-when-value-missing="HM Attended is required"></lightning-combobox>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-combobox name="sessionLead" label="Session Lead" data-session-id={session.id}
                                                     value={session.sessionLead}
-                                                    options={optionsSessionLead} disabled={session.disableAttendance} onchange={changeSessionLead}></lightning-combobox>
+                                                    options={optionsSessionLead} disabled={session.disableAttendance}
+                                                    onchange={changeSessionLead} required={session.leadRequired} 
+                                                    message-when-value-missing="Session lead is required"></lightning-combobox>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <div class={classAtten}>
-                                                <lightning-input label="Class Attendance" class="classAttendanceLabel" data-session-id={session.id} type="number"
-                                                    value={session.studentAttendance} disabled={session.disableAttendance} onchange={handleClassAttend}></lightning-input>
+                                                <lightning-input label="Class Attendance" class="classAttendanceLabel" data-session-id={session.id} type="number" min="0"
+                                                    value={session.studentAttendance} disabled={session.disableAttendance}
+                                                    onchange={handleClassAttend} required={session.stdAttendRequired} 
+                                                    message-when-value-missing="Class Attendance is required"></lightning-input>
                                                 </div>
                                             </lightning-layout-item>
 
@@ -314,35 +327,50 @@
                                             </lightning-layout-item>
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-input type="date" label="Date" value={session.sessionDate} data-session-id={session.id} 
-                                                    disabled={session.disableStartTimeNDate} onchange={changeDateTime}></lightning-input>
+                                                    disabled={session.disableStartTimeNDate} onchange={changeDateTime}
+                                                    message-when-value-missing="Date is required" 
+                                                    required={session.dateRequired}></lightning-input>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-input type="time" label="Start Time"
                                                     value={session.startTimeFormatted} data-session-id={session.id} 
-                                                    disabled={session.disableStartTimeNDate} onchange={changeDateTime}></lightning-input>
+                                                    disabled={session.disableStartTimeNDate} onchange={changeDateTime}
+                                                    message-when-value-missing="Start Time is required"
+                                                    required={session.startTimeRequired}></lightning-input>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-combobox name="hmAttended" label="HM Attended" 
                                                     value={session.hmAttended} data-session-id={session.id}
-                                                    options={optionsHmAttended} disabled={session.disableAttendance} onchange={changeHmAttended}></lightning-combobox>
+                                                    options={optionsHmAttended} disabled={session.disableAttendance} onchange={changeHmAttended}
+                                                    required={session.hmRequired}
+                                                 message-when-value-missing="HM Attended is required"></lightning-combobox>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
                                                 <lightning-combobox name="sessionLead" label="Session Lead" 
                                                     value={session.sessionLead} data-session-id={session.id}
-                                                    options={optionsSessionLead} disabled={session.disableAttendance} onchange={changeSessionLead}></lightning-combobox>
+                                                    options={optionsSessionLead} disabled={session.disableAttendance} onchange={changeSessionLead}
+                                                    required={session.leadRequired} 
+                                                    message-when-value-missing="Session lead is required"></lightning-combobox>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-input label="Parent attendance" class="classAttendanceLabel" type="number" data-session-id={session.id}
-                                                    value={session.parentAttendance} disabled={session.disableAttendance} onchange={handleParentAttend}></lightning-input>
+                                                <lightning-input label="Parent attendance" class="classAttendanceLabel" type="number" 
+                                                data-session-id={session.id} min="0"
+                                                    value={session.parentAttendance} disabled={session.disableAttendance} 
+                                                    onchange={handleParentAttend}
+                                                    required={session.parAttendRequired} 
+                                                    message-when-value-missing="Parent Attendance is required"></lightning-input>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
-                                                <lightning-input label="Student Attendance" type="number" data-session-id={session.id}
-                                                    value={session.studentAttendance} disabled={session.disableAttendance} onchange={handleClassAttend}></lightning-input>
+                                                <lightning-input label="Student Attendance" type="number" data-session-id={session.id} min="0"
+                                                    value={session.studentAttendance} disabled={session.disableAttendance} 
+                                                    onchange={handleClassAttend}
+                                                    required={session.stdAttendRequired} 
+                                                    message-when-value-missing="Student Attendance is required"></lightning-input>
                                             </lightning-layout-item>
 
                                             <lightning-layout-item size="1" padding="around-small">
@@ -415,13 +443,16 @@
                                             </lightning-layout-item>
                                                 <lightning-layout-item size="2" padding="around-small">
                                                     <lightning-input type="date" label="Date" value={session.sessionDate} data-session-id={session.id} 
-                                                        disabled={session.disableStartTimeNDate} onchange={changeDateTime}></lightning-input>
+                                                        disabled={session.disableStartTimeNDate} onchange={changeDateTime}
+                                                        message-when-value-missing="Date is required" 
+                                                    required={session.dateRequired}></lightning-input>
                                                 </lightning-layout-item>
 
                                                 <lightning-layout-item size="2" padding="around-small">
                                                     <lightning-input type="time" label="Start Time"
                                                         value={session.startTimeFormatted} data-session-id={session.id} 
-                                                        disabled={session.disableStartTimeNDate} onchange={changeDateTime}></lightning-input>
+                                                        disabled={session.disableStartTimeNDate} onchange={changeDateTime}
+                                                        required={session.startTimeRequired} message-when-value-missing="Start Time is required"></lightning-input>
                                                 </lightning-layout-item>              
 
                                         </lightning-layout>
@@ -442,7 +473,7 @@
                                                                 <lightning-combobox name="sessionLead" label="Session Lead"  
                                                                 onchange={handleSessionLead} data-student-id={student.studentId}
                                                                     style="width: 170px;"
-                                                                    value={student.stdLead}
+                                                                    value={student.stdLead} placeholder="--None--"
                                                                     options={optionsSessionLead} disabled={student.stdWrongBatch}>
                                                                 </lightning-combobox>
                                                                 <div class="session-info" style="margin-top:0px;">
@@ -462,14 +493,25 @@
                                                                     data-student-id={student.studentId}
                                                                     onchange={handleParentAttendanceChange}
                                                                     class="input-style"
-                                                                    disabled={student.stdWrongBatch}>
+                                                                    placeholder="--None--"
+                                                                    disabled={student.stdWrongBatch} >
                                                                 </lightning-combobox>
                                                                 </div>
                                                                </template>
                                                                <template lwc:else>
-                                                                <lightning-combobox name="sessionLead" label="Session Lead"  style="width: 170px;"
+                                                                <!-- <lightning-combobox name="sessionLead" label="Session Lead"  style="width: 170px;"
                                                                     value={student.stdLead}
                                                                     options={optionsSessionLead} disabled={student.disableStudent}>
+                                                                </lightning-combobox> -->
+                                                                <lightning-combobox name="sessionLead" label="Session Lead"  
+                                                                    style="width: 170px;"
+                                                                    value={student.stdLead}
+                                                                    options={optionsSessionLead} 
+                                                                    data-student-id={student.studentId}
+                                                                    onchange={handleSessionLead} 
+                                                                    disabled={student.disableStudent}
+                                                                    message-when-value-missing="Session Lead is required"
+                                                                    required={student.leadRequired}>
                                                                 </lightning-combobox>
                                                                 <div class="session-info" style="margin-top:0px;">
                                                                  <lightning-combobox label="Student Attendance"
@@ -479,7 +521,9 @@
                                                                     data-student-id={student.studentId}
                                                                     onchange={handleAttendanceChange}
                                                                     class="input-style"
-                                                                    disabled={student.disableStudent}>
+                                                                    disabled={student.disableStudent}
+                                                                    message-when-value-missing="Student Attendance is required"
+                                                                    required={student.stdAttendRequired}>
                                                                 </lightning-combobox>
                                                                 <lightning-combobox
                                                                     style="width: 170px;" label="Parent Attendance"
@@ -488,7 +532,9 @@
                                                                     data-student-id={student.studentId}
                                                                     onchange={handleParentAttendanceChange}
                                                                     class="input-style"
-                                                                    disabled={student.disableStudent}>
+                                                                    disabled={student.disableStudent}
+                                                                    message-when-value-missing="Parent Attendance is required"
+                                                                    required={student.parAttRequired}>
                                                                 </lightning-combobox>
                                                                 </div>
                                                                </template>
@@ -526,7 +572,7 @@
                     </template>
                 </lightning-accordion>
                 <div class="saveDiv">
-                    <lightning-button variant="brand" label="Save" title="Sign Out" onclick={handleSave}
+                    <lightning-button variant="brand" label="Save" title="Save" onclick={handleSave}
                         class="slds-m-left_x-small saveButton"></lightning-button>
                 </div>
             </div>

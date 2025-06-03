@@ -410,7 +410,8 @@ export default class CareerPlanning_A_Endline_V2 extends NavigationMixin(Lightni
         console.log(this.grd);
         getApexRecord({
             studentId : this.rxStudentId,
-            grade : this.grd
+            grade : this.grd,
+            batchId : this.bid
         }).then(result => {
             console.log('result : ' + JSON.stringify(result));
             //===========================================================//
@@ -1279,6 +1280,7 @@ export default class CareerPlanning_A_Endline_V2 extends NavigationMixin(Lightni
             //this.rxRecordIdCMD2 = null; //For temperary purpose delete afterwards
 
             saveAllQA({
+                batchId : this.bid,
                 recordIdCP : this.cpRecordId,
                 studentId : this.rxStudentId,
                 barCode : this.studentBarcode,

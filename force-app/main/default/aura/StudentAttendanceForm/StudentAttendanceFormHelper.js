@@ -176,6 +176,7 @@
             let state = response.getState();
             if (response.getState() === "SUCCESS") {
                 let res = response.getReturnValue();
+                console.log('res = ',res);
                 component.set("v.studentMatrixForAllSession",res.studentdata);
                 component.set("v.tempstudentMatrixForAllSession",res.studentdata);
                 if(res.sessWithPreSessSubmitedAtt != '' && res.sessWithPreSessSubmitedAtt != undefined){

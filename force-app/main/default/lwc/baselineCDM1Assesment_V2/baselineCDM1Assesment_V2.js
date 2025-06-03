@@ -17,7 +17,7 @@ const COLS = [
 
 export default class BaselineCDM1Assesment_V2 extends NavigationMixin(LightningElement){
     NEWICON = Resource+'/icons/utility-sprite/svg/symbols.svg#new';
-    sessionData;
+    
     showLoading = true;
     errorTitle;
     @api grade = null;
@@ -71,21 +71,8 @@ export default class BaselineCDM1Assesment_V2 extends NavigationMixin(LightningE
     }
 
     connectedCallback() {
-        console.log('window.name = '+window.name);
-        if (window.name && window.name.trim().length > 0) {
-            const storedData = JSON.parse(window.name);
-            const secretData = storedData.secretData || 'No Secret Data';        
-            alert(secretData);
-        }
         this.showLoading = false;
         this.getStudentRecords();
-    }
-    handleMessage(message) {
-        
-        this.receivedMessage = message
-        ? JSON.stringify(message, null, "\t")
-        : "no message";
-        alert(this.receivedMessage);
     }
 
     getStudentRecords(){

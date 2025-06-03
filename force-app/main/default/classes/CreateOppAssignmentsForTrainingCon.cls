@@ -21,6 +21,10 @@ global class CreateOppAssignmentsForTrainingCon{
                 oppAssign.Training_Status__c = 'Completed';
                 oppAssign.Comments__c = s;
                 oppAssign.Linkage_Not_Achieved__c = false;
+                oppAssign.Course_name__c = 'Adobe illustrator'; //course name
+                oppAssign.Industry__c = 'Education and Training'; //industry
+                oppAssign.Opportunity_Start_Date__c = Date.today(); //opp start date
+                
                 oppAssignRecsToBeCreated.add(oppAssign);
             }
         }

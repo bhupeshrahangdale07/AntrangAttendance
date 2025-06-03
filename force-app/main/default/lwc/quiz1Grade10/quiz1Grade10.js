@@ -1299,7 +1299,7 @@ export default class Quiz1Grade10 extends NavigationMixin(LightningElement) {
         }).catch(error => {
             this.isLoading = false;   //Turn OFF the spinner
             let rxError = 'Error while submitting the record';
-            console.log('error.body.message = ',error.body.message)
+
             if (Array.isArray(error.body)) {
                 rxError = error.body.map(e => e.message).join(', ');
             } else if (typeof error.body.message === 'string') {

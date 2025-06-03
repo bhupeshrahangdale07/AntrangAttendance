@@ -288,13 +288,11 @@ export default class CareerPlanning_A_Endline extends NavigationMixin(LightningE
     }
 
     getApexRecordCP(){
-        console.log(this.rxStudentId);
-        console.log(this.grd);
         getApexRecord({
             studentId : this.rxStudentId,
             grade : this.grd
         }).then(result => {
-            console.log('result : ' + JSON.stringify(result));
+            //console.log('result : ' + JSON.stringify(result));
             //===========================================================//
             const singleRecordWrapper = JSON.parse(JSON.stringify(result));
             if(singleRecordWrapper.studentBarcode !== undefined)

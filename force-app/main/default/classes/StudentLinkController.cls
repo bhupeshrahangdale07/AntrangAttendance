@@ -20,13 +20,16 @@ public without sharing class StudentLinkController {
         String query = 'Select Id, Name, G9_Whatsapp_Number__c, G10_Whatsapp_Number__c, G11_Whatsapp_Number__c From Contact Where createdDate != null';
         
         if(grade == 'Grade 10'){
-            query += ' AND Currently_Studying_In__c =\'Grade 9\' AND G10_Batch_Code__c  = null ';
+            //query += ' AND Currently_Studying_In__c =\'Grade 9\' AND G10_Batch_Code__c  = null ';
+            query += ' AND G10_Batch_Code__c  = null ';	//02.05.2025 - removed Currently_Studying_In__c condition as this field can be blank for some studs - confirmed by Insiyah
             query += ' AND Batch_Code__r.School_Name__c = :schoolId AND Batch_Code__r.Academic_Year__c = :previousAcademicYear';
         }else if(grade == 'Grade 11'){
-            query += ' AND Currently_Studying_In__c =\'Grade 10\' AND G11_Batch_Code__c  = null ';
+            //query += ' AND Currently_Studying_In__c =\'Grade 10\' AND G11_Batch_Code__c  = null ';
+            query += ' AND G11_Batch_Code__c  = null ';	//02.05.2025 - removed Currently_Studying_In__c condition as this field can be blank for some studs - confirmed by Insiyah
             query += ' AND (G10_Batch_Code__c != null AND G10_Batch_Code__r.School_Name__c = :schoolId AND G10_Batch_Code__r.Academic_Year__c = :previousAcademicYear ) ';
         }else if(grade == 'Grade 12'){
-            query += ' AND Currently_Studying_In__c =\'Grade 11\' AND G12_Batch_Code__c  = null  ';
+            //query += ' AND Currently_Studying_In__c =\'Grade 11\' AND G12_Batch_Code__c  = null  ';
+            query += ' AND G12_Batch_Code__c  = null ';	//02.05.2025 - removed Currently_Studying_In__c condition as this field can be blank for some studs - confirmed by Insiyah
             query += ' AND (G11_Batch_Code__c != null AND  G11_Batch_Code__r.School_Name__c = :schoolId AND G11_Batch_Code__r.Academic_Year__c = :previousAcademicYear ) ';
         }else{
             throw new AuraHandledException('Invalid Grade : '+grade);
@@ -57,6 +60,7 @@ public without sharing class StudentLinkController {
     @AuraEnabled
     public static List<Contact> saveLinkStudents(list<String> selectedContactIds, String batchId, String grade){
         if(String.isNotBlank(batchId)){
+            system.debug('Grade- '+grade);
             
             batch__c bt = [ SELECT Id, Academic_Year__c, School_Name__c, School_Name__r.Name, Grade__c, School_Name__r.State__r.State_Code__c, School_Name__r.District__c, School_Name__r.District__r.Academic_Year__c, School_Name__r.District__r.Barcode_starts_with__c FROM Batch__c WHERE id =:batchId LIMIT 1];
             String barcodeBenchMark = getBarcodeStartNumber(bt);
@@ -71,13 +75,16 @@ public without sharing class StudentLinkController {
             String schoolId = bt.School_Name__c;
             String query = 'Select Id, G9_Whatsapp_Number__c, G10_Whatsapp_Number__c, G11_Whatsapp_Number__c From Contact Where Id IN :selectedContactIds ';
             if(grade == 'Grade 10'){
-                query += ' AND Currently_Studying_In__c =\'Grade 9\' AND G10_Batch_Code__c  = null ';
+                //query += ' AND Currently_Studying_In__c =\'Grade 9\' AND G10_Batch_Code__c  = null ';
+                query += ' AND G10_Batch_Code__c  = null ';	//02.05.2025 - removed Currently_Studying_In__c condition as this field can be blank for some studs - confirmed by Insiyah
                 query += ' AND Batch_Code__r.School_Name__c = :schoolId AND Batch_Code__r.Academic_Year__c = :previousAcademicYear ';
             }else if(grade == 'Grade 11'){
-                query += ' AND Currently_Studying_In__c =\'Grade 10\' AND G11_Batch_Code__c  = null ';
+                //query += ' AND Currently_Studying_In__c =\'Grade 10\' AND G11_Batch_Code__c  = null ';
+                query += ' AND G11_Batch_Code__c  = null ';	//02.05.2025 - removed Currently_Studying_In__c condition as this field can be blank for some studs - confirmed by Insiyah
                 query += ' AND (G10_Batch_Code__c != null AND G10_Batch_Code__r.School_Name__c = :schoolId AND G10_Batch_Code__r.Academic_Year__c = :previousAcademicYear ) ';
             }else if(grade == 'Grade 12'){
-                query += ' AND Currently_Studying_In__c =\'Grade 11\' AND G12_Batch_Code__c  = null  ';
+                //query += ' AND Currently_Studying_In__c =\'Grade 11\' AND G12_Batch_Code__c  = null  ';
+                query += ' AND G12_Batch_Code__c  = null ';	//02.05.2025 - removed Currently_Studying_In__c condition as this field can be blank for some studs - confirmed by Insiyah
                 query += ' AND (G11_Batch_Code__c != null AND  G11_Batch_Code__r.School_Name__c = :schoolId AND G11_Batch_Code__r.Academic_Year__c = :previousAcademicYear ) ';
             }
             String recordTypeId = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('CA_Student').getRecordTypeId();
@@ -137,14 +144,15 @@ public without sharing class StudentLinkController {
                           AND ApexClass.Name = 'BarcodeGenerationQueueable'
                     ];
                     system.debug('runningJobs = '+runningJobs.size());
+                    Map<Id, Integer> retryCountMap = new Map<Id, Integer>();
                     if (runningJobs.size() > 0) {
                         system.debug('After 1 min');
-                        Integer delayInMinutes = 1;
-                        System.enqueueJob(new BarcodeGenerationQueueable(contacts, grade, bt, 'Form V2', true), delayInMinutes);
+                        Integer delayInMinutes = 2;
+                        System.enqueueJob(new BarcodeGenerationQueueable(contacts, grade, bt, 'Form V2', true,retryCountMap), delayInMinutes);
     
                     }else{
                         system.debug('Scheduled');
-                         System.enqueueJob(new BarcodeGenerationQueueable(contacts, grade, bt, 'Form V2', true));
+                         System.enqueueJob(new BarcodeGenerationQueueable(contacts, grade, bt, 'Form V2', true,retryCountMap));
                     }
                 }
 

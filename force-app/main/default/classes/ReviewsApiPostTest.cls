@@ -32,6 +32,8 @@ public class ReviewsApiPostTest {
         opp.Working_Hours_Start_Time__c = Time.newInstance(7, 1, 1, 1);
         opp.Working_Hours_End_Time__c = Time.newInstance(15, 1, 1, 1);
         opp.Work_Days__c = 'Tuesday; Wednesday;';
+        opp.Payroll_details__c = 'monthly';
+        opp.Salary_in_hand_monthly__c = 999999;
         insert opp;
         opportunity__c oppt = [select id,Opportunity_Unique_Id__c from opportunity__c where id =: opp.id];
         
@@ -49,7 +51,7 @@ public class ReviewsApiPostTest {
         RestContext.request = req;
         RestContext.response= res;
         
-        req.requestUri = URL.getSalesforceBaseUrl().toExternalForm() + '/services/apexrest/placements/review';
+        req.requestUri = URL.getOrgDomainUrl().toExternalForm() + '/services/apexrest/placements/review';
         req.httpMethod = 'post';
         req.requestBody = Blob.valueof(JsonMsg);
         
@@ -108,7 +110,7 @@ public class ReviewsApiPostTest {
         RestContext.request = req;
         RestContext.response= res;
         
-        req.requestUri = URL.getSalesforceBaseUrl().toExternalForm() + '/services/apexrest/placements/review';
+        req.requestUri = URL.getOrgDomainUrl().toExternalForm() + '/services/apexrest/placements/review';
         req.httpMethod = 'post';
         req.requestBody = Blob.valueof(JsonMsg);
         
@@ -154,6 +156,8 @@ public class ReviewsApiPostTest {
         opp.Working_Hours_Start_Time__c = Time.newInstance(7, 1, 1, 1);
         opp.Working_Hours_End_Time__c = Time.newInstance(15, 1, 1, 1);
         opp.Work_Days__c = 'Tuesday; Wednesday;';
+        opp.Payroll_details__c = 'monthly';
+        opp.Salary_in_hand_monthly__c = 999999;
         insert opp;
         opportunity__c oppt = [select id,Opportunity_Unique_Id__c from opportunity__c where id =: opp.id];
         
@@ -171,7 +175,7 @@ public class ReviewsApiPostTest {
         RestContext.request = req;
         RestContext.response= res;
         
-        req.requestUri = URL.getSalesforceBaseUrl().toExternalForm() + '/services/apexrest/placements/review';
+        req.requestUri = URL.getOrgDomainUrl().toExternalForm() + '/services/apexrest/placements/review';
         req.httpMethod = 'post';
         req.requestBody = Blob.valueof(JsonMsg);
         

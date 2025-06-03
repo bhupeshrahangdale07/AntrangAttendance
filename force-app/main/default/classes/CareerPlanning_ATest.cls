@@ -7,9 +7,14 @@ public class CareerPlanning_ATest {
         Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId();
         account.RecordTypeId=RecordTypeIdAccount;
         insert account;
-
+		List<Batch__c> batchList = new List<Batch__c>{
+            new Batch__c(Name = 'ShreeramSchoolBatch1', School_Name__c = account.Id, Preferred_Language__c = 'English'),
+            new Batch__c(Name = 'ShreeramSchoolBatch2', School_Name__c = account.Id, Preferred_Language__c = 'English')
+                };
+        insert batchList;
         RecordType CA_Student_RecordType = [SELECT Id, Name FROM RecordType WHERE SobjectType = 'Contact' AND Name = 'CA Student'];
         Contact student = new Contact(RecordTypeId = CA_Student_RecordType.Id);
+        student.Batch_Code__c = batchList[0].Id;
         student.AccountId = account.Id;
         student.FirstName = 'First'; 
         student.LastName = 'Last';
@@ -55,9 +60,9 @@ public class CareerPlanning_ATest {
         List<Contact> conList = [SELECT Id FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
 
         test.startTest();
-        CareerPlanning_A.getApexRecord(conList[0].Id, 'Grade 9');
-        CareerPlanning_A.getApexRecord(conList[0].Id, 'Grade 10');
-        CareerPlanning_A.getApexRecord(conList[0].Id, 'Grade 11');
+        CareerPlanning_A.getApexRecord(conList[0].Id, 'Grade 9', '');
+        CareerPlanning_A.getApexRecord(conList[0].Id, 'Grade 10', '');
+        CareerPlanning_A.getApexRecord(conList[0].Id, 'Grade 11', '');
         test.stopTest();
     }
     
@@ -122,10 +127,12 @@ public class CareerPlanning_ATest {
         qAnsAll.q09.answer4 = 'A';
         qAnsAll.q09.answer5 = 'A';
         qAnsAll.q09.answer6 = 'A';
-        
+        List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c]);
         test.startTest();
-        CareerPlanning_A.saveAllQA(cpList[0].Id, conList[0].Id, 'Test009', qAnsAll, 'English', 'Form V2');
-        CareerPlanning_A.saveAllQA(null, conList[0].Id, 'Test009', qAnsAll, 'English', 'Form V2');
+        CareerPlanning_A.saveAllQA(batches[0].id, cpList[0].Id, conList[0].Id, 'Test009', qAnsAll, 'English', 'Form V2');
+        CareerPlanning_A.saveAllQA(batches[0].id, null, conList[0].Id, 'Test009', qAnsAll, 'English', 'Form V2');
         test.stopTest();
     }
     public class qAnswerAll{

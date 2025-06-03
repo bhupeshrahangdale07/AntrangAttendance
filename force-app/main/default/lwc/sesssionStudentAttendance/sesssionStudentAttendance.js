@@ -28,6 +28,7 @@ export default class SesssionStudentAttendance extends NavigationMixin(Lightning
     @track attendancePicklist;
     @track reasonOption;
     @track isWrongBatchChecked = false;
+    @track showError;
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference) {
@@ -38,6 +39,7 @@ export default class SesssionStudentAttendance extends NavigationMixin(Lightning
             this.batch = rxCurrentPageReference.state.batch ? decodeURI(rxCurrentPageReference.state.batch) : null;
             this.grade = rxCurrentPageReference.state.grade ? decodeURI(rxCurrentPageReference.state.grade) : null;
             this.sessionId = rxCurrentPageReference.state.sessionId ? decodeURI(rxCurrentPageReference.state.sessionId) : null;
+            this.showError = rxCurrentPageReference.state.showError ? decodeURI(rxCurrentPageReference.state.showError) : null;
             console.log('code =', this.code)
             console.log('facEmailId = ', this.facEmailId)
         }
@@ -178,6 +180,10 @@ export default class SesssionStudentAttendance extends NavigationMixin(Lightning
                     this.showAttendanceTable = true;
                 } else {
                     this.showAttendanceTable = false;
+                }
+                if(this.showError == 'true'){
+                    this.sessionAttSubmitted =  true;
+                    this.showToastMessage("Previous session’s attendance is incomplete. Please complete to proceed.",'error');
                 }
                 this.showLoading = false;
                 //this.sessionData = result.studentdata.sessiondata[0];

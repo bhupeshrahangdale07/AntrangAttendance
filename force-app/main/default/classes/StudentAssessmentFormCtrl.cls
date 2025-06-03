@@ -221,7 +221,7 @@ public without sharing class StudentAssessmentFormCtrl{
                 if(objAnswer.Is_Show_Others__c){
                     objWrpStudentAnswer.isShowOtherOption = objAnswer.Is_Show_Others__c;
                     if(objWrpStudentQuestion.answerId.indexOf(objAnswer.Id) != -1){
-                        objWrpStudentQuestion.isshowtextarea = true;     //TODO : Thoda confusion hai idr. 
+                        objWrpStudentQuestion.isshowtextarea = true;
                     }
                 }
                 objWrpStudentQuestion.lstWrpStudentAnswer.add(objWrpStudentAnswer);

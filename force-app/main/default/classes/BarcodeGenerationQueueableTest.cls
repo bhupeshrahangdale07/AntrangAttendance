@@ -69,8 +69,9 @@ public class BarcodeGenerationQueueableTest {
 		list<contact> lstContact = [SELECT Id, LastName, Grade_9_Barcode__c FROM Contact];
         batch__c batch = [select id from batch__c limit 1];
         batch__c bt =  BaselineController.getBatchCodeName(batch.id);
+        Map<Id, Integer> retryCountMap = new Map<Id, Integer>();
         Test.startTest();
-         System.enqueueJob(new BarcodeGenerationQueueable(lstContact, 'Grade 9', bt, 'Form V2'));
+         System.enqueueJob(new BarcodeGenerationQueueable(lstContact, 'Grade 9', bt, 'Form V2',retryCountMap));
         Test.stopTest();
     }
     @isTest
@@ -78,8 +79,9 @@ public class BarcodeGenerationQueueableTest {
 		list<contact> lstContact = [SELECT Id, LastName, Grade_10_Barcode__c FROM Contact];
         batch__c batch = [select id from batch__c limit 1];
         batch__c bt =  BaselineController.getBatchCodeName(batch.id);
+        Map<Id, Integer> retryCountMap = new Map<Id, Integer>();
         Test.startTest();
-         System.enqueueJob(new BarcodeGenerationQueueable(lstContact, 'Grade 10', bt, 'Form V2'));
+         System.enqueueJob(new BarcodeGenerationQueueable(lstContact, 'Grade 10', bt, 'Form V2',retryCountMap));
         Test.stopTest();
     }
     @isTest
@@ -87,8 +89,9 @@ public class BarcodeGenerationQueueableTest {
 		list<contact> lstContact = [SELECT Id, LastName, Grade_11_Barcode__c FROM Contact];
         batch__c batch = [select id from batch__c limit 1];
         batch__c bt =  BaselineController.getBatchCodeName(batch.id);
+        Map<Id, Integer> retryCountMap = new Map<Id, Integer>();
         Test.startTest();
-         System.enqueueJob(new BarcodeGenerationQueueable(lstContact, 'Grade 11', bt, 'Form V2'));
+         System.enqueueJob(new BarcodeGenerationQueueable(lstContact, 'Grade 11', bt, 'Form V2',retryCountMap));
         Test.stopTest();
     }
     @isTest
@@ -96,8 +99,9 @@ public class BarcodeGenerationQueueableTest {
 		list<contact> lstContact = [SELECT Id, LastName, Grade_12_Barcode__c FROM Contact];
         batch__c batch = [select id from batch__c limit 1];
         batch__c bt =  BaselineController.getBatchCodeName(batch.id);
+        Map<Id, Integer> retryCountMap = new Map<Id, Integer>();
         Test.startTest();
-         System.enqueueJob(new BarcodeGenerationQueueable(lstContact, 'Grade 12', bt, 'Form V2'));
+         System.enqueueJob(new BarcodeGenerationQueueable(lstContact, 'Grade 12', bt, 'Form V2',retryCountMap));
         Test.stopTest();
     }
     @isTest
@@ -105,8 +109,9 @@ public class BarcodeGenerationQueueableTest {
 		list<contact> lstContact = [SELECT Id, LastName, Grade_9_Barcode__c FROM Contact];
         batch__c batch = [select id from batch__c limit 1];
         batch__c bt =  BaselineController.getBatchCodeName(batch.id);
+        Map<Id, Integer> retryCountMap = new Map<Id, Integer>();
         Test.startTest();
-         System.enqueueJob(new BarcodeGenerationQueueable(lstContact, 'Grade 9', bt, 'Form V1'));
+         System.enqueueJob(new BarcodeGenerationQueueable(lstContact, 'Grade 9', bt, 'Form V1',retryCountMap));
         Test.stopTest();
     }
     @isTest
@@ -114,8 +119,44 @@ public class BarcodeGenerationQueueableTest {
 		list<contact> lstContact = [SELECT Id, LastName, Grade_9_Barcode__c FROM Contact];
         batch__c batch = [select id from batch__c limit 1];
         batch__c bt =  BaselineController.getBatchCodeName(batch.id);
+        Map<Id, Integer> retryCountMap = new Map<Id, Integer>();
         Test.startTest();
-         System.enqueueJob(new BarcodeGenerationQueueable(lstContact, 'Grade 9', bt, 'Form V1',true));
+         System.enqueueJob(new BarcodeGenerationQueueable(lstContact, 'Grade 9', bt, 'Form V1',true,retryCountMap));
+        Test.stopTest();
+    }
+     @isTest
+    static void testQueueableExceptionHandling() {
+        Map<Id, Integer> retryCountMap = new Map<Id, Integer>();
+        District_Master__c dist = [select id from District_Master__c];
+        dist.Academic_Year__c = null;
+        update dist;
+        Test.startTest();
+        try {
+            list<contact> lstContact = [SELECT Id, LastName, Grade_9_Barcode__c FROM Contact];
+            batch__c bt =  [SELECT Name, School_Name__c, School_Name__r.name, Grade__c, Batch_Number__c, Academic_Year__c,
+                                    School_Name__r.District__r.Academic_Year__c, School_Name__r.State__r.State_Code__c, 
+                                   School_Name__r.District__r.Barcode_starts_with__c FROM Batch__c ];
+            System.enqueueJob(new BarcodeGenerationQueueable(lstContact, '', bt, 'Form V1',true,retryCountMap)); // Passing null to cause an exception
+        } catch (Exception e) {
+        }
+        Test.stopTest();
+    }
+
+     @isTest
+    static void testQueueableCount5() {
+        list<contact> lstContact = [SELECT Id, LastName, Grade_9_Barcode__c FROM Contact];
+        Map<Id, Integer> retryCountMap = new Map<Id, Integer>();
+        retryCountMap.put(lstContact[0].id, 5);
+       
+        Test.startTest();
+        try {
+            
+            batch__c bt =  [SELECT Name, School_Name__c, School_Name__r.name, Grade__c, Batch_Number__c, Academic_Year__c,
+                                    School_Name__r.District__r.Academic_Year__c, School_Name__r.State__r.State_Code__c, 
+                                   School_Name__r.District__r.Barcode_starts_with__c FROM Batch__c ];
+            System.enqueueJob(new BarcodeGenerationQueueable(lstContact, '', bt, 'Form V1',true,retryCountMap)); // Passing null to cause an exception
+        } catch (Exception e) {
+        }
         Test.stopTest();
     }
 

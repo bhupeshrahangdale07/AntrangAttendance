@@ -6,11 +6,11 @@
     <!-- Option list to show in drop down -->
     <aura:attribute name="msoptions" type="List" />
     <!-- Show filter input box -->
-    <aura:attribute name="showFilterInput" type="Boolean" default="false" />
+    <aura:attribute name="showFilterInput" type="Boolean" default="true" />
     <!-- Show filter input box -->
-    <aura:attribute name="showRefreshButton" type="Boolean" default="false" />
+    <aura:attribute name="showRefreshButton" type="Boolean" default="true" />
     <!-- Show filter input box -->
-    <aura:attribute name="showClearButton" type="Boolean" default="false" />
+    <aura:attribute name="showClearButton" type="Boolean" default="true" />
     <!-- Selected options label -->
     <aura:attribute name="msname" type="String" default="Select a value.." />
     
@@ -32,14 +32,14 @@
     
     
     <!-- DROPDOWN Component Code Starts HERE-->
-    <div class="slds-form-element" style="width:150px;">
+    <div class="slds-form-element">
         <aura:if isTrue="{! !empty(v.mslabel)}">
         	<label class="slds-form-element__label">{!v.mslabel}</label>
         </aura:if>
         <div class="slds-form-element__control">
             <div class="slds-combobox_container slds-size_small">
                 <div id="ms-picklist-dropdown" class="slds-dropdown-trigger slds-dropdown-trigger_click slds-picklist ms-picklist-dropdown" 
-                     aria-expanded="false" aria-haspopup="listbox" role="listbox" style="width:150px;">
+                     aria-expanded="false" aria-haspopup="listbox" role="listbox" >
                     <!-- MAIN BUTTON CODE -->
                     <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
                         <input class="slds-combobox__input ms-input" id="ms-input" aria-controls="ms-dropdown-items" 

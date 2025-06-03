@@ -63,10 +63,6 @@
     </div>
   </aura:if>
   <!-- Loading spinner end-->
-    
- <!--   <div>
-    <iframe width="800" height="500" src="https://www.youtube.com/embed/7foV2XPaHvM"></iframe>
-    </div> -->
 
   <div class="container">
     <div class="slds-box slds-theme_default">

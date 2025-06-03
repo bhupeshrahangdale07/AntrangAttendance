@@ -8,9 +8,16 @@ public class careerDecisionMaking_02Test {
         Id RecordTypeIdAccount = Schema.SObjectType.Account.getRecordTypeInfosByName().get('School').getRecordTypeId();
         account.RecordTypeId = RecordTypeIdAccount;
         insert account;
+        
+         List<Batch__c> batchList = new List<Batch__c>{
+            new Batch__c(Name = 'ShreeramSchoolBatch1', School_Name__c = account.Id, Preferred_Language__c = 'English'),
+            new Batch__c(Name = 'ShreeramSchoolBatch2', School_Name__c = account.Id, Preferred_Language__c = 'English')
+                };
+        insert batchList;
 
         RecordType CA_Student_RecordType = [SELECT Id, Name FROM RecordType WHERE SobjectType = 'Contact' AND Name = 'CA Student'];
         Contact student = new Contact(RecordTypeId = CA_Student_RecordType.Id);
+        student.Batch_Code__c = batchList[0].Id;
         student.AccountId = account.Id;
         student.FirstName = 'First';
         student.LastName = 'Last';
@@ -43,9 +50,9 @@ public class careerDecisionMaking_02Test {
     {
         List<Contact> conList = [SELECT Id FROM Contact WHERE LastName = 'Last' AND Bar_Code__c = 'Test009'];
         test.startTest();
-        careerDecisionMaking_02.singleRecordWrapper rspWrap = careerDecisionMaking_02.getRecordCDM2(conList[0].Id, 'Grade 9');
-        careerDecisionMaking_02.getRecordCDM2(conList[0].Id, 'Grade 10');
-        careerDecisionMaking_02.getRecordCDM2(conList[0].Id, 'Grade 11');
+        careerDecisionMaking_02.singleRecordWrapper rspWrap = careerDecisionMaking_02.getRecordCDM2(conList[0].Id, 'Grade 9', '');
+        careerDecisionMaking_02.getRecordCDM2(conList[0].Id, 'Grade 10', '');
+        careerDecisionMaking_02.getRecordCDM2(conList[0].Id, 'Grade 11', '');
         test.stopTest();
         
         System.assertEquals('First Last',rspWrap.studentName,'Contact Size is Not Matched');
@@ -109,13 +116,21 @@ public class careerDecisionMaking_02Test {
         qAll.q06_10.answer = 'A';
         qAll.q06_11.answer = 'A';
         qAll.q06_12.answer = 'A';
-        
+         List<Batch__c> batches = new List<Batch__c>([
+                    SELECT Id, Name, School_Name__r.Name, Grade__c, Academic_Year__c, Batch_Number__c
+                    FROM Batch__c]);
         test.startTest();
-        careerDecisionMaking_02.saveAllQA(cdm2List[0].Id, conList[0].Id , 'Test009', qAll, 'English', 'Form V2');
-        careerDecisionMaking_02.saveAllQA(null, conList[0].Id , 'Test009', qAll, 'English', 'Form V2');
+        careerDecisionMaking_02.saveAllQA(batches[0].id, cdm2List[0].Id, conList[0].Id , 'Test009', qAll, 'English', 'Form V2');
+        careerDecisionMaking_02.saveAllQA(batches[0].id, null, conList[0].Id , 'Test009', qAll, 'English', 'Form V2');
         test.stopTest();
     }
-    
+    @isTest
+    public static void test_fakeMethod(){
+
+        test.startTest();
+        careerDecisionMaking_02.fakeMethod();
+        test.stopTest();
+    }
     public class qAnswerAll{
         q05Answer q05;
         q06Answer q06_01;

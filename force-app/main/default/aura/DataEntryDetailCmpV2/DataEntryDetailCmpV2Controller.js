@@ -48,15 +48,7 @@
                 if(component.get("v.selectedGrade") !=null && component.get("v.selectedBatchId") !=null){
                     debugger;
                     helper.getButtonsVisibility(component, component.get("v.AccountId"));
-                    
-                    var schoolName = component.get("v.selectedValueFromList");
-                    var batch = component.get("v.selectedBatchId");
-                    var grade = component.get("v.selectedGrade");
-                    if(batch && batch != '' &&
-                       grade && grade != '' &&
-                       schoolName && schoolName != ''){
-                        component.set("v.displayButtonList",true);
-                    }
+                    component.set("v.displayButtonList",true);
                 }
                 component.set("v.formTyp",decodeURI(params[5].split('=')[1]));
                 component.set("v.formLng",decodeURI(params[6].split('=')[1]));
@@ -84,7 +76,7 @@
                 var pageReference = {
                     type: 'comm__namedPage',
                     attributes: {
-                        name: 'LoginPage__c'
+                        name: 'LoginPageV2__c'
                     }
                 };
                 navService.navigate(pageReference);
@@ -95,7 +87,6 @@
       
     },
     onwrpEventUpdate: function (component, event, helper) {
-        component.set("v.displayButtonList", false); 
         if(component.get("v.selectedValueFromList") == '' || component.get("v.selectedValueFromList") == 'undefined'){
         	console.log('$$$$$$$$', component.get("v.isEnglish"));
             if(component.get("v.isEnglish") == true){
@@ -119,10 +110,7 @@
             if(accountId != undefined && accountId != null && accountId.length > 0){
                 console.log('#accountId : '+accountId);
                 var schoolName = component.get("v.selectedValueFromList");
-                if(schoolName != ''){
-                     helper.getButtonsVisibility(component, accountId);
-                }
-                
+                if(schoolName != '') helper.getButtonsVisibility(component, accountId);
                 console.log('##selectedValueFromSchoolList : '+schoolName);
                 component.set("v.AccountId",accountId);
                 /*component.set(
@@ -144,8 +132,6 @@
     },
     handleGradeChange: function (component, event, helper) {
         debugger;
-        component.set("v.displayButtonList", false); 
-        
         console.log('handleGradeChange SchoolId = ',component.get("v.selectedValueFromList"))
         if(component.get("v.selectedValueFromList") == '' || component.get("v.selectedValueFromList") === undefined){
             if(component.get("v.isEnglish") == true){
@@ -162,8 +148,7 @@
         helper.gradehandler(component, event, helper);
     },
     handleBatchChange: function (component, event, helper) {
-        console.log('$$$ In handleBatchChange'+component.get('v.selectedBatchId'));
-        
+        console.log('$$$ In handleBatchChange');
         if(component.get("v.selectedValueFromList") == '' || component.get("v.selectedValueFromList") == 'undefined'){
             if(component.get("v.isEnglish") == true){
                 console.log('English');
@@ -203,6 +188,27 @@
                              type: 'comm__namedPage',
                              attributes: {
                                              name: 'baselinesublinks_V2__c'
+                                        }, 
+                             state: {
+                                 		
+                                        fem: component.get('v.traineremail'),
+                                        sch: component.get('v.selectedValueFromList'),
+                                        grd: component.get('v.selectedGrade'),
+                                        bid: component.get('v.selectedBatchId'),
+                                        acid:component.get('v.AccountId'),
+                                 		typ:component.get('v.formTyp'),
+                                 		lng:component.get('v.formLng')
+                                    }
+        };
+    
+        navService.navigate(pageReference);
+    },
+    baseline2AssessmentHandle : function(component, event, helper){
+        var navService = component.find("navService");
+        var pageReference = {
+                             type: 'comm__namedPage',
+                             attributes: {
+                                             name: 'Baseline_2_Summary__c'
                                         }, 
                              state: {
                                  		

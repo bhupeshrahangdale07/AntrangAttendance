@@ -53,9 +53,6 @@ export default class Quiz2Details extends NavigationMixin(LightningElement) {
         }
         
     }
-      get getStudentCount(){
-        if(this.totalStudentsOfBatchCount == 0 && this.realityCount == this.totalStudentsOfBatchCount) return true; else return false;
-    }
     connectedCallback() {
         this.showLoading = true;
         getStudentData({

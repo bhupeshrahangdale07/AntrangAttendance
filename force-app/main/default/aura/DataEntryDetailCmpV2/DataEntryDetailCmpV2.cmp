@@ -17,6 +17,7 @@
     			<!-- Updated by Piyush on 7/2/24 Start -->
     			<aura:attribute name="studentDetailsButton" type="Boolean" default="false"/>
                 <aura:attribute name="baselineAssessmentButton" type="Boolean" default="false"/>
+    			<aura:attribute name="baseline2AssessmentButton" type="Boolean" default="false"/>
                 <aura:attribute name="interestButton" type="Boolean" default="false"/>
     			<aura:attribute name="interestFormType" type="String"/>
                 <aura:attribute name="aptitudeButton" type="Boolean" default="false"/>
@@ -156,7 +157,7 @@
                 </div>
             </div>
             <aura:if isTrue="{!v.displayButtonList}">
-                <p class="slds-align_absolute-center slds-m-around_medium">Click on the handout/assessment you want to fill.</p>
+                
                 <div class="slds-grid slds-gutters slds-wrap">
                     <!--Add Buttons Here-->
                     <aura:if isTrue = "{!v.studentDetailsButton}">
@@ -171,6 +172,13 @@
                             <lightning:button variant="brand" label="Baseline Assessment" 
                                               class="slds-align_absolute-center slds-m-top_small assessmentButton" 
                                               onclick="{!c.baselineAssessmentHandle}"/>
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue = "{!v.baseline2AssessmentButton}">
+                        <div class="slds-col slds-size_3-of-3">
+                            <lightning:button variant="brand" label="Student Details 2" 
+                                              class="slds-align_absolute-center slds-m-top_small assessmentButton" 
+                                              onclick="{!c.baseline2AssessmentHandle}"/>
                         </div>
                     </aura:if>
                     <aura:if isTrue = "{!v.interestButton}">

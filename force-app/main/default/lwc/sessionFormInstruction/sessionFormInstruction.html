@@ -4,8 +4,9 @@
             <ul class="instruction-list">
                 <li>Keep the tab open or minimised to stay logged in. Closing the tab will log you out automatically
                 </li>
+                <li>If you’ve not logged out, refresh page to go to Pending Sessions and see updated form for all batches</li>
                 <li>Click on Save to save the changes made</li>
-                <li>Adding Date and Start Time both are required</li>
+                <!-- <li>Adding Date and Start Time both are required</li> -->
                 <li>All sessions have to be taken in order. Eg. Session 5 cannot be scheduled for before Session 4
                     (except in Flexible Sessions)</li>
                 <li>Multiple sessions cannot be scheduled at the same time (Start Time difference should be at least 40
@@ -41,6 +42,16 @@
                     </lightning-button></div>
                     <div class="status-description" style="padding-top: 8px;">In the session, individual Student Attendance is submitted</div>
                 </div>
+                <div class="status-item" style="padding-top: 5px">
+                     <div class="statusBtn" style="padding-top: 12px"><lightning-button variant="brand" label="Ready For Attendance" class="status-button3">
+                    </lightning-button></div>
+                    <div class="status-description" style="padding-top: 8px;">Scheduled Student/Parent/Flexible Session's date and time is in the past but attendance is not saved yet</div>
+                </div>
+                <div class="status-item" style="padding-top: 18px">
+                     <div class="statusBtn"><lightning-button variant="brand" label="Scheduled" class="status-button5">
+                    </lightning-button></div>
+                    <div class="status-description">Student/Parent/Flexible Session is scheduled, but there is more than 1hr left for the session, so details can still be edited</div>
+                </div>
             </div>
 
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 addTopClass">
@@ -49,17 +60,22 @@
                     </lightning-button></div>
                     <div class="status-description" style="padding-top: 8px;">No Student/Parent/Flexible Session schedule has been saved</div>
                 </div>
+                <div class="status-item" style="padding-top: 5px">
+                     <div class="statusBtn" style="padding-top: 12px"><lightning-button variant="brand" label="Incomplete" class="status-button4">
+                    </lightning-button></div>
+                    <div class="status-description" style="padding-top: 8px">Counselling is pending for 1 or more students in the batch, or session data is pending for Parent Session</div>
+                </div>
             </div>
         </div>
 
         <!-- Second Row -->
-        <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+        <!-- <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 addTopClass">
-                <div class="status-item">
+                 <div class="status-item">
                      <div class="statusBtn"><lightning-button variant="brand" label="Ready For Attendance" class="status-button3">
                     </lightning-button></div>
                     <div class="status-description" style="padding-top: 8px;">Scheduled Student/Parent/Flexible Session's date and time is in the past but attendance is not saved yet</div>
-                </div>
+                </div> 
             </div>
 
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 addTopClass">
@@ -69,10 +85,10 @@
                     <div class="status-description">Counselling is pending for 1 or more students in the batch, or session data is pending for a Student/Parent/Flexible Session</div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Third Row -->
-        <div class="slds-grid slds-wrap slds-gutters">
+        <!-- <div class="slds-grid slds-wrap slds-gutters">
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 addTopClass">
                 <div class="status-item">
                      <div class="statusBtn"><lightning-button variant="brand" label="Scheduled" class="status-button5">
@@ -81,6 +97,6 @@
                 </div>
             </div>
 
-        </div>
+        </div> -->
     </div>
 </template>

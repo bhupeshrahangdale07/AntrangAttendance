@@ -75,18 +75,8 @@ lng;
             });
         }   
     }
-    beforeUnloadHandler(ev) {
-        console.log("beforeUnloadHandler called");
-        return "";
-    }
-    disconnectedCallback() {
-        window.removeEventListener("beforeunload", this.beforeUnloadHandler);
-        console.log("disconnectedCallback executed");
-    }
-    connectedCallback() {
-         window.addEventListener("beforeunload", this.beforeUnloadHandler);
-        console.log("connectedCallback executed");
 
+    connectedCallback() {
         if(this.isEnglish){
             this.errorMsg = 'Error';
         }else{

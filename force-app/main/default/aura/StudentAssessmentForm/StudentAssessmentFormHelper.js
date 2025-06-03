@@ -57,19 +57,18 @@
         });
         action.setCallback(this, function(response){
             let state = response.getState();
-            debugger;
+            
             if(state === "SUCCESS"){
                 let result = response.getReturnValue();
                 
                 if(result != null && result != undefined){
                     //this is for already submitted assessment
-                    /*if(result.isSubmitted){
+                    if(result.isSubmitted){
                         component.set("v.isShowResult",result.isSubmitted);
                         component.set("v.isShowQuestionPage",false);
                         component.set("v.AssessmentMark",result.objAssessmentMarks);
                         
-                    }else if(!result.isSubmitted && result.lstWrpStudentQuestion != null)*/
-                    {
+                    }else if(!result.isSubmitted && result.lstWrpStudentQuestion != null){
                         component.set("v.isShowQuestionPage",true);
                         helper.convertListToMapQuestions(component, event, helper, result.lstWrpStudentQuestion);
                         helper.loadQuestionPerPage(component, event, helper, component.get("v.startPage"));

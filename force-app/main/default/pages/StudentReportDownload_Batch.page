@@ -4,18 +4,6 @@
            cache="true"
            contentType="application/x-pdf#Batch_{!Batch__c.Batch_Number__c}.pdf">
     <head>
-        <apex:includeScript value="{!$Resource.jquery}" />
-            <script>
-                $( window ).ready(function() {
-                    alert();
-                    navigateToRecordDetail();
-                });
-    
-                function navigateToRecordDetail() {
-                    var recordId = '{!Batch__c.Id}';
-                    window.parent.location = '/' + recordId;
-                }
-            </script>
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
         <style>
             body {
